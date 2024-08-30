@@ -37,8 +37,10 @@ namespace bhenum {
     };
 }
 
-
-
+//
+//
+//
+//
 
 // 日志等级判断
 template<typename Tlevel>
@@ -223,98 +225,6 @@ struct Tlog_file
 };
 
 
-/*
-
-
-
-//== 文件日志模板 ==
-//提供等级自定义模板参数
-template<class Tlevel>
-class Tflog
-{
-public:
-    inline bool init(const std::string &file = "Tflog.log",bool app = true) //初始化日志
-    {
-        _file = file;
-        if(app) _mode = std::ios::app; else _mode = std::ios::out;
-        if(_fs.is_open() == false) _fs.open(_file,_mode);
-        return _fs.is_open();
-    }
-
-    static std::string date_time() //获取秒精度的日期时间
-    {
-        time_t t; time(&t); char buf[64] = {0};
-        strftime(buf,sizeof(buf),"%Y-%m-%d %H:%M:%S",localtime(&t));
-        return std::string(buf);
-    }
-
-    inline void set_limit(int max) { _limit_max = max; }    //设置数量限制
-    inline void set_level(Tlevel el) { _level = el; }       //设置等级
-    inline void set_length(size_t len) { _len_max = len;}   //设置文件长度
-    inline void close_log() { _fs.close(); }                //关闭日志
-
-    inline Tflog& operator<<(Tlevel el)
-    { if(el <= _level) _ok = true; else _ok = false; return *this; };
-
-    inline Tflog& operator<<(std::ostream& (*end)(std::ostream&))
-    { if(_ok &&_fs.is_open()){ _fs<<end; update_file(); } return *this; };
-
-    template<class T>
-    inline Tflog& operator<<(const T &log)
-    { if(_ok &&_fs.is_open()) _fs<<log; return *this; };
-
-protected:
-    bool _ok = false;       //判断等级是否符合
-    int _limit_max = 0;     //日志文件限制数量
-    int _limit_now = 1;     //当前写入日志
-    Tlevel _level;          //最低显示的等级
-    std::fstream _fs;       //文件对象
-    std::string _file;      //文件名
-    size_t _len_max = (1 << 26);    //最大长度--64M
-    std::ios_base::openmode _mode;  //文件打开模式
-
-    void update_file() //超出最大文件限制后更新文件名
-    {
-        if(_len_max < (size_t)_fs.tellg())
-        {
-            if(_limit_max == 0) write_unlimited();
-            else write_limit();
-        }
-    }
-
-    void write_unlimited() //无限制日志
-    {
-        _fs.close();
-        for(int i=1;;i++)
-        {
-            std::string new_file = std::to_string(i)+"_"+_file;
-            if(exist_file(new_file) == false)
-            { rename(_file.c_str(),new_file.c_str()); break; }
-        }
-        _fs.open(_file,_mode);
-    }
-
-    void write_limit() //限制日志数量
-    {
-        _fs.close();
-        {
-            std::string new_file = std::to_string(_limit_now)+"_"+_file;
-            rename(_file.c_str(),new_file.c_str());
-            _limit_now++;
-            if(_limit_now > _limit_max) _limit_now = 1;
-        }
-        _fs.open(_file,_mode);
-    }
-
-    static bool exist_file(const std::string &filename)    //判断文件是否存在
-    { std::ifstream f(filename); return f.is_open(); }
-};
-//== 文件日志模板 ==
-
-
-*/
-
-
 // 命令行打印日志 等级4
 struct Tlog_cmd4 : public Tlog_base <Tlog_level<bhenum::level4>,Tlog_buf,Tlog_end,Tlog_cmd> 
 {
@@ -335,7 +245,10 @@ struct Tlog_file4 : public Tlog_base <Tlog_level<bhenum::level4>,Tlog_buf,Tlog_e
     Tlog_file4() { set_level(Tlog_level<bhenum::level4>(bhenum::level4::e_deb)); _out.reopen(); }
 };
 
-
+//
+//
+//
+//
 
 // 日志格式化内容
 #define BHLOG_FORMAT(tips,el,...)                           \
@@ -403,8 +316,10 @@ struct Tlog_file4 : public Tlog_base <Tlog_level<bhenum::level4>,Tlog_buf,Tlog_e
     #define floge(...) 
 #endif
 
-
-
+//
+//
+//
+//
 
 // 标准容器打印
 template<class T>
@@ -425,8 +340,10 @@ std::string Tlog_con(const T& con,const std::string &prve = "| ",const std::stri
     return ret;
 }
 
-
-
+//
+//
+//
+//
 
 // 快捷使用定义
 typedef Tlog_level<bhenum::level4> logel4;
