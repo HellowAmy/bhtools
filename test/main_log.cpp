@@ -147,8 +147,8 @@ void test_4()
         c3.push_back(i);
     }
 
-    vlogd(Tlog_con(c1,"",",",0));
-    vlogd(Tlog_con(c1,"| ","-",5));
+    vlogd(Tlog_con(c1,0,",",""));
+    vlogd(Tlog_con(c1,5,"-","| "));
 
     vlogi(Tlog_con(c2));
     vlogw(Tlog_con(c3));

@@ -65,5 +65,10 @@ if(ALL OR main_log)
     add_executable(main_log test/main_log.cpp)
 endif()
 
+if(ALL OR main_time)
+    add_executable(main_time test/main_time.cpp)
+endif()
+
+
 # 生成目标
 add_executable(${CMAKE_PROJECT_NAME} main.cpp)

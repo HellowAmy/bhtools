@@ -55,7 +55,6 @@
 
         
 
-
         {
             "label": "CMake main_log",
             "type": "shell",
@@ -81,9 +80,36 @@
                 "CMake main_log",
                 "CMake Build"
             ]
+        },
+
+
+
+
+        {
+            "label": "CMake main_time",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "..",
+                "-Dmain_time=1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build/"
+            },
+        },
+        {
+            "label": "Run main_time",
+            "type": "shell",
+            "command": "cmake",
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "CMake main_time",
+                "CMake Build"
+            ]
         }
-
-
-
     ]
 }

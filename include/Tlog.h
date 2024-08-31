@@ -323,16 +323,16 @@ struct Tlog_file4 : public Tlog_base <Tlog_level<bhenum::level4>,Tlog_buf,Tlog_e
 
 // 标准容器打印
 template<class T>
-std::string Tlog_con(const T& con,const std::string &prve = "| ",const std::string &flg = " ",size_t len = 10)
+std::string Tlog_con(const T& con,size_t len = 1,const std::string &flg = " ",const std::string &prev = "| ")
 {
     std::string ret = "\n";
-    ret += prve + "size: " + std::to_string(con.size());
-    ret += "\n" + prve;
+    ret += prev + "size: " + std::to_string(con.size());
+    ret += "\n" + prev;
     size_t count = 0;
     Tlog_buf buf;
     for(const auto &a:con)
     {
-        if(len != 0 && count >= len) { count = 0; ret += "\n" + prve; }
+        if(len != 0 && count >= len) { count = 0; ret += "\n" + prev; }
         ret += buf.Tto_string(a) + flg;
         count++;
     }

@@ -10,7 +10,7 @@
 namespace bhtools {
 
 
-// 用于记录线性时间点
+// 用于记录线性流逝的时间点
 struct Ftimel
 {
     typedef std::chrono::nanoseconds nanoseconds;
@@ -73,18 +73,29 @@ struct Ftimel
     { 
         if(reset) { _vec.clear(); }
         if(now) { update(); }
-        _vec.push_back(tips + to_string());
+        _vec.push_back(tips +" "+ to_string());
     }
 
     // 获取加入时间点-可选择清空容器
-    inline std::vector<std::string> check_time() 
+    inline std::vector<std::string> check_vec() 
     { return _vec; }
 
     time_point _begin;              //用于计算上一个时间点
     std::vector<std::string> _vec;  //多点打印记录
 };
 
+//
+//
+//
+//
 
+//
+struct Ftimes
+{
+
+    Ftimes() {}
+    ~Ftimes() {}
+};
 
 
 } // bhtools
@@ -139,11 +150,6 @@ protected:
 
 */
 
-struct Ftimes
-{
 
-    Ftimes() {}
-    ~Ftimes() {}
-};
 
 #endif // FTIME_H
