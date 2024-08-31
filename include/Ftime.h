@@ -89,66 +89,67 @@ struct Ftimel
 //
 //
 
-//
+// 显示系统时间与日期格式
 struct Ftimes
 {
+    typedef std::chrono::nanoseconds nanoseconds;
+    typedef std::chrono::microseconds microseconds;
+    typedef std::chrono::milliseconds milliseconds;
+    typedef std::chrono::seconds seconds;
+    typedef std::chrono::minutes minutes;
+    typedef std::chrono::hours hours;
+    typedef std::chrono::duration<int64_t, std::ratio<60*60*24>>  days;
+    typedef std::chrono::duration<int64_t, std::ratio<60*60*24*30>>  months;
+    typedef std::chrono::duration<int64_t, std::ratio<60*60*24*30*12>>  years;
+    typedef std::chrono::system_clock system_clock;
+    typedef typename std::chrono::time_point<std::chrono::system_clock,std::chrono::nanoseconds> time_point;
 
-    Ftimes() {}
+    // 自定义格式
+    struct data
+    {
+        size_t mil;
+        size_t sec;
+        size_t min;
+        size_t hou;
+        size_t day;
+        size_t mon;
+        size_t yea;
+    };
+
+    Ftimes() { _begin = system_clock::now(); }
     ~Ftimes() {}
+
+    inline nanoseconds time_now()
+    { return system_clock::now().time_since_epoch(); }
+
+    std::string to_string()
+    { return to_string(time_now()); }
+
+    std::string to_string(const nanoseconds &point)
+    {
+        std::string ret;
+        return ret;
+    }
+
+    data to_data(const nanoseconds &point)
+    {
+        data d;
+        d.mil = std::chrono::duration_cast<milliseconds>(point).count();
+        d.sec = std::chrono::duration_cast<seconds>(point).count();
+        d.min = std::chrono::duration_cast<minutes>(point).count();
+        d.hou = std::chrono::duration_cast<hours>(point).count();
+        d.day = std::chrono::duration_cast<days>(point).count();
+        d.mon = std::chrono::duration_cast<months>(point).count();
+        d.yea = std::chrono::duration_cast<years>(point).count();
+        return d;
+    }
+
+    time_point _begin;
 };
 
 
 } // bhtools
 
-
-
-
-/*
-
-class ctimel
-{
-public:
-    ctimel() { _pass = steady_clock::now(); _begin = _pass; }
-    ~ctimel() { nanoseconds loss = steady_clock::now() - _pass; show_point(loss); }
-
-    inline nanoseconds to_point()
-    {
-        nanoseconds loss = steady_clock::now() - _begin;
-        return loss;
-    }
-
-    inline std::string to_string(const nanoseconds &loss)
-    {
-        //顺序 [纳秒|微秒|毫秒|秒]
-        std::string str =
-                "[nan: " + std::to_string(loss.count()) +
-                "|mic: " + std::to_string(duration_cast<microseconds>(loss).count()) +
-                "|mil: " + std::to_string(duration_cast<milliseconds>(loss).count()) +
-                "|sec: " + std::to_string(duration_cast<seconds>(loss).count()) +
-                "]";
-        return str;
-    }
-
-    inline void show_vec()
-    {
-        for(auto a:_vec)
-        { std::cout<<to_string(a)<<std::endl; }
-    }
-
-    inline void show_point(const nanoseconds &loss) { std::cout<<to_string(loss)<<std::endl; }
-    inline void show() { show_point(to_point()); }
-    inline void update() { _begin = steady_clock::now(); }
-    inline void add_point() { _vec.push_back(to_point()); }
-    inline void add_point_re() { _vec.push_back(to_point()); update(); }
-
-protected:
-    time_point<steady_clock,nanoseconds> _begin;    //用于计算上一个时间点
-    time_point<steady_clock,nanoseconds> _pass;     //计算生存时间，析构时打印
-    std::vector<nanoseconds> _vec;                  //多点打印记录
-};
-
-
-*/
 
 
 

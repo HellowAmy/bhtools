@@ -257,6 +257,23 @@ void test_2()
 
         vlogd($C(t.check_vec()));
     }
+} 
+
+void test_3()
+{
+    Ftimel t;
+    vlogd(t.to_string(std::chrono::steady_clock::now().time_since_epoch()) );
+    vlogd(t.to_string(std::chrono::system_clock::now().time_since_epoch()) );
+    vlogd(t.to_string(std::chrono::system_clock::now().time_since_epoch()) );
+
+    {
+        Ftimes t;
+        auto d = t.to_data(t.time_now());
+        vlogd($(d.mil) $(d.sec) $(d.min) );
+        vlogd($(d.hou) $(d.day) $(d.mon) $(d.yea + 1970) );
+    }
+
+
 }
 
 int main(int argc, char *argv[])
@@ -264,8 +281,8 @@ int main(int argc, char *argv[])
 
 
     // test_1();   
-    test_2();   
-    // test_3();   
+    // test_2();   
+    test_3();   
     // test_4();   
     // test_5();
     // test_6();
