@@ -261,16 +261,16 @@ void test_2()
 
 void test_3()
 {
-    Ftimel t;
-    vlogd(t.to_string(std::chrono::steady_clock::now().time_since_epoch()) );
-    vlogd(t.to_string(std::chrono::system_clock::now().time_since_epoch()) );
-    vlogd(t.to_string(std::chrono::system_clock::now().time_since_epoch()) );
-
     {
         Ftimes t;
         auto d = t.to_data(t.time_now());
-        vlogd($(d.mil) $(d.sec) $(d.min) );
-        vlogd($(d.hou) $(d.day) $(d.mon) $(d.yea + 1970) );
+        vlogd($(d.yea) $(d.mon) $(d.day) $(d.hou) $(d.min) $(d.sec) $(d.mil) $(d.mic) $(d.nan));
+    }
+    {
+        Ftimes t;
+        auto s1 = t.to_string();
+        auto s2 = t.to_ctime();
+        vlogd($(s1) $(s2));
     }
 
 
