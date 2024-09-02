@@ -5,8 +5,9 @@
 #include <chrono>
 #include <vector>
 #include <string>
-
-#include <Tlog.h>
+#include <sstream>
+#include <ctime>
+#include <iomanip>
 
 namespace bhtools {
 
@@ -140,15 +141,15 @@ struct Ftimes
     }
 
     // 获取当前UTC时间
-    inline nanoseconds time_now()
+    inline static nanoseconds time_now()
     { return system_clock::now().time_since_epoch(); }
 
     // 默认转为中国时区显示时间
-    std::string to_string(size_t UTC = 8)
+    inline static std::string to_string(size_t UTC = 8)
     { return to_string(time_now(),UTC); }
 
     // 转为默认UTC显示时间-传入时间点
-    inline std::string to_string(const nanoseconds &point,size_t UTC)
+    inline static std::string to_string(const nanoseconds &point,size_t UTC)
     {
         data d = to_data(point);
         std::string ret = "[ " + 
@@ -165,7 +166,7 @@ struct Ftimes
     }
 
     // 返回C++标准库的UTC时间-具体地区的时间偏移需要自行计算
-    inline data to_data(const nanoseconds &point)
+    inline static data to_data(const nanoseconds &point)
     {
         // 计算秒到天的时间
         data d;
@@ -198,7 +199,7 @@ struct Ftimes
         }
 
         // 计算日期-传入当年经过的天数-计算天数所属的月份
-        auto vec = get_month_leap(year_next);
+        std::vector<size_t> vec = get_month_leap(year_next);
         for(int i=0;i<vec.size();i++)
         {
             if(days_less <= vec[i])
@@ -210,6 +211,62 @@ struct Ftimes
             }
         }
         return d;
+    }
+
+
+    // 格式化日期格式-格式的替换字符如下-[%XC][百分号加字符串长度加类型]
+    // %4Y-%2M-%2D.%2H:%2T:%2S.%3L.%3C.%3N >>>> 2024-09-02.15:44:28.804.245.495
+    inline static std::string format_time(const data &d,const std::string &fm = "%4Y-%2M-%2D.%2H:%2T:%2S.%3L.%3C.%3N")
+    {
+        std::string ret;
+        for(size_t i=0;i<fm.size();i++)
+        {
+            char c = fm[i];
+            if(c == '%')
+            {
+                if(i+2 >= fm.size()) { return "1"; } 
+                size_t n = fm[i+1] - '0';
+                char t = fm[i+2];
+                
+                if(n < 1 || n > 9) { return "2"; } 
+                std::string val;
+                val.resize(n);
+
+                if(t == 'Y') { ret += to_time_len(d.yea,n,true); }
+                else if(t == 'M') { ret += to_time_len(d.mon,n); }
+                else if(t == 'D') { ret += to_time_len(d.day,n); }
+                else if(t == 'H') { ret += to_time_len(d.hou,n); }
+                else if(t == 'T') { ret += to_time_len(d.min,n); }
+                else if(t == 'S') { ret += to_time_len(d.sec,n); }
+                else if(t == 'L') { ret += to_time_len(d.mil,n); }
+                else if(t == 'C') { ret += to_time_len(d.mic,n); }
+                else if(t == 'N') { ret += to_time_len(d.nan,n); }
+                else { return "3"; } 
+
+                i += 2;
+            }
+            else { ret.push_back(c); }
+        }
+        return ret;
+    }
+
+    // 格式化为指定长度的字符串
+    inline static std::string to_time_len(size_t time,size_t len,bool reverse = false)
+    {
+        std::string s = std::to_string(time);
+        if(s.size() > len) 
+        {
+            if(reverse) { s = s.erase(0,s.size()-len); } 
+            else { s.resize(len); }
+        }
+        else if(s.size() < len)
+        {
+            std::string sf;
+            sf.resize(len - s.size());
+            std::fill(sf.begin(),sf.end(),'0');
+            s = sf + s;
+        }
+        return s;
     }
 
 

@@ -272,8 +272,88 @@ void test_3()
         auto s2 = t.to_ctime();
         vlogd($(s1) $(s2));
     }
+}
 
+void test_4()
+{
+    {
+        vlogd($(Ftimes::to_string()));
+    }
+    {
+        Ftimes t;
+        auto tt = t.time_now();
+        auto t1 = t.to_data(tt);
+        auto s1 = t.format_time(t1);
+        auto s2 = t.to_string(tt,8);
+        vlogd($(s1) $(s2));
+    }
+    {
+        Ftimes t;
+        auto tt = t.time_now();
+        auto t1 = t.to_data(tt);
+        auto s13 = t.format_time(t1);
+        auto s11 = t.format_time(t1,"%2Y-%2M-%2D.%2H:%2T:%2S.%2L.%2C.%3N");
+        auto s2 = t.to_string(tt,8);
+        vlogd($(s13) $(s11));
+    }
+}
 
+void test_5()
+{
+    int sum = 10000000;
+    {
+        Ftimel t;
+        for(int i=0;i<sum;i++)
+        {
+            auto t1 = Ftimes::time_now();
+            auto t2 = Ftimes::to_data(t1);
+            t2.hou += 8;
+            auto s1 = Ftimes::format_time(t2);
+        }
+        auto s1 = t.to_string();
+        vlogd($(s1));
+    }
+    {
+        Ftimel t;
+        for(int i=0;i<sum;i++)
+        {
+            auto t1 = Ftimes::to_ctime();
+        }
+        auto s1 = t.to_string();
+        vlogd($(s1));
+    }
+    {
+        Ftimel t;
+        for(int i=0;i<sum;i++)
+        {
+            std::time_t t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+            std::tm *m = std::localtime(&t);
+        }
+        auto s1 = t.to_string();
+        vlogd($(s1));
+    }
+    {
+        Ftimel t;
+        for(int i=0;i<sum;i++)
+        {
+            std::time_t t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+            std::tm *m = std::localtime(&t);
+            char buffer[80];
+            std::strftime(buffer, 80, "%Y-%m-%d %H:%M:%S", m);
+        }
+        auto s1 = t.to_string();
+        vlogd($(s1));
+    }
+    {
+        Ftimel t;
+        for(int i=0;i<sum;i++)
+        {
+            auto t1 = Ftimes::time_now();
+            Ftimes::to_string();
+        }
+        auto s1 = t.to_string();
+        vlogd($(s1));
+    }
 }
 
 int main(int argc, char *argv[])
@@ -282,9 +362,9 @@ int main(int argc, char *argv[])
 
     // test_1();   
     // test_2();   
-    test_3();   
+    // test_3();   
     // test_4();   
-    // test_5();
+    test_5();
     // test_6();
 
     return 0;

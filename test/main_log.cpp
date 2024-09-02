@@ -193,6 +193,69 @@ void test_6()
     }
 }
 
+void test_7()
+{
+    size_t len = (1<<15);
+    _sp_file4_->_out.set_length(len);
+    _sp_file4_->_out.set_limit(10);
+
+    for(int i=0;i<100;i++)
+    {
+        floge($(i) $("2445") $(std::to_string(i)));
+        flogd($(i) $("dd2445") $(std::to_string(i)));
+        vlogd($(i) $("dd2445") $(std::to_string(i)));
+        vloge($(i) $("2445") $(std::to_string(i)));
+        vlogw("war");
+    }
+}
+
+void test_8()
+{
+    {
+        auto s1 = Tlog_time::get_time();
+        for(int i=0;i<100;i++)
+        {
+            vlogd($(s1));
+        }
+    }
+}
+
+void test_9()
+{
+    int count = 1000000;
+    double ss1 = 55.5; 
+    std::string ss2 = "hellow world"; 
+    // {
+    //     Ftimel t;
+    //     for(int i=0;i<count;i++)
+    //     {
+    //         vlogd($(i) $(count) $(ss1) $(ss2));
+    //     }
+    //     vlogd($(t.to_string()));
+    // }
+    // {
+    //     Ftimel t;
+    //     for(int i=0;i<count;i++)
+    //     {
+    //         std::cout<<i<<count<<ss1<<ss2<<std::endl;
+
+    //         // vlogd($(i) $(count) $(ss1) $(ss2));
+    //     }
+    //     vlogd($(t.to_string()));
+    // }
+    {
+        Ftimel t;
+        for(int i=0;i<count;i++)
+        {
+            // std::cout<<i<<count<<ss1<<ss2<<std::endl;
+            (*_sp_cmd4_)<<Tlog_level<bhenum::level4>(bhenum::level4::e_deb)<<$(i) $(count) $(ss1) $(ss2)<<Tlog_end();
+
+            // vlogd($(i) $(count) $(ss1) $(ss2));
+        }
+        vlogd($(t.to_string()));
+    }
+}
+
 int main(int argc, char *argv[])
 {
 
@@ -202,7 +265,10 @@ int main(int argc, char *argv[])
     // test_3();   
     // test_4();   
     // test_5();
-    test_6();
+    // test_6();
+    test_7();
+    // test_8();
+    // test_9();
 
     return 0;
 }

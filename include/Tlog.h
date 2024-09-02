@@ -10,6 +10,8 @@
 #include <sstream>
 #include <ctime>
 
+#include "Ftime.h"
+
 
 namespace bhtools {
 
@@ -48,17 +50,19 @@ struct Tlog_level
 {
     Tlog_level() { }
 
-    Tlog_level(Tlevel el) { _level = el; }
+    Tlog_level(Tlevel el) { set_level(el); }
 
-    void status(bool ok) { _ok = ok; }
+    inline void set_level(Tlevel el)  { _level = el; }
 
-    bool pass() { return _ok; }
+    inline void status(bool ok) { _ok = ok; }
 
-    void comp(const Tlog_level &el) 
+    inline bool pass() { return _ok; }
+
+    inline void comp(const Tlog_level &el) 
     { if(el._level >= _level) { _ok = true; } else{ _ok = false; } }
 
     inline Tlog_level& operator<<(Tlevel el)
-    { _level = el; return *this; };
+    { set_level(el); return *this; };
 
     bool _ok = false;   // 是否满足等级
     Tlevel _level;      // 设置等级
@@ -94,6 +98,18 @@ struct Tlog_buf
 
 // 日志结束类标记
 struct Tlog_end { };
+
+
+// 打印固定格式的时间
+struct Tlog_time 
+{
+    inline static std::string get_time()
+    {
+        Ftimes::data d = Ftimes::to_data(Ftimes::time_now());
+        d.hou += 8;
+        return Ftimes::format_time(d,"%4Y-%2M-%2D.%2H:%2T:%2S.%3L");
+    };
+};
 
 
 // 日志基本类-用于创建各种输出类型的模板-不提供打印只提供写入与缓存
@@ -257,15 +273,11 @@ struct Tlog_file4 : public Tlog_base <Tlog_level<bhenum::level4>,Tlog_buf,Tlog_e
 
 
 // 格式化VSCode快捷导航格式
-#define BHLOG_FORMAT_VSC(tips,el,...)                       \
-    el<<tips "["<<__FILE__<<":"<<__LINE__<<"] <<<< "        \
-    <<__VA_ARGS__                                           \  
-
-
-// 格式化VSCode快捷导航格式-文件输出
-#define BHLOG_FORMAT_VSC_FILE(tips,el,...)                  \
-    el<<tips<<" <<<< "<<__VA_ARGS__                         \
-    <<"["<<__FILE__<<":"<<__LINE__<<"]"                     \
+#define BHLOG_FORMAT_VSC(tips,el,...)               \
+    el<<tips "<<<< "                                \
+    <<__VA_ARGS__                                   \
+    <<" >>>>["<<__FILE__<<":"<<__LINE__             \
+    <<"][" +Tlog_time::get_time()+"] "             \
 
 
 // 生成打印字符串
@@ -278,29 +290,29 @@ struct Tlog_file4 : public Tlog_base <Tlog_level<bhenum::level4>,Tlog_buf,Tlog_e
 
     // 快捷命令行打印 等级4
     #ifndef BHLOG_CLOSE_COL
-        #define vlogi(...) BHLOG_PRINT((*_sp_cmd4_),"\033[36m[Inf]",BHLOG_FORMAT_VSC,Tlog_end(),level4,e_inf,__VA_ARGS__<<"\033[0m")
-        #define vlogd(...) BHLOG_PRINT((*_sp_cmd4_),"\033[32m[Deb]",BHLOG_FORMAT_VSC,Tlog_end(),level4,e_deb,__VA_ARGS__<<"\033[0m")
-        #define vlogw(...) BHLOG_PRINT((*_sp_cmd4_),"\033[33m[War]",BHLOG_FORMAT_VSC,Tlog_end(),level4,e_war,__VA_ARGS__<<"\033[0m")
-        #define vloge(...) BHLOG_PRINT((*_sp_cmd4_),"\033[31m[Err]",BHLOG_FORMAT_VSC,Tlog_end(),level4,e_err,__VA_ARGS__<<"\033[0m")
+        #define vlogd(...) BHLOG_PRINT((*_sp_cmd4_),"\033[32m[Deb]","\033[0m"<<BHLOG_FORMAT_VSC,(*_sp_log_end_),level4,e_deb,__VA_ARGS__)
+        #define vlogi(...) BHLOG_PRINT((*_sp_cmd4_),"\033[36m[Inf]","\033[0m"<<BHLOG_FORMAT_VSC,(*_sp_log_end_),level4,e_deb,__VA_ARGS__)
+        #define vlogw(...) BHLOG_PRINT((*_sp_cmd4_),"\033[33m[War]","\033[0m"<<BHLOG_FORMAT_VSC,(*_sp_log_end_),level4,e_deb,__VA_ARGS__)
+        #define vloge(...) BHLOG_PRINT((*_sp_cmd4_),"\033[31m[Err]","\033[0m"<<BHLOG_FORMAT_VSC,(*_sp_log_end_),level4,e_deb,__VA_ARGS__)
     #else
-        #define vlogi(...) BHLOG_PRINT((*_sp_cmd4_),"[Inf]",BHLOG_FORMAT_VSC,Tlog_end(),level4,e_inf,__VA_ARGS__)
-        #define vlogd(...) BHLOG_PRINT((*_sp_cmd4_),"[Deb]",BHLOG_FORMAT_VSC,Tlog_end(),level4,e_deb,__VA_ARGS__)
-        #define vlogw(...) BHLOG_PRINT((*_sp_cmd4_),"[War]",BHLOG_FORMAT_VSC,Tlog_end(),level4,e_war,__VA_ARGS__)
-        #define vloge(...) BHLOG_PRINT((*_sp_cmd4_),"[Err]",BHLOG_FORMAT_VSC,Tlog_end(),level4,e_err,__VA_ARGS__)
+        #define vlogd(...) BHLOG_PRINT((*_sp_cmd4_),"[Deb]",BHLOG_FORMAT_VSC,(*_sp_log_end_),level4,e_deb,__VA_ARGS__)
+        #define vlogi(...) BHLOG_PRINT((*_sp_cmd4_),"[Inf]",BHLOG_FORMAT_VSC,(*_sp_log_end_),level4,e_inf,__VA_ARGS__)
+        #define vlogw(...) BHLOG_PRINT((*_sp_cmd4_),"[War]",BHLOG_FORMAT_VSC,(*_sp_log_end_),level4,e_war,__VA_ARGS__)
+        #define vloge(...) BHLOG_PRINT((*_sp_cmd4_),"[Err]",BHLOG_FORMAT_VSC,(*_sp_log_end_),level4,e_err,__VA_ARGS__)
     #endif
 
     // 快捷命令行打印-自行扩展 等级8
     #ifndef BHLOG_CLOSE_COL
-        #define vlogd8(...) BHLOG_PRINT((*_sp_cmd8_),"\033[32m[Deb-level8]",BHLOG_FORMAT_VSC,Tlog_end(),level8,e_debug,__VA_ARGS__<<"\033[0m")
+        #define vlogd8(...) BHLOG_PRINT((*_sp_cmd8_),"\033[32m[Deb-level8]",BHLOG_FORMAT_VSC,(*_sp_log_end_),level8,e_debug,__VA_ARGS__<<"\033[0m")
     #else
-        #define vlogd8(...) BHLOG_PRINT((*_sp_cmd8_),"[Deb-level8]",BHLOG_FORMAT_VSC,Tlog_end(),level8,e_debug,__VA_ARGS__)
+        #define vlogd8(...) BHLOG_PRINT((*_sp_cmd8_),"[Deb-level8]",BHLOG_FORMAT_VSC,(*_sp_log_end_),level8,e_debug,__VA_ARGS__)
     #endif
 
     // 快捷文件打印 等级4
-    #define flogi(...) BHLOG_PRINT((*_sp_file4_),"[Inf] ["+_sp_file4_->_out.format_time()+"]",BHLOG_FORMAT_VSC_FILE,Tlog_end(),level4,e_inf,__VA_ARGS__)
-    #define flogd(...) BHLOG_PRINT((*_sp_file4_),"[Deb] ["+_sp_file4_->_out.format_time()+"]",BHLOG_FORMAT_VSC_FILE,Tlog_end(),level4,e_deb,__VA_ARGS__)
-    #define flogw(...) BHLOG_PRINT((*_sp_file4_),"[War] ["+_sp_file4_->_out.format_time()+"]",BHLOG_FORMAT_VSC_FILE,Tlog_end(),level4,e_war,__VA_ARGS__)
-    #define floge(...) BHLOG_PRINT((*_sp_file4_),"[Err] ["+_sp_file4_->_out.format_time()+"]",BHLOG_FORMAT_VSC_FILE,Tlog_end(),level4,e_err,__VA_ARGS__)
+    #define flogi(...) BHLOG_PRINT((*_sp_file4_),"[Inf]",BHLOG_FORMAT_VSC,(*_sp_log_end_),level4,e_inf,__VA_ARGS__)
+    #define flogd(...) BHLOG_PRINT((*_sp_file4_),"[Deb]",BHLOG_FORMAT_VSC,(*_sp_log_end_),level4,e_deb,__VA_ARGS__)
+    #define flogw(...) BHLOG_PRINT((*_sp_file4_),"[War]",BHLOG_FORMAT_VSC,(*_sp_log_end_),level4,e_war,__VA_ARGS__)
+    #define floge(...) BHLOG_PRINT((*_sp_file4_),"[Err]",BHLOG_FORMAT_VSC,(*_sp_log_end_),level4,e_err,__VA_ARGS__)
 
 #else
     #define vlogi(...)
@@ -352,6 +364,10 @@ typedef bhenum::level4 el4;
 static Tlog_cmd4 *_sp_cmd4_ = new Tlog_cmd4;
 static Tlog_cmd8 *_sp_cmd8_ = new Tlog_cmd8;
 static Tlog_file4 *_sp_file4_ = new Tlog_file4;
+static Tlog_end *_sp_log_end_ = new Tlog_end;
+
+static Tlog_level<bhenum::level4> *_sp_level4_ = new Tlog_level<bhenum::level4>;
+static Tlog_level<bhenum::level8> *_sp_level8_ = new Tlog_level<bhenum::level8>;
 
 #define $(value) "["#value": "<<value<<"] "
 #define $C(value) "["#value": "<<Tlog_con(value)<<"] "
