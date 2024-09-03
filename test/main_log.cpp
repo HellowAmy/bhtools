@@ -17,7 +17,7 @@ using namespace bhtools;
 void test_1()
 {
     Tlog_cmd4 t1;
-    t1.set_level(logel4(el4::e_deb));
+    t1.set_level(*_sp_level4_<<el4::e_inf);
 
     const char *s1 = "s11";
     std::string s2 = "s22";
@@ -67,7 +67,7 @@ void test_1()
 void test_2()
 {
     Tlog_cmd8 t1;
-    t1.set_level(Tlog_level<bhenum::level8>(bhenum::level8::e_warning));
+    t1.set_level(Tlog_level<bhenum::level8>(bhenum::level8::e_war));
 
     const char *s1 = "s11";
     std::string s2 = "s22";
@@ -77,27 +77,27 @@ void test_2()
     t1<<"e_all";
     t1<<Tlog_end();
 
-    t1<<Tlog_level<bhenum::level8>(bhenum::level8::e_trace);
+    t1<<Tlog_level<bhenum::level8>(bhenum::level8::e_tra);
     t1<<"e_trace";
     t1<<Tlog_end();
 
-    t1<<Tlog_level<bhenum::level8>(bhenum::level8::e_debug);
+    t1<<Tlog_level<bhenum::level8>(bhenum::level8::e_deb);
     t1<<"e_debug";
     t1<<Tlog_end();
 
-    t1<<Tlog_level<bhenum::level8>(bhenum::level8::e_info);
+    t1<<Tlog_level<bhenum::level8>(bhenum::level8::e_inf);
     t1<<"e_info";
     t1<<Tlog_end();
 
-    t1<<Tlog_level<bhenum::level8>(bhenum::level8::e_warning);
+    t1<<Tlog_level<bhenum::level8>(bhenum::level8::e_war);
     t1<<"e_warning";
     t1<<Tlog_end();
 
-    t1<<Tlog_level<bhenum::level8>(bhenum::level8::e_error);
+    t1<<Tlog_level<bhenum::level8>(bhenum::level8::e_err);
     t1<<"e_error";
     t1<<Tlog_end();
 
-    t1<<Tlog_level<bhenum::level8>(bhenum::level8::e_fatal);
+    t1<<Tlog_level<bhenum::level8>(bhenum::level8::e_fat);
     t1<<"e_fatal";
     t1<<Tlog_end();
 
@@ -222,7 +222,7 @@ void test_8()
 
 void test_9()
 {
-    int count = 1000000;
+    int count = 10000000;
     double ss1 = 55.5; 
     std::string ss2 = "hellow world"; 
     // {
@@ -233,6 +233,25 @@ void test_9()
     //     }
     //     vlogd($(t.to_string()));
     // }
+    {
+        Ftimel t;
+        for(int i=0;i<count;i++)
+        {
+            flogd($(i) $(count) $(ss1) $(ss2));
+        }
+        vlogd($(t.to_string()));
+    }
+    // {
+    //     Ftimel t;
+    //     for(int i=0;i<count;i++)
+    //     {
+    //         nulogd($(i) $(count) $(ss1) $(ss2));
+    //     }
+    //     vlogd($(t.to_string()));
+    // }
+    std::string sr1;
+    std::string sr2;
+    std::string sr3;
     // {
     //     Ftimel t;
     //     for(int i=0;i<count;i++)
@@ -241,34 +260,39 @@ void test_9()
 
     //         // vlogd($(i) $(count) $(ss1) $(ss2));
     //     }
-    //     vlogd($(t.to_string()));
+    //     sr3 = t.to_string();
     // }
-    {
-        Ftimel t;
-        for(int i=0;i<count;i++)
-        {
-            // std::cout<<i<<count<<ss1<<ss2<<std::endl;
-            (*_sp_cmd4_)<<Tlog_level<bhenum::level4>(bhenum::level4::e_deb)<<$(i) $(count) $(ss1) $(ss2)<<Tlog_end();
-
-            // vlogd($(i) $(count) $(ss1) $(ss2));
-        }
-        vlogd($(t.to_string()));
-    }
+    // {
+    //     Ftimel t;
+    //     for(int i=0;i<count;i++)
+    //     {
+    //         (*_sp_cmd4_)<<Tlog_level<bhenum::level4>(bhenum::level4::e_deb)<<$(i) $(count) $(ss1) $(ss2)<<Tlog_end();
+    //     }
+    //     sr1 = t.to_string();
+    // }
+    // {
+    //     Ftimel t;
+    //     for(int i=0;i<count;i++)
+    //     {
+    //         (*_sp_cmd4_)<<_sp_level4_->set_level(bhenum::level4::e_deb)<<$(i) $(count) $(ss1) $(ss2)<<*_sp_end_;
+    //     }
+    //     sr2 = t.to_string();
+    // }
+    vlogd($(sr1) $(sr2) $(sr3));
 }
+
 
 int main(int argc, char *argv[])
 {
-
-
     // test_1();   
     // test_2();   
     // test_3();   
     // test_4();   
     // test_5();
     // test_6();
-    test_7();
+    // test_7();
     // test_8();
-    // test_9();
+    test_9();
 
     return 0;
 }
