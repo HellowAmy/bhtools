@@ -8,6 +8,7 @@
 #include <vector>
 #include <map>
 #include <list>
+#include <unistd.h>
 
 #include "Tlog.h"
 
@@ -237,6 +238,14 @@ void test_9()
         Ftimel t;
         for(int i=0;i<count;i++)
         {
+            aflogd($(i) $(count) $(ss1) $(ss2));
+        }
+        vlogd($(t.to_string()));
+    }
+    {
+        Ftimel t;
+        for(int i=0;i<count;i++)
+        {
             flogd($(i) $(count) $(ss1) $(ss2));
         }
         vlogd($(t.to_string()));
@@ -282,6 +291,70 @@ void test_9()
 }
 
 
+void test_10()
+{
+    int count = 10000000;
+    double ss1 = 55.5; 
+    std::string ss2 = "hellow world"; 
+
+
+    {
+        Ftimel t;
+        for(int i=0;i<count;i++)
+        {
+            aflogd("==1=="<<$(ss1) $(ss2) $(i));
+        }
+        auto v1 = t.to_string();
+        vlogd(v1);
+    }
+
+    // {
+    //     Ftimel t;
+    //     for(int i=0;i<count;i++)
+    //     {
+    //         flogd("==2=="<<$(ss1) $(ss2) $(i));
+    //     }
+    //     auto v1 = t.to_string();
+    //     vlogd(v1);
+    // }
+
+  
+
+    // auto fn_th1 = [=](){
+    //     {
+    //         Ftimel t;
+    //         for(int i=0;i<count;i++)
+    //         {
+    //             aflogd("==1=="<<$(ss1) $(ss2) $(i));
+    //         }
+    //         auto v1 = t.to_string();
+    //         vlogd(v1);
+    //     }
+    // };
+
+    // auto fn_th2 = [=](){
+    //     {
+    //         Ftimel t;
+    //         for(int i=0;i<count;i++)
+    //         {
+    //             aflogd("==2=="<<$(ss1) $(ss2) $(i));
+    //         }
+    //         auto v1 = t.to_string();
+    //         vlogd(v1);
+    //     }
+    // };
+
+    // _sp_afile4_->_out._out.reopen("Tflog.log",false);
+
+    // std::thread(fn_th1).detach();
+    // std::thread(fn_th2).detach();
+
+
+    sleep(100);
+
+    
+}
+
 int main(int argc, char *argv[])
 {
     // test_1();   
@@ -292,7 +365,11 @@ int main(int argc, char *argv[])
     // test_6();
     // test_7();
     // test_8();
-    test_9();
+    // test_9();
+    test_10();
+
+
+
 
     return 0;
 }

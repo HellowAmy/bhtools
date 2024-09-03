@@ -57,12 +57,18 @@ set(CMAKE_BUILD_TYPE "Debug")
 # set(CMAKE_BUILD_TYPE "Release")
 
 
+# 查找多线程
+find_package(Threads REQUIRED)
+
+
+
 # 加载头文件
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
 
 if(ALL OR main_log)
     add_executable(main_log test/main_log.cpp)
+    target_link_libraries(main_log PUBLIC ${CMAKE_THREAD_LIBS_INIT})
 endif()
 
 if(ALL OR main_time)

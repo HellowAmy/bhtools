@@ -9,6 +9,10 @@
 #include <iomanip>
 #include <sstream>
 #include <ctime>
+#include <thread>
+#include <queue>
+#include <mutex>
+#include <memory>
 
 #include "Ftime.h"
 
@@ -139,6 +143,47 @@ struct Tlog_base
     Tlevel _el;     // 日志等级划分枚举
     Tbuf _buf;      // 日志写入缓存内容
     Tout _out;      // 日志输出类
+};
+
+
+// 异步文件日志-比对普遍文件日志在一千万输出时有十分之一的速度提升
+template<typename Tout,typename Tbuf,size_t Ttime = 1000>
+struct Tlog_asyn
+{
+    Tlog_asyn() { _th = std::make_shared<std::thread>(&Tlog_asyn::work_write,this); }
+
+    ~Tlog_asyn() { _run = false; _th->join(); }
+
+    // 获取到日志内容并加入队列
+    void out(const Tlog_buf &buf) { push_queue(buf); }    
+
+    // 将队列内日志写入日志输出类
+    void work_write()
+    {
+        while(_run)
+        {
+            {
+                std::unique_lock<std::mutex> lock(_mut);
+                while (_que.empty() == false)
+                {
+                    _out.out(_que.front());
+                    _que.pop(); 
+                }
+            }
+            std::this_thread::sleep_for(std::chrono::milliseconds(Ttime));
+        }
+    }
+
+    // 加入到队列
+    inline void push_queue(const Tbuf &txt)
+    { std::unique_lock<std::mutex> lock(_mut); _que.push(txt); } 
+
+
+    bool _run = true;                   // 写入线程运行标记
+    Tout _out;                          // 日志输出类
+    std::mutex _mut;                    // 队列锁
+    std::queue<Tbuf> _que;              // 写入日志队列
+    std::shared_ptr<std::thread> _th;   // 写入线程
 };
 
 
@@ -274,6 +319,36 @@ struct Tlog_file4 : public Tlog_base <Tlog_level<bhenum::level4>,Tlog_buf,Tlog_e
     Tlog_file4() { set_level(Tlog_level<bhenum::level4>(bhenum::level4::e_deb)); _out.reopen(); }
 };
 
+// 文件打印日志-异步 等级4
+struct Tlog_asyn_file4 : public Tlog_base <Tlog_level<bhenum::level4>,Tlog_buf,Tlog_end,Tlog_asyn<Tlog_file,Tlog_buf,1000>> 
+{
+    Tlog_asyn_file4() { set_level(Tlog_level<bhenum::level4>(bhenum::level4::e_deb)); _out._out.reopen(); }
+};
+
+//
+//
+//
+//
+
+// 标准容器打印
+template<class T>
+std::string Tlog_con(const T& con,size_t len = 1,const std::string &flg = " ",const std::string &prev = "| ")
+{
+    std::string ret = "\n";
+    ret += prev + "size: " + std::to_string(con.size());
+    ret += "\n" + prev;
+    size_t count = 0;
+    Tlog_buf buf;
+    for(const auto &a:con)
+    {
+        if(len != 0 && count >= len) { count = 0; ret += "\n" + prev; }
+        ret += buf.Tto_string(a) + flg;
+        count++;
+    }
+    ret += "\n";
+    return ret;
+}
+
 //
 //
 //
@@ -322,6 +397,7 @@ struct Tlog_file4 : public Tlog_base <Tlog_level<bhenum::level4>,Tlog_buf,Tlog_e
 #define BHLOG_MAKE_COL_L4E(out,...)                                                 \
     BHLOG_PRINT(out,"\033[31m[Err]","\033[0m"<<(*_sp_end_),BHLOG_FORMAT_VSC,        \
     _sp_level4_->set_level(bhenum::level4::e_err),__VA_ARGS__)                      \
+
 
 // 生成快捷打印宏-等级4
 #define BHLOG_MAKE_L4D(out,...)                                         \
@@ -382,7 +458,12 @@ struct Tlog_file4 : public Tlog_base <Tlog_level<bhenum::level4>,Tlog_buf,Tlog_e
     // #define flogw(...) BHLOG_PRINT((*_sp_file4_),"[War]",(*_sp_end_),BHLOG_FORMAT_VSC,_sp_level4_->set_level(bhenum::level4::e_war),__VA_ARGS__)
     // #define floge(...) BHLOG_PRINT((*_sp_file4_),"[Err]",(*_sp_end_),BHLOG_FORMAT_VSC,_sp_level4_->set_level(bhenum::level4::e_err),__VA_ARGS__)
 
-
+    // 快捷文件打印 等级4
+    #define aflogd(...) BHLOG_MAKE_L4D((*_sp_afile4_),__VA_ARGS__)
+    #define aflogi(...) BHLOG_MAKE_L4I((*_sp_afile4_),__VA_ARGS__)
+    #define aflogw(...) BHLOG_MAKE_L4W((*_sp_afile4_),__VA_ARGS__)
+    #define afloge(...) BHLOG_MAKE_L4E((*_sp_afile4_),__VA_ARGS__)
+    
     // 快捷空值打印 等级4
     #define nulogd(...) BHLOG_MAKE_L4D((*_sp_null4_),__VA_ARGS__)
     #define nulogi(...) BHLOG_MAKE_L4I((*_sp_null4_),__VA_ARGS__)
@@ -408,42 +489,19 @@ struct Tlog_file4 : public Tlog_base <Tlog_level<bhenum::level4>,Tlog_buf,Tlog_e
 //
 //
 
-// 标准容器打印
-template<class T>
-std::string Tlog_con(const T& con,size_t len = 1,const std::string &flg = " ",const std::string &prev = "| ")
-{
-    std::string ret = "\n";
-    ret += prev + "size: " + std::to_string(con.size());
-    ret += "\n" + prev;
-    size_t count = 0;
-    Tlog_buf buf;
-    for(const auto &a:con)
-    {
-        if(len != 0 && count >= len) { count = 0; ret += "\n" + prev; }
-        ret += buf.Tto_string(a) + flg;
-        count++;
-    }
-    ret += "\n";
-    return ret;
-}
-
-//
-//
-//
-//
-
 // 快捷使用定义
 typedef Tlog_level<bhenum::level4> logel4;
 typedef bhenum::level4 el4;
+
+static Tlog_level<bhenum::level4> *_sp_level4_ = new Tlog_level<bhenum::level4>;
+static Tlog_level<bhenum::level8> *_sp_level8_ = new Tlog_level<bhenum::level8>;
+static Tlog_end *_sp_end_ = new Tlog_end;
 
 static Tlog_null4 *_sp_null4_ = new Tlog_null4;
 static Tlog_cmd4 *_sp_cmd4_ = new Tlog_cmd4;
 static Tlog_cmd8 *_sp_cmd8_ = new Tlog_cmd8;
 static Tlog_file4 *_sp_file4_ = new Tlog_file4;
-static Tlog_end *_sp_end_ = new Tlog_end;
-
-static Tlog_level<bhenum::level4> *_sp_level4_ = new Tlog_level<bhenum::level4>;
-static Tlog_level<bhenum::level8> *_sp_level8_ = new Tlog_level<bhenum::level8>;
+static Tlog_asyn_file4 *_sp_afile4_ = new Tlog_asyn_file4;
 
 
 #define $(value) "["#value": "<<value<<"] "
