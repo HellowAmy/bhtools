@@ -355,6 +355,84 @@ void test_10()
     
 }
 
+void test_11()
+{
+    #define aflogd_th1(...) BHLOG_MAKE_L4D((*_sp_th1_),__VA_ARGS__)
+    #define aflogi_th1(...) BHLOG_MAKE_L4I((*_sp_th1_),__VA_ARGS__)
+    #define aflogw_th1(...) BHLOG_MAKE_L4W((*_sp_th1_),__VA_ARGS__)
+    #define afloge_th1(...) BHLOG_MAKE_L4E((*_sp_th1_),__VA_ARGS__)
+
+    #define aflogd_th2(...) BHLOG_MAKE_L4D((*_sp_th2_),__VA_ARGS__)
+    #define aflogi_th2(...) BHLOG_MAKE_L4I((*_sp_th2_),__VA_ARGS__)
+    #define aflogw_th2(...) BHLOG_MAKE_L4W((*_sp_th2_),__VA_ARGS__)
+    #define afloge_th2(...) BHLOG_MAKE_L4E((*_sp_th2_),__VA_ARGS__)
+
+    static Tlog_asyn_file4 *_sp_th1_ = new Tlog_asyn_file4;
+    _sp_th1_->_out._out.reopen("Tflog_th1.log");
+
+    static Tlog_asyn_file4 *_sp_th2_ = new Tlog_asyn_file4;
+    _sp_th2_->_out._out.reopen("Tflog_th2.log");
+
+
+    int count = 1000000;
+    double ss1 = 55.5; 
+    std::string ss2 = "hellow world"; 
+
+    auto fn_th1 = [=](){
+        {
+            Ftimel t;
+            for(int i=0;i<count;i++)
+            {
+                aflogd_th1("==1=="<<$(ss1) $(ss2) $(i));
+            }
+            auto v1 = t.to_string();
+            vlogd(v1);
+
+            // 需要手动刷新否则缓冲区数据丢失-需要等待异步写入完成
+            sleep(2);
+            _sp_th1_->flush();
+        }
+    };
+
+    auto fn_th2 = [=](){
+        {
+            Ftimel t;
+            for(int i=0;i<count;i++)
+            {
+                aflogd_th2("==2=="<<$(ss1) $(ss2) $(i));
+            }
+            auto v1 = t.to_string();
+            vlogd(v1);
+
+            
+            // sleep(2);
+            // _sp_th2_->flush();
+        }
+    };
+
+    auto fn_th3 = [=](){
+        {
+            Ftimel t;
+            for(int i=0;i<count;i++)
+            {
+                flogd("==3=="<<$(ss1) $(ss2) $(i) $(count));
+            }
+            auto v1 = t.to_string();
+            vlogd(v1);
+        }
+        _sp_file4_->flush();
+    };
+
+    _sp_afile4_->_out._out.reopen("Tflog.log",false);
+
+    std::thread (fn_th1).detach();
+    std::thread (fn_th2).detach();
+    std::thread (fn_th3).detach();
+    sleep(15);
+
+
+}
+
 int main(int argc, char *argv[])
 {
     // test_1();   
@@ -366,7 +444,8 @@ int main(int argc, char *argv[])
     // test_7();
     // test_8();
     // test_9();
-    test_10();
+    // test_10();
+    test_11();
 
 
 

@@ -146,7 +146,8 @@ struct Tlog_base
 };
 
 
-// 异步文件日志-比对普遍文件日志在一千万输出时有十分之一的速度提升
+// 异步文件日志
+// 比对普遍文件日志在一千万输出时有十分之一的速度提升
 template<typename Tout,typename Tbuf,size_t Ttime = 1000>
 struct Tlog_asyn
 {
@@ -197,17 +198,18 @@ struct Tlog_null
 // 命令行打印
 struct Tlog_cmd 
 {
-    void out(const Tlog_buf &buf) { std::cout<<buf.value()<<"\n"; }    
+    void out(const Tlog_buf &buf) { std::cout<<buf.value()<<std::endl; }    
 };
 
 
-// 文件打印-打印一千万行时换行符比换行函数速度提升近一倍
+// 文件打印
+// 打印一千万行时换行符比换行函数速度提升近一倍-但换行符是可能会导致无法及时刷新缓冲区丢失数据
 struct Tlog_file
-{
+{    
     void out(const Tlog_buf &buf) { _fs<<buf.value()<<"\n"; update_file(); } 
 
     //初始化日志
-    inline bool reopen(const std::string &file = "Tflog.log",bool app = true) //初始化日志
+    inline bool reopen(const std::string &file = "Tflog.log",bool app = true)
     {
         _file = file;
         if(app) { _mode = std::ios::app; } 
@@ -217,25 +219,12 @@ struct Tlog_file
         _fs.open(_file,_mode);
         return _fs.is_open();
     }
-
-    //获取秒精度的日期时间
-    static std::string format_time()
-    {
-        std::time_t t = std::time(nullptr);
-        std::tm *m = std::localtime(&t);
-        std::stringstream sm;
-        sm << std::put_time(m,"%Y-%m-%d %H:%M:%S");
-        return sm.str();
-    }
     
     // 设置循环最大文件数-默认无限
     inline void set_limit(size_t max) { _limit_max = max; } 
 
     // 设置单个文件最大长度-默认64M
     inline void set_length(size_t len) { _len_max = len;}  
-
-    // 关闭文件
-    inline void close() { _fs.close(); } 
 
     // 超出最大文件限制后更新文件名
     bool update_file() 
@@ -317,12 +306,14 @@ struct Tlog_cmd8 : public Tlog_base <Tlog_level<bhenum::level8>,Tlog_buf,Tlog_en
 struct Tlog_file4 : public Tlog_base <Tlog_level<bhenum::level4>,Tlog_buf,Tlog_end,Tlog_file> 
 {
     Tlog_file4() { set_level(Tlog_level<bhenum::level4>(bhenum::level4::e_deb)); _out.reopen(); }
+    void flush() { _out._fs.flush(); }
 };
 
 // 文件打印日志-异步 等级4
 struct Tlog_asyn_file4 : public Tlog_base <Tlog_level<bhenum::level4>,Tlog_buf,Tlog_end,Tlog_asyn<Tlog_file,Tlog_buf,1000>> 
 {
     Tlog_asyn_file4() { set_level(Tlog_level<bhenum::level4>(bhenum::level4::e_deb)); _out._out.reopen(); }
+    void flush() { _out._out._fs.flush(); }
 };
 
 //
