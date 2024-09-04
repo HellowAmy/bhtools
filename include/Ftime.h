@@ -222,11 +222,11 @@ struct Ftimes
             char c = fm[i];
             if(c == '%')
             {
-                if(i+2 >= fm.size()) { return "1"; } 
+                if(i+2 >= fm.size()) { return ""; } 
                 size_t n = fm[i+1] - '0';
                 char t = fm[i+2];
                 
-                if(n < 1 || n > 9) { return "2"; } 
+                if(n < 1 || n > 9) { return ""; } 
                 std::string val;
                 val.resize(n);
 
@@ -239,7 +239,7 @@ struct Ftimes
                 else if(t == 'L') { ret += to_time_len(d.mil,n); }
                 else if(t == 'C') { ret += to_time_len(d.mic,n); }
                 else if(t == 'N') { ret += to_time_len(d.nan,n); }
-                else { return "3"; } 
+                else { return ""; } 
 
                 i += 2;
             }
