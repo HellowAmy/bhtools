@@ -80,6 +80,9 @@ if(ALL OR main_sin)
     add_executable(main_sin test/main_sin.cpp)
 endif()
 
+if(ALL OR main_pool)
+    add_executable(main_pool test/main_pool.cpp)
+endif()
 
 # 生成目标
 add_executable(${CMAKE_PROJECT_NAME} main.cpp)

@@ -140,6 +140,36 @@
                 "CMake main_sin",
                 "CMake Build"
             ]
+        },
+
+
+
+        
+        {
+            "label": "CMake main_pool",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "..",
+                "-Dmain_pool=1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build/"
+            },
+        },
+        {
+            "label": "Run main_pool",
+            "type": "shell",
+            "command": "cmake",
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "CMake main_pool",
+                "CMake Build"
+            ]
         }
     ]
 }
