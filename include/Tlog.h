@@ -15,6 +15,7 @@
 #include <memory>
 
 #include "Ftime.h"
+#include "Tbase.h"
 
 
 namespace bhtools {
@@ -76,15 +77,7 @@ struct Tlog_level
 // 日志缓冲区
 struct Tlog_buf 
 { 
-    template<typename T>
-    inline std::string Tto_string(const T &val) 
-    { return std::to_string(val); }
 
-    inline std::string Tto_string(const char *val) 
-    { return val; }
-
-    inline std::string Tto_string(const std::string &val) 
-    { return val;}
 
     template<typename T>
     inline void push(const T &val) 
@@ -329,11 +322,10 @@ std::string Tlog_con(const T& con,size_t len = 1,const std::string &flg = " ",co
     ret += prev + "size: " + std::to_string(con.size());
     ret += "\n" + prev;
     size_t count = 0;
-    Tlog_buf buf;
     for(const auto &a:con)
     {
         if(len != 0 && count >= len) { count = 0; ret += "\n" + prev; }
-        ret += buf.Tto_string(a) + flg;
+        ret += Tto_string(a) + flg;
         count++;
     }
     ret += "\n";

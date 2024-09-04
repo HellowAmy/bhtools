@@ -170,6 +170,37 @@
                 "CMake main_pool",
                 "CMake Build"
             ]
+        },
+
+
+
+
+        {
+            "label": "CMake main_base",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "..",
+                "-Dmain_base=1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build/"
+            },
+        },
+        {
+            "label": "Run main_base",
+            "type": "shell",
+            "command": "cmake",
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "CMake main_base",
+                "CMake Build"
+            ]
         }
+
     ]
 }
