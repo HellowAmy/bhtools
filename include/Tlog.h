@@ -348,7 +348,7 @@ std::string Tlog_con(const T& con,size_t len = 1,const std::string &flg = " ",co
 // 日志格式化内容
 #define BHLOG_FORMAT(tips,el,...)                           \
     el<<tips "["<<__FILE__<<":<"<<__LINE__<<">] <<<< "      \
-    <<__VA_ARGS__                                           \  
+    <<__VA_ARGS__
 
 
 // 格式化VSCode快捷导航格式
@@ -362,14 +362,6 @@ std::string Tlog_con(const T& con,size_t len = 1,const std::string &flg = " ",co
 // 生成打印字符串
 #define BHLOG_PRINT(out,tips,end,BHDF_FM,el,...)        \
     out<<BHDF_FM(tips,el,__VA_ARGS__)<<end              \
-
-
-// 生成快捷打印宏-等级4
-#define BHLOG_MAKE_L4D(out,...)                                 \
-    BHLOG_PRINT(out,"\033[32m[Deb]","\033[0m"                   \
-    <<(*_sp_end_),BHLOG_FORMAT_VSC,                             \
-    _sp_level4_->set_level(bhenum::level4::e_deb),              \
-    __VA_ARGS__)                                                \
 
 
 // 生成快捷打印宏-带颜色-等级4

@@ -104,16 +104,14 @@ struct Ftimes
     typedef typename std::chrono::time_point<std::chrono::system_clock,std::chrono::nanoseconds> time_point;
 
     // 日期相关预设值
-    inline static constexpr size_t _tunix_epoch = 1970;
-    inline static constexpr size_t _tunix_year = 365;
-    inline static constexpr size_t _tnan_sec = 1000 * 1000 * 1000;
-    inline static constexpr size_t _tnan_mil = 1000 * 1000;
-    inline static constexpr size_t _tnan_mic = 1000;
-    inline static constexpr size_t _tsec_min = 60;
-    inline static constexpr size_t _tsec_hou = 60 * 60;
-    inline static constexpr size_t _tsec_day = 60 * 60 * 24;
-    inline static std::vector<size_t> _vec_normal { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
-    inline static std::vector<size_t> _vec_leap   { 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366 };
+    static constexpr size_t _tunix_epoch = 1970;
+    static constexpr size_t _tunix_year = 365;
+    static constexpr size_t _tnan_sec = 1000 * 1000 * 1000;
+    static constexpr size_t _tnan_mil = 1000 * 1000;
+    static constexpr size_t _tnan_mic = 1000;
+    static constexpr size_t _tsec_min = 60;
+    static constexpr size_t _tsec_hou = 60 * 60;
+    static constexpr size_t _tsec_day = 60 * 60 * 24;
 
     // 自定义格式
     struct data
@@ -199,7 +197,7 @@ struct Ftimes
         }
 
         // 计算日期-传入当年经过的天数-计算天数所属的月份
-        std::vector<size_t> vec = get_month_leap(year_next);
+        std::vector<size_t> &vec = get_month_leap(year_next);
         for(int i=0;i<vec.size();i++)
         {
             if(days_less <= vec[i])
@@ -271,8 +269,8 @@ struct Ftimes
 
 
     // 得到传入年的每月累加分部天数-包括润年
-    inline static std::vector<size_t> get_month_leap(int64_t year)
-    { return (is_leap(year) ? _vec_leap : _vec_normal); }
+    inline static std::vector<size_t>& get_month_leap(int64_t year)
+    { return (is_leap(year) ? month_normal() : month_leap()); }
 
     // 得到传入年的时间-包括润年
     inline static size_t get_year_leap(int64_t year)
@@ -289,6 +287,20 @@ struct Ftimes
     // 计算传入时间包含的润日
     inline static int64_t count_leap(int64_t year)
     { return (calc_res(year, 4) - calc_res(year, 100) + calc_res(year, 400)); }
+
+    // 返回普通月份天数
+    inline static std::vector<size_t>& month_normal()
+    {
+        static std::vector<size_t> vec_normal { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
+        return vec_normal;
+    }
+
+    // 返回闰年月份天数
+    inline static std::vector<size_t>& month_leap()
+    {
+        static std::vector<size_t> vec_leap { 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366 };
+        return vec_leap;
+    }
 };
 
 
