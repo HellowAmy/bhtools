@@ -12,43 +12,46 @@
 namespace bhtools {
 
 
-// 
+// 处理字符串位置
 struct Ffinds
 {
-    // 
-    inline static std::tuple<bool,size_t> find_sub(const std::string &str,const std::string &sub,size_t offset = 0)
+    // 发现子串位置
+    // 返回值 < 是否成功 - 成功的下标 >
+    inline static std::tuple<bool,size_t> 
+    find_sub(const std::string &str,const std::string &sub,size_t offset = 0)
     {
-        auto it = std::find(str.begin() + offset,str.end(),sub);
-        if(it != str.end())
-        {
-            size_t index = it - str.begin();
-            return std::make_tuple(true,index);
-        }
+        auto it = str.find(sub,offset);
+        if(it != std::string::npos)
+        { return std::make_tuple(true,it); }
         return std::make_tuple(false,0);
     }
 
-    // 
-    inline static std::tuple<bool,size_t,size_t> find_sub(const std::string &str,const std::string &fb,const std::string &fe,size_t offset = 0)
+    // 发现子串范围位置-标记位置是最开始和最末尾
+    // 传参数 < 字符串 - 开始标记 - 末尾标记 - 偏移位置 >
+    // 返回值 < 是否成功 - 开始标记的首位 - 末尾标记的末尾 - 标记中间的字符串 >
+    inline static std::tuple<bool,size_t,size_t,std::string> 
+    find_range(const std::string &str,const std::string &fb,const std::string &fe,size_t offset = 0)
     {
         auto rb = find_sub(str,fb,offset); 
         auto re = find_sub(str,fe,offset); 
         if(std::get<0>(rb) && std::get<0>(re))
-        { return std::make_tuple(true,std::get<1>(rb),std::get<1>(re)); }
-
-        return std::make_tuple(false,0,0);
+        { 
+            size_t ib = std::get<1>(rb);
+            size_t ie = std::get<1>(re);
+            return std::make_tuple(true,ib,ie + fe.size() -1,section_range(str,ib + fb.size(),ie)); 
+        }
+        return std::make_tuple(false,0,0,"");
     }
 
-    // 
+    // 切割字符串-传入开始和末尾下标-获取两个下标间的字符串-开区间和闭区间
     inline static std::string section_range(const std::string &str,size_t ib,size_t ie)
     {
         std::string ret;
-        size_t len = ie - ib;
-        if(ie > ib)
+        if(ie > ib && ie <= str.size())
         {
-            ret.resize(len);
-            for(size_t i=0;i<len;i++)
+            for(size_t i=ib;i<ie;i++)
             {
-                ret[i] = str[ib+i];
+                ret.push_back(str[i]);
             }
         }
         return ret;
@@ -80,13 +83,6 @@ struct Ffm_base
         return std::make_tuple(false,0,0);
     }   
 
-    // 
-    inline static std::string copy_str(const std::string &str,size_t ib,size_t ie)
-    {
-        size_t len = ie - ib;
-        if(ie > ib) { return std::string(str.begin() +ib,str.begin() +ib +len); }
-        return "";
-    }   
 };
 
 
@@ -118,15 +114,15 @@ struct Fsfm : public Ffm_base
         size_t offset = 0;
         while(true)
         {
-            auto tsub = Ffinds::find_sub(_str,strb(),stre(),offset)
-            auto tnum = Ffm_base::to_num(_str,tsub);
+            auto tsub = Ffinds::find_range(_str,strb(),stre(),offset);
+            auto tnum = Ffm_base::to_num(_str,std::make_tuple(std::get<0>(tsub),std::get<1>(tsub),std::get<2>(tsub)));
             if(std::get<0>(tnum))
             {
-                ret += Ffinds::copy_str(_str,offset,std::get<1>(tsub));
+                ret += Ffinds::section_range(_str,offset,std::get<1>(tsub));
 
                 size_t index = std::get<1>(tnum);
                 if(index < _vec.size()) { ret += _vec[index]; }
-                else { ret += Ffinds::copy_str(_str,std::get<1>(tsub),std::get<2>(tsub) + stre().size()); }
+                else { ret += Ffinds::section_range(_str,std::get<1>(tsub),std::get<2>(tsub) + stre().size()); }
 
                 offset = std::get<2>(tnum);
             }

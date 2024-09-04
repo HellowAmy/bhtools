@@ -88,6 +88,9 @@ if(ALL OR main_base)
     add_executable(main_base test/main_base.cpp)
 endif()
 
+if(ALL OR main_fm)
+    add_executable(main_fm test/main_fm.cpp)
+endif()
 
 # 生成目标
 add_executable(${CMAKE_PROJECT_NAME} main.cpp)

@@ -200,6 +200,36 @@
                 "CMake main_base",
                 "CMake Build"
             ]
+        },
+
+
+
+
+        {
+            "label": "CMake main_fm",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "..",
+                "-Dmain_fm=1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build/"
+            },
+        },
+        {
+            "label": "Run main_fm",
+            "type": "shell",
+            "command": "cmake",
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "CMake main_fm",
+                "CMake Build"
+            ]
         }
 
     ]
