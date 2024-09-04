@@ -110,6 +110,36 @@
                 "CMake main_time",
                 "CMake Build"
             ]
+        },
+
+
+
+
+        {
+            "label": "CMake main_sin",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "..",
+                "-Dmain_sin=1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build/"
+            },
+        },
+        {
+            "label": "Run main_sin",
+            "type": "shell",
+            "command": "cmake",
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "CMake main_sin",
+                "CMake Build"
+            ]
         }
     ]
 }

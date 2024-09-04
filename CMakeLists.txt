@@ -66,12 +66,18 @@ find_package(Threads REQUIRED)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 link_libraries(${CMAKE_THREAD_LIBS_INIT})
 
+
+# 生成单个任务
 if(ALL OR main_log)
     add_executable(main_log test/main_log.cpp)
 endif()
 
 if(ALL OR main_time)
     add_executable(main_time test/main_time.cpp)
+endif()
+
+if(ALL OR main_sin)
+    add_executable(main_sin test/main_sin.cpp)
 endif()
 
 
