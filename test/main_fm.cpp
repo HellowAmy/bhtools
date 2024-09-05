@@ -5,6 +5,7 @@
 
 
 #include <iostream>
+#include <string.h>
 #include <vector>
 #include <map>
 #include <list>
@@ -12,6 +13,7 @@
 
 #include "Ffm.h"
 #include "Tlog.h"
+#include "Ftime.h"
 
 using namespace bhtools;
 
@@ -135,15 +137,185 @@ void test_1()
     }
 }
 
+void test_2()
+{
+    {
+        std::string s = "{0}{1}{2}";
+        int a = 100;
+        double b = 3.145;
+        std::string c = "hellow";
+        auto s1 = Fsfm(s)(a,b,c);
+        vlogd($(s1));
+    }
+    {
+        std::string s = "#{0}#{1}#{2}#";
+        int a = 100;
+        double b = 3.145;
+        std::string c = "hellow";
+        auto s1 = Fsfm(s)(a,b,c);
+        vlogd($(s1));
+    }
+    {
+        std::string s = "##{0}##{1}##{2}##";
+        int a = 100;
+        double b = 3.145;
+        std::string c = "hellow";
+        auto s1 = Fsfm(s)(a,b);
+        vlogd($(s1));
+    }
+    {
+        std::string s = "##{0}##{1}##";
+        int a = 100;
+        double b = 3.145;
+        std::string c = "hellow";
+        auto s1 = Fsfm(s)(a,b,c);
+        vlogd($(s1));
+    }
+    {
+        std::string s = "##{0}##{1}##{0}##{1}##{2}";
+        int a = 100;
+        double b = 3.145;
+        std::string c = "hellow";
+        auto s1 = Fsfm(s)(a,b,c);
+        vlogd($(s1));
+    }
+    {
+        std::string s = "##{2}##{1}##{0}##";
+        int a = 100;
+        double b = 3.145;
+        std::string c = "hellow";
+        auto s1 = Fsfm(s)(a,b,c);
+        vlogd($(s1));
+    }
+    {
+        auto s1 = Fsfm("##{2}##{1}##{0}##")(100,3.145,"hellow");
+        vlogd($(s1));
+    }
+}
+
+void test_3()
+{
+    {
+        std::string s = "{}{}{}";
+        int a = 100;
+        double b = 3.145;
+        std::string c = "hellow";
+        auto s1 = Fffm(s)(a,b,c);
+        vlogd($(s1));
+    }
+    {
+        std::string s = "#{}#{}#{}#";
+        int a = 100;
+        double b = 3.145;
+        std::string c = "hellow";
+        auto s1 = Fffm(s)(a,b,c);
+        vlogd($(s1));
+    }
+    {
+        std::string s = "##{}##{}##";
+        int a = 100;
+        double b = 3.145;
+        std::string c = "hellow";
+        auto s1 = Fffm(s)(a,b,c);
+        vlogd($(s1));
+    }
+    {
+        std::string s = "######";
+        int a = 100;
+        double b = 3.145;
+        std::string c = "hellow";
+        auto s1 = Fffm(s)(a,b,c);
+        vlogd($(s1));
+    }
+    {
+        std::string s = "##{}##{}##{}##";
+        int a = 100;
+        double b = 3.145;
+        std::string c = "hellow";
+        auto s1 = Fffm(s)(c,b,a);
+        vlogd($(s1));
+    }
+    {
+        auto s1 = Fffm("##{}##{}##{}##")(100,3.145,"hellow");
+        vlogd($(s1));
+    }
+}
+
+template<class... T>
+std::string formatf(const char *fmt, const T&...t)
+{
+    const auto len = snprintf(nullptr, 0, fmt, t...);
+    std::string r;
+    r.resize(static_cast<size_t>(len) + 1);
+    snprintf(&r.front(), len + 1, fmt, t...);  // Bad boy
+    r.resize(static_cast<size_t>(len));
+ 
+    return r;
+}
+
+void test_4()
+{
+    int count = 10000000;
+    // int count = 1;
+
+    short a = 128;
+    int b = 1024;
+    float c = 123.123;
+    double d = 456.456;
+    const char * e = "hellow";
+    std::string f = "world";
+
+    {
+        Ftimel t;
+        char buf[64];
+        for(int i=0;i<count;i++)
+        {   
+            memset(buf,0x00,sizeof(buf));
+            sprintf(buf,"<<%d-%d-%d-%f-%f-%s-%s>>",i,a,b,c,d,e,f.c_str());
+            std::string s(buf);
+        }
+        auto s1 = t.to_string();
+        vlogd($(s1));
+    }
+    {
+        Ftimel t;
+        for(int i=0;i<count;i++)
+        {   
+            std::string s = formatf("<<%d-%d-%d-%f-%f-%s-%s>>",i,a,b,c,d,e,f);
+        }
+        auto s1 = t.to_string();
+        vlogd($(s1));
+    }
+    {
+        Ftimel t;
+        for(int i=0;i<count;i++)
+        {   
+            std::string s = Fsfm("<<{0}-{1}-{2}-{3}-{4}-{5}-{6}>>")(i,a,b,c,d,e,f);
+        }
+        auto s1 = t.to_string();
+        vlogd($(s1));
+    }
+    {
+        Ftimel t;
+        for(int i=0;i<count;i++)
+        {   
+            std::string s = Fffm("<<{}-{}-{}-{}-{}-{}-{}>>")(i,a,b,c,d,e,f);
+        }
+        auto s1 = t.to_string();
+        vlogd($(s1));
+    }
+
+
+}
 
 int main(int argc, char *argv[])
 {
 
 
-    test_1();   
+    // test_1();   
     // test_2();   
     // test_3();   
-    // test_4();   
+    test_4();   
     // test_5();
     // test_6();
 
