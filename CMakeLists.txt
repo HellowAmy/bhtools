@@ -92,5 +92,9 @@ if(ALL OR main_fm)
     add_executable(main_fm test/main_fm.cpp)
 endif()
 
+if(ALL OR main_heap)
+    add_executable(main_heap test/main_heap.cpp)
+endif()
+
 # 生成目标
 add_executable(${CMAKE_PROJECT_NAME} main.cpp)

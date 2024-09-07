@@ -20,6 +20,13 @@ inline static std::string Tto_string(const char *val)
 inline static std::string Tto_string(const std::string &val) 
 { return val; }
 
+template<typename T>
+inline static std::string Tto_string(T* val) 
+{ std::stringstream ss; ss<<val; return ss.str(); }
+
+inline static std::string Tto_string(void *val) 
+{ std::stringstream ss; ss<<val; return ss.str(); }
+
 //
 //
 //
