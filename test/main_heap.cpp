@@ -65,32 +65,60 @@ void test_1()
             vlogd(heap._size);
             vlogd(heap.value_tail());
 
-            // auto tail = heap.update_tail(heap._size -1);
-            // if(tail)
-            // {
-            //     Theap_node<int> *tnode = nullptr;
-            //     if(tail->_right != nullptr)
-            //     {
-            //         tnode = tail->_right;
-            //     }
-            //     else 
-            //     {
-            //         tnode = tail->_left;
-            //     }
-            //     vlogd(tnode->_value);
-            // }
-
-
             show_node(heap._root);
+            heap.clear_heap();
+            show_node(heap._root);
+            vlogd(heap._size);
+
             vlogi($("===="));
         }
     };
 
 
-    for(int i=1;i<=10;i++)
+    auto fn_push = [](Theap<int,Theap_comp<int>> &heap,int count){
+        for(int i=1;i<=count;i++)
+        {
+            heap.insert_node(i);
+        }
+    };
+
+
     {
-        fn_show(i);
+        Theap<int,Theap_comp<int>> heap;
+        fn_push(heap,10);
+
+        show_node(heap._root);
+        
+        for(int i=0;i<20;i++)
+        {
+            {
+                vlogi("============= " $(heap.size_node()));
+                auto val = heap.pop_root(); 
+                vlogi($(val) $(heap.size_node()));
+                show_node(heap._root);
+            }
+        }
+
+        // {
+        //     auto val = heap.pop_root(); 
+        //     vlogi($(val));
+        //     show_node(heap._root);
+        // }
+
+
+
+
+
+
     }
+
+
+
+    // for(int i=1;i<=10;i++)
+    // {
+    //     fn_show(i);
+    // }
+
 
     // {
     //     Theap<int,Theap_comp<int>> heap;

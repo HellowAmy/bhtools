@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <queue>
 
 #include <assert.h>
 #include "Tlog.h"
@@ -13,21 +14,21 @@
 namespace bhtools {
 
 
-//
+// 大小堆树节点
 template<typename T>
 struct Theap_node
 {
     Theap_node() { }
     Theap_node(T val) : _value(val) { }
 
-    Theap_node *_parent = nullptr;  //
-    Theap_node *_right = nullptr;   //
-    Theap_node *_left = nullptr;    //
-    T _value;                       //
+    Theap_node *_parent = nullptr;  // 父节点
+    Theap_node *_right = nullptr;   // 右节点
+    Theap_node *_left = nullptr;    // 左节点
+    T _value;                       // 存储的值
 };
 
 
-// 
+// 最大堆对比函数-总是大的在上
 template<typename T>
 struct Theap_comp
 {
@@ -51,6 +52,16 @@ struct Theap
         _tail->_parent = _root;
     }
 
+    // 析构时清空分配内存
+    ~Theap()
+    {
+        clear_heap();
+        delete _root;
+        delete _tail;
+        _root = nullptr;
+        _tail = nullptr;
+    }
+
     // 插入新节点
     void insert_node(Tval val)
     {
@@ -64,40 +75,77 @@ struct Theap
         }
     }
 
-    // 
+    // 弹出树根值
     Tval pop_root()
     {
-        if(_size <= 1) 
+        if(_size == 0) { return Tval(); }
+        if(_size == 1) 
         { 
-
+            _size--;
             return _root->_value; 
         }
 
+        // 交换树根和尾节点-上扬
+        Tval val = _root->_value;
         Theap_node<Tval> *tail = tail_node();
-        return Tval();
-        // else if(_size > 1)
-        // {
+        swap_value(_root,tail);
 
-        // }
+        // 释放尾节点-减去数量
+        Theap_node<Tval> *ptail = tail->_parent;
+        if(ptail->_left == tail) { ptail->_left = nullptr; }
+        else { ptail->_right = nullptr; }
+        delete tail;
+        _size--;
+
+        move_down(_root);
+        update_tail();
+        return val;
     }
 
-    // 
-    size_t size()
-    {
-        return _size;
-    }
+    // 返回节点数
+    size_t size_node() const { return _size; }
 
-    //
-    bool dalete_node(Tval val)
-    {
-        return false;
-    }
+    // 判断堆树释放为空
+    bool is_empty() const { return _size != 0; }
 
-
-    //
-    bool find_node(Tval val)
+    // 清空堆树并释放内存-广度优先-树根不释放内存
+    void clear_heap()
     {
-        return false;
+        if(_size < 1) { return; }
+
+        std::queue<Theap_node<Tval>*> que_clear;
+        que_clear.push(_root);
+
+        while (que_clear.empty() == false)
+        {
+            std::queue<Theap_node<Tval>*> que_level;
+
+            size_t size = que_clear.size();
+            for(size_t i=0;i<size;i++)
+            {
+                Theap_node<Tval> *node = que_clear.front();
+                que_clear.pop();
+
+                Theap_node<Tval> *nl = node->_left;
+                if(nl) { que_clear.push(nl); }
+
+                Theap_node<Tval> *nr = node->_right;
+                if(nr) { que_clear.push(nr); }
+
+                if(node != _root)
+                {
+                    vlogd($(node->_value));
+                    delete node;
+                    node = nullptr;
+                }
+                else 
+                {
+                    _root->_left = nullptr;
+                    _root->_right = nullptr;
+                }
+            }
+        }
+        _size = 0;
     }
 
     // 加入到尾节点位置
@@ -125,12 +173,6 @@ struct Theap
         return false;
     }
 
-    //
-    void move_node(Theap_node<Tval> *node)
-    {
-
-    }
-
     // 节点上升-从尾部插入
     void move_up(Theap_node<Tval> *node)
     {
@@ -140,19 +182,47 @@ struct Theap
             if(next->_parent == nullptr) { break; }
 
             if(Tcomp::comp(next->_value,next->_parent->_value))
-            { swap_node(next,next->_parent); next = next->_parent; }
+            { swap_value(next,next->_parent); next = next->_parent; }
             else { break; }
         }
     }
 
-    // 
+    // 向下移动-正常是从树根开始
     void move_down(Theap_node<Tval> *node)
     {
+        Theap_node<Tval> *next = node;
+        while (next)
+        {
+            // 父节点总是和最小的子节点交换-先对比右节点
+            Theap_node<Tval> *snode = nullptr;
+            if(next->_right) 
+            { 
+                if(Tcomp::comp(next->_right->_value,next->_value)) 
+                { snode = next->_right; }
+            }
 
+            // 对比左节点时如果右节点已经被选中-左节点和右节点对比而不是父节点
+            if(next->_left)
+            {
+                if(snode)
+                {
+                    if(Tcomp::comp(next->_left->_value,next->_right->_value)) 
+                    { snode = next->_left; }
+                }
+                else 
+                {
+                    if(Tcomp::comp(next->_left->_value,next->_value)) 
+                    { snode = next->_left; }
+                }
+            }
+
+            if(snode) { swap_value(next,snode); next = snode; }
+            else { break; }
+        }
     }
 
     // 交换节点
-    void swap_node(Theap_node<Tval> *node,Theap_node<Tval> *parent)
+    void swap_value(Theap_node<Tval> *node,Theap_node<Tval> *parent)
     {
         Tval tm = node->_value;
         node->_value = parent->_value;
@@ -232,10 +302,10 @@ struct Theap
         return _root->_value; 
     }
 
-    size_t _size = 0;                       //
-    Tcomp _comp;                            // 
-    Theap_node<Tval> *_root = nullptr;      //
-    Theap_node<Tval> *_tail = nullptr;      //
+    size_t _size = 0;                       // 堆树大小
+    Tcomp _comp;                            // 对比函数
+    Theap_node<Tval> *_root = nullptr;      // 根节点-总是存在
+    Theap_node<Tval> *_tail = nullptr;      // 尾节点-总是指向下一个加入的位置
 };
 
 
