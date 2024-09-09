@@ -2,13 +2,13 @@
 #ifndef THEAP_H
 #define THEAP_H
 
-#include <iostream>
+// #include <iostream>
 #include <vector>
 #include <cmath>
 #include <queue>
 
-#include <assert.h>
-#include "Tlog.h"
+// #include <assert.h>
+// #include "Tlog.h"
 
 
 namespace bhtools {
@@ -30,11 +30,23 @@ struct Theap_node
 
 // 最大堆对比函数-总是大的在上
 template<typename T>
-struct Theap_comp
+struct Theap_comp_max
 {
     inline static bool comp(T a, T b)
     {
         if(a > b) { return true; } 
+        return false;
+    }
+};
+
+
+// 最小堆对比函数-总是小的在上
+template<typename T>
+struct Theap_comp_min
+{
+    inline static bool comp(T a, T b)
+    {
+        if(a < b) { return true; } 
         return false;
     }
 };
@@ -63,7 +75,7 @@ struct Theap
     }
 
     // 插入新节点
-    void insert_node(Tval val)
+    inline void insert_node(Tval val)
     {
         if(_size == 0) { _root->_value = val; _size++; }
         else 
@@ -73,10 +85,17 @@ struct Theap
             move_up(node);
             update_tail();
         }
+    }   
+
+    // 检查根节点
+    inline Tval check_root()
+    {
+        if(_size == 0) { return Tval(); }
+        return _root->_value;
     }
 
     // 弹出树根值
-    Tval pop_root()
+    inline Tval pop_root()
     {
         if(_size == 0) { return Tval(); }
         if(_size == 1) 
@@ -102,14 +121,8 @@ struct Theap
         return val;
     }
 
-    // 返回节点数
-    size_t size_node() const { return _size; }
-
-    // 判断堆树释放为空
-    bool is_empty() const { return _size != 0; }
-
     // 清空堆树并释放内存-广度优先-树根不释放内存
-    void clear_heap()
+    inline void clear_heap()
     {
         if(_size < 1) { return; }
 
@@ -134,7 +147,6 @@ struct Theap
 
                 if(node != _root)
                 {
-                    vlogd($(node->_value));
                     delete node;
                     node = nullptr;
                 }
@@ -148,8 +160,24 @@ struct Theap
         _size = 0;
     }
 
+    // 返回最后一个插入的值
+    inline Tval value_tail()
+    {
+        Theap_node<Tval> *tail = tail_node();
+        if(tail) { return tail->_value; }
+        return _root->_value; 
+    }
+
+    // 返回节点数
+    inline size_t size_node() const { return _size; }
+
+    // 判断堆树是否为空
+    inline bool is_empty() const { return _size == 0; }
+
+
+
     // 加入到尾节点位置
-    void push_node_tail(Theap_node<Tval> *node)
+    inline void push_node_tail(Theap_node<Tval> *node)
     {
         Theap_node<Tval> *ptail = _tail->_parent;
         node->_parent = ptail;
@@ -160,21 +188,21 @@ struct Theap
     }
 
     // 判断尾部节点方向
-    bool is_left_node()
+    inline bool is_left_node()
     {
         if(_size % 2 == 1) { return true; }
         return false;
     }
 
     // 判断传入节点是父节点的左右方向
-    bool is_left_node(Theap_node<Tval> *node,Theap_node<Tval> *parent)
+    inline bool is_left_node(Theap_node<Tval> *node,Theap_node<Tval> *parent)
     {
         if(parent->_left == node) { return true; }
         return false;
     }
 
     // 节点上升-从尾部插入
-    void move_up(Theap_node<Tval> *node)
+    inline void move_up(Theap_node<Tval> *node)
     {
         Theap_node<Tval> *next = node;
         while(true)
@@ -188,7 +216,7 @@ struct Theap
     }
 
     // 向下移动-正常是从树根开始
-    void move_down(Theap_node<Tval> *node)
+    inline void move_down(Theap_node<Tval> *node)
     {
         Theap_node<Tval> *next = node;
         while (next)
@@ -222,7 +250,7 @@ struct Theap
     }
 
     // 交换节点
-    void swap_value(Theap_node<Tval> *node,Theap_node<Tval> *parent)
+    inline void swap_value(Theap_node<Tval> *node,Theap_node<Tval> *parent)
     {
         Tval tm = node->_value;
         node->_value = parent->_value;
@@ -230,7 +258,7 @@ struct Theap
     }
 
     // 根据传入位置返回指向下一个位置的父节点
-    Theap_node<Tval>* find_tail_parent(size_t size)
+    inline Theap_node<Tval>* find_tail_parent(size_t size)
     {
         if(size == 0) { return nullptr; }
         if(size < 3) { return _root; }
@@ -275,14 +303,14 @@ struct Theap
     }
 
     // 更新尾节点位置
-    void update_tail()
+    inline void update_tail()
     {
         Theap_node<Tval> *tail = find_tail_parent(_size);
         if(tail) { _tail->_parent = tail; } 
     }
 
     // 返回最后一个值的节点指针
-    Theap_node<Tval>* tail_node()
+    inline Theap_node<Tval>* tail_node()
     {
         Theap_node<Tval> *ptail = find_tail_parent(_size -1);
         Theap_node<Tval> *tnode = nullptr;
@@ -294,13 +322,6 @@ struct Theap
         return tnode;
     }
 
-    // 返回最后一个插入的值
-    Tval value_tail()
-    {
-        Theap_node<Tval> *tail = tail_node();
-        if(tail) { return tail->_value; }
-        return _root->_value; 
-    }
 
     size_t _size = 0;                       // 堆树大小
     Tcomp _comp;                            // 对比函数
