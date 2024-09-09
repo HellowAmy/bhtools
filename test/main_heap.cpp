@@ -74,139 +74,260 @@ void test_1()
     {
         Theap<int,Theap_comp_max<int>> heap;
         fn_push1(heap,40);
-        fn_push1(heap,40);
 
-        while(heap.is_empty() == false)
-        {
-            auto val = heap.pop_root();
-            vlogd($(val));
-        }
-        
-        // show_node(heap._root);
-        // vlogd($(heap.size_node()));
-        // vlogd($(heap.is_empty()));
-        // vlogd($(heap.check_root()));
+        show_node(heap._root);
+        vlogd($(heap.size_node()));
+        vlogd($(heap.is_empty()));
+        vlogd($(heap.check_root()));
+        vlogd($(heap.value_tail()));
+        vlogd($(heap._tail->_parent->_value));
     }
-
     {
-        Theap<int,Theap_comp_min<int>> heap;
-        fn_push2(heap,30);
-        fn_push2(heap,30);
+        Theap<int,Theap_comp_max<int>> heap;
 
-        while(heap.is_empty() == false)
-        {
-            auto val = heap.pop_root();
-            vlogd($(val));
-        }
-        
-        // show_node(heap._root);
-        // vlogd($(heap.size_node()));
-        // vlogd($(heap.is_empty()));
-        // vlogd($(heap.check_root()));
+        show_node(heap._root);
+        vlogd($(heap.size_node()));
+        vlogd($(heap.is_empty()));
+        vlogd($(heap.check_root()));
+        vlogd($(heap.value_tail()));
+        vlogd($(heap._tail->_parent->_value));
+    }
+    {
+        Theap<int,Theap_comp_max<int>> heap;
+        fn_push1(heap,1);
+
+        show_node(heap._root);
+        vlogd($(heap.size_node()));
+        vlogd($(heap.is_empty()));
+        vlogd($(heap.check_root()));
+        vlogd($(heap.value_tail()));
+        vlogd($(heap._tail->_parent->_value));
+    }
+    {
+        Theap<int,Theap_comp_max<int>> heap;
+        fn_push1(heap,2);
+
+        show_node(heap._root);
+        vlogd($(heap.size_node()));
+        vlogd($(heap.is_empty()));
+        vlogd($(heap.check_root()));
+        vlogd($(heap.value_tail()));
+        vlogd($(heap._tail->_parent->_value));
+    }
+    {
+        Theap<int,Theap_comp_max<int>> heap;
+        fn_push1(heap,3);
+
+        show_node(heap._root);
+        vlogd($(heap.size_node()));
+        vlogd($(heap.is_empty()));
+        vlogd($(heap.check_root()));
+        vlogd($(heap.value_tail()));
+        vlogd($(heap._tail->_parent->_value));
+    }
+    {
+        Theap<int,Theap_comp_max<int>> heap;
+        fn_push1(heap,4);
+
+        show_node(heap._root);
+        vlogd($(heap.size_node()));
+        vlogd($(heap.is_empty()));
+        vlogd($(heap.check_root()));
+        vlogd($(heap.value_tail()));
+        vlogd($(heap._tail->_parent->_value));
     }
 }
 
 void test_2()
 {
-    int count = 10000000;
-
-    {
-        Ftimel t;
-        Theap<int,Theap_comp_min<int>> heap;
+    auto fn_push1 = [](Theap<int,Theap_comp_max<int>> &heap,int count){
         for(int i=1;i<=count;i++)
         {
             heap.insert_node(i);
         }
-        vlogd($(t.to_string()));
-    }
-
-    {
-        Theap<int,Theap_comp_min<int>> heap;
+    };
+    auto fn_push2 = [](Theap<int,Theap_comp_min<int>> &heap,int count){
         for(int i=1;i<=count;i++)
         {
             heap.insert_node(i);
         }
+    };
 
-        Ftimel t;
-        while(heap.is_empty() == false)
+
+    {
+        Theap<int,Theap_comp_max<int>> heap;
+        fn_push1(heap,40);
+
+        vlogw($(heap.size_node()));
+        while (heap.is_empty() == false)
         {
-            heap.pop_root();
+            auto val = heap.pop_root();
+            vlogd($(val));
         }
-        vlogd($(t.to_string()));
-    }
+    }  
+
+    {
+        Theap<int,Theap_comp_min<int>> heap;
+        fn_push2(heap,40);
+
+        vlogw($(heap.size_node()));
+        while (heap.is_empty() == false)
+        {
+            auto val = heap.pop_root();
+            vlogd($(val));
+        }
+    }  
+
 }
-
-struct heap_val_int
-{
-    heap_node node;
-    int val;
-};
-
-#ifndef container_of
-#define container_of(ptr, type, member) \
-((type*)((char*)(ptr) - offsetof(type, member)))
-#endif
 
 void test_3()
 {
+    int count = 10000000;
+
+    {
+        Theap<int,Theap_comp_min<int>> heap;
+        {
+            Ftimel t;
+            for(int i=1;i<=count;i++)
+            {
+                heap.insert_node(i);
+            }
+            vlogd($(t.to_string()) $(heap.size_node()) );
+        }
+        {
+            Ftimel t;
+            while(heap.is_empty() == false)
+            {
+                heap.pop_root();
+            }
+            vlogd($(t.to_string()) $(heap.size_node()) );
+        }
+
+    }
+
+    {
+        Theap<int,Theap_comp_max<int>> heap;
+        {
+            Ftimel t;
+            for(int i=1;i<=count;i++)
+            {
+                heap.insert_node(i);
+            }
+            vlogd($(t.to_string()) $(heap.size_node()) );
+        }
+        {
+            Ftimel t;
+            while(heap.is_empty() == false)
+            {
+                heap.pop_root();
+            }
+            vlogd($(t.to_string()) $(heap.size_node()) );
+        }
+
+    }
+
+}
+
+void test_4()
+{
+    struct heap_val_int
+    {
+        heap_node node;
+        int val;
+    };
+
+    #ifndef container_of
+    #define container_of(ptr, type, member) \
+    ((type*)((char*)(ptr) - offsetof(type, member)))
+    #endif
 
     int count = 10000000;
-    // {
-    //     heap hp;    
-    //     heap_init(&hp,[](const struct heap_node* lhs, const struct heap_node* rhs)->int {
-    //         heap_val_int *lv = container_of(lhs,heap_val_int,val);
-    //         heap_val_int *rv = container_of(rhs,heap_val_int,val);
-    //         return lv->val > rv->val;
-    //     });
 
-    //     Ftimel t;
-    //     for(int i=1;i<=count;i++)
-    //     {
-    //         heap_val_int *ct = new heap_val_int;
-    //         ct->val = i;
-    //         heap_insert(&hp,&ct->node);
-    //     }
-    //     vlogd($(t.to_string()));
-    // }
     {
         heap hp;    
         heap_init(&hp,[](const struct heap_node* lhs, const struct heap_node* rhs)->int {
             heap_val_int *lv = container_of(lhs,heap_val_int,val);
             heap_val_int *rv = container_of(rhs,heap_val_int,val);
-            return lv->val > rv->val;
+            return lv->val < rv->val;
         });
 
-        for(int i=1;i<=count;i++)
         {
-            heap_val_int *ct = new heap_val_int;
-            ct->val = i;
-            heap_insert(&hp,&ct->node);
-        }
-        vlogd($(hp.nelts));
-
-        Ftimel t;
-        {
-            while(hp.nelts > 0)
+            Ftimel t;
+            for(int i=1;i<=count;i++)
             {
-                heap_dequeue(&hp);
+                heap_val_int *ct = new heap_val_int;
+                ct->val = i;
+                heap_insert(&hp,&ct->node);
             }
+            vlogd($(t.to_string()));
         }
-        vlogd($(t.to_string()));
-
-        vlogd($(hp.nelts));
+        {
+            Ftimel t;
+            {
+                while(hp.nelts > 0)
+                {
+                    heap_dequeue(&hp);
+                }
+            }
+            vlogd($(t.to_string()));
+        }
     }
 
+
+}
+
+
+void test_5()
+{
+    {
+        Theap<int,Theap_comp_max<int>> heap;
+        for(int i=1;i<=10000000;i++)
+        {
+            heap.insert_node(i);
+        }
+
+        // show_node(heap._root);
+        vlogd($(heap.size_node()));
+        vlogd($(heap.is_empty()));
+        vlogd($(heap.check_root()));
+        vlogd($(heap.value_tail()));
+        vlogd($(heap._tail->_parent->_value));
+
+        {
+            auto n = heap.find_tail_parent(heap._size-14);
+            vlogd($(n->_value));
+        }
+        {
+            auto n = heap.find_tail_parent(heap._size-15);
+            vlogd($(n->_value));
+        }
+        {
+            auto n = heap.find_tail_parent(heap._size-16);
+            vlogd($(n->_value));
+        }
+
+    }
+    {
+        static const size_t _max_one = (1UL << 63);
+        vlogd($(_max_one));
+    }
 }
 
 int main(int argc, char *argv[])
 {
     // test_1();   
-    test_2();   
+    // test_2();   
     // test_3();   
-    // test_4();   
+    test_4();   
     // test_5();
     // test_6();
 
+
+    // for(int i=0;i<77;i++)
+    // {
+    //     std::cout<<i<<",";
+    // }
+    // std::cout<<std::endl;
 
     return 0;
 }

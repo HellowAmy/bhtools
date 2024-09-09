@@ -263,41 +263,16 @@ struct Theap
         if(size == 0) { return nullptr; }
         if(size < 3) { return _root; }
 
-        // 计算尾节点所在树的层级
+        // 将数值从左忘右推进的bit和对比符号比较-如果为1则代表应该走右节点-可以从数值的二进制中找规律
         Theap_node<Tval> *node = _root;
-        size_t sum = size - 2;
-        size_t level = 2;
-        while(true)
+        bool find = false;
+        size_t path = size + 1;
+        for(size_t i=0;i<(sizeof(path)*8)-1;i++)
         {
-            size_t val = std::pow(2,level);
-            if(sum <= val) { break; }
-            sum -= val;
-            level++;
-        }
-
-        // 计算去往尾节点的左右路径
-        size_t pos = size + 1;
-        while(true)
-        {
-            size_t prev_sum = std::pow(2,level) -1;
-            size_t prev_level = std::pow(2,level -1);
-
-            size_t old_pos = pos;
-            pos -= prev_sum;
-
-            if(pos > prev_level) 
-            { 
-                node = node->_right;
-                pos = old_pos - std::pow(2,level);
-            }
-            else 
-            { 
-                node = node->_left; 
-                pos = old_pos - std::pow(2,level -1);
-            }
-
-            level--;
-            if(level == 1) { break; }
+            if(find && (path & _max_one)) { node = node->_right; }
+            else if(find) { node = node->_left; }
+            else if((find == false) && (path & _max_one)) { find = true; }
+            path <<= 1;
         }
         return node;
     }
@@ -323,10 +298,11 @@ struct Theap
     }
 
 
-    size_t _size = 0;                       // 堆树大小
-    Tcomp _comp;                            // 对比函数
-    Theap_node<Tval> *_root = nullptr;      // 根节点-总是存在
-    Theap_node<Tval> *_tail = nullptr;      // 尾节点-总是指向下一个加入的位置
+    size_t _size = 0;                               // 堆树大小
+    Tcomp _comp;                                    // 对比函数
+    Theap_node<Tval> *_root = nullptr;              // 根节点-总是存在
+    Theap_node<Tval> *_tail = nullptr;              // 尾节点-总是指向下一个加入的位置
+    static const size_t _max_one = (1UL << 63);     // 最高位对比标记
 };
 
 
