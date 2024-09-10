@@ -16,11 +16,11 @@
 using namespace bhtools;
 
 
-void show_node(Theap_node<int> *root)
+int show_node(Theap_node<int> *root)
 {
     if(root == nullptr)
     {
-        return;
+        return 0;
     }
     std::queue<Theap_node<int> *> que;
     que.push(root);
@@ -35,7 +35,7 @@ void show_node(Theap_node<int> *root)
         {
             Theap_node<int> *node = que.front();
             que.pop();
-            vlogw($(count) $(clevel) $(node->_value));
+            // vlogw($(count) $(clevel) $(node->_value));
 
             Theap_node<int> *nl = node->_left;
             if(nl)
@@ -52,7 +52,11 @@ void show_node(Theap_node<int> *root)
         }
         clevel++;
     }
+
+    return count;
 }
+
+
 
 
 void test_1()
@@ -194,6 +198,8 @@ void test_3()
             }
             vlogd($(t.to_string()) $(heap.size_node()) );
         }
+        int sum = show_node(heap._root);
+        vlogd($(sum));
         {
             Ftimel t;
             while(heap.is_empty() == false)
@@ -257,6 +263,9 @@ void test_4()
             {
                 heap_val_int *ct = new heap_val_int;
                 ct->val = i;
+                ct->node.left = nullptr;
+                ct->node.right = nullptr;
+                ct->node.parent = nullptr;
                 heap_insert(&hp,&ct->node);
             }
             vlogd($(t.to_string()));
@@ -317,7 +326,7 @@ int main(int argc, char *argv[])
 {
     // test_1();   
     // test_2();   
-    // test_3();   
+    test_3();   
     test_4();   
     // test_5();
     // test_6();

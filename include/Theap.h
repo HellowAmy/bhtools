@@ -83,7 +83,7 @@ struct Theap
             Theap_node<Tval> *node = new Theap_node<Tval>(val);
             push_node_tail(node);
             move_up(node);
-            update_tail();
+            if(is_left_node()) { update_tail(); }
         }
     }   
 
@@ -106,7 +106,9 @@ struct Theap
 
         // 交换树根和尾节点-上扬
         Tval val = _root->_value;
-        Theap_node<Tval> *tail = tail_node();
+        Theap_node<Tval> *tail = nullptr;
+        if(is_left_node()) { tail = tail_node(); }
+        else { tail = _tail->_parent->_left; }
         swap_value(_root,tail);
 
         // 释放尾节点-减去数量
@@ -117,7 +119,7 @@ struct Theap
         _size--;
 
         move_down(_root);
-        update_tail();
+        if(is_left_node() == false) { update_tail(); }
         return val;
     }
 
