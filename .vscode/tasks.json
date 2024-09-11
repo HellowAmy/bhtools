@@ -260,7 +260,38 @@
                 "CMake main_heap",
                 "CMake Build"
             ]
+        },
+
+
+
+
+        {
+            "label": "CMake main_timer",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "..",
+                "-Dmain_timer=1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build/"
+            },
+        },
+        {
+            "label": "Run main_timer",
+            "type": "shell",
+            "command": "cmake",
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "CMake main_timer",
+                "CMake Build"
+            ]
         }
+
 
     ]
 }

@@ -96,5 +96,9 @@ if(ALL OR main_heap)
     add_executable(main_heap test/main_heap.cpp)
 endif()
 
+if(ALL OR main_timer)
+    add_executable(main_timer test/main_timer.cpp)
+endif()
+
 # 生成目标
 add_executable(${CMAKE_PROJECT_NAME} main.cpp)

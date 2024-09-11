@@ -9,6 +9,14 @@
 namespace bhtools {
 
 
+// 默认 C++ sstream 类型转字符串
+struct Tsstream_string
+{
+    template<typename T>
+    std::string operator()(T val) { std::stringstream ss; ss<<val; return ss.str(); }
+};
+
+
 // 各类型转字符串函数
 template<typename T>
 inline static std::string Tto_string(const T &val) 
@@ -26,6 +34,9 @@ inline static std::string Tto_string(T* val)
 
 inline static std::string Tto_string(void *val) 
 { std::stringstream ss; ss<<val; return ss.str(); }
+
+// inline static std::string Tto_string(void *val) 
+// { std::stringstream ss; ss<<val; return ss.str(); }
 
 //
 //
