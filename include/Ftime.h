@@ -197,7 +197,7 @@ struct Ftimes
         }
 
         // 计算日期-传入当年经过的天数-计算天数所属的月份
-        std::vector<size_t> &vec = get_month_leap(year_next);
+        const std::vector<size_t> &vec = get_month_leap(year_next);
         for(int i=0;i<vec.size();i++)
         {
             if(days_less <= vec[i])
@@ -269,7 +269,7 @@ struct Ftimes
 
 
     // 得到传入年的每月累加分部天数-包括润年
-    inline static std::vector<size_t>& get_month_leap(int64_t year)
+    inline static const std::vector<size_t>& get_month_leap(int64_t year)
     { return (is_leap(year) ? month_normal() : month_leap()); }
 
     // 得到传入年的时间-包括润年
@@ -289,16 +289,16 @@ struct Ftimes
     { return (calc_res(year, 4) - calc_res(year, 100) + calc_res(year, 400)); }
 
     // 返回普通月份天数
-    inline static std::vector<size_t>& month_normal()
+    inline static const std::vector<size_t>& month_normal()
     {
-        static std::vector<size_t> vec_normal { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
+        static const std::vector<size_t> vec_normal { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
         return vec_normal;
     }
 
     // 返回闰年月份天数
-    inline static std::vector<size_t>& month_leap()
+    inline static const std::vector<size_t>& month_leap()
     {
-        static std::vector<size_t> vec_leap { 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366 };
+        static const std::vector<size_t> vec_leap { 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366 };
         return vec_leap;
     }
 };
