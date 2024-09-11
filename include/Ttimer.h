@@ -77,11 +77,11 @@ struct Ttimer
     }
 
     // 加入定时任务到执行队列
-    inline size_t push(size_t delay,std::function<void(size_t)> fn,size_t active = 1)
+    inline size_t push(Tduration delay,std::function<void(size_t)> fn,size_t active = 1)
     {
         task ct;
         ct._id = _count++;
-        ct._start = time_now() + std::chrono::duration_cast<Tduration>(Tduration(delay));
+        ct._start = time_now() + delay;
         ct._delay = Tduration(delay);
         ct._active = active;
         ct._task = fn;
@@ -92,14 +92,18 @@ struct Ttimer
         return ct._id;
     }
 
+    // 加入定时任务到执行队列-重载
+    inline size_t push(size_t delay,std::function<void(size_t)> fn,size_t active = 1)
+    { return push(std::chrono::duration_cast<Tduration>(Tduration(delay)),fn,active); }
+
     // 移除指定ID定时任务
     inline bool remove(size_t id) { return remove_task_th(id); }
 
     // 关闭定时器
-    void close_timer() { _run = false; }
+    inline void close_timer() { _run = false; }
 
     // 重启定时器
-    void restart_timer()
+    inline void restart_timer()
     { 
         close_timer();
         std::this_thread::sleep_for(Tduration(Tinterval * 2));
@@ -113,28 +117,28 @@ struct Ttimer
 
 
     // 加入任务到堆树排队
-    void insert_task_th(const task &ct)
+    inline void insert_task_th(const task &ct)
     {
         std::unique_lock<std::mutex> lock(_mut);
         _heap.insert_node(ct);
     }
 
     // 移除指定ID定时任务
-    bool remove_task_th(size_t id)
+    inline bool remove_task_th(size_t id)
     {
         std::unique_lock<std::mutex> lock(_mut);
         return _heap.remove_node(task(id));
     }
 
     // 清空定时器任务
-    void clear_task_th()
+    inline void clear_task_th()
     {
         std::unique_lock<std::mutex> lock(_mut);
         _heap.clear_heap();
     }
 
     // 弹出超时的任务
-    task pop_task_th()
+    inline task pop_task_th()
     {
         std::unique_lock<std::mutex> lock(_mut);
         return _heap.pop_root();

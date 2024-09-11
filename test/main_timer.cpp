@@ -9,6 +9,7 @@
 
 #include "Tlog.h"
 #include "Ttimer.h"
+#include "Ftime.h"
 
 #include "unistd.h"
 
@@ -98,15 +99,176 @@ void test_2()
 
 }
 
+void test_3()
+{
+    
+    {
+        vlogi("=====");
+        Ftimel t;
+        Ttimer<std::chrono::milliseconds,20,2> ti;
+        size_t tid1 = ti.push(200,[&](size_t id){
+            vlogd($(t.to_string()));
+            t.update();
+        },0);
+        sleep(5);
+    }
+    {
+        vlogi("=====");
+        Ftimel t;
+        Ttimer<std::chrono::milliseconds,50,2> ti;
+        size_t tid1 = ti.push(200,[&](size_t id){
+            vlogd($(t.to_string()));
+            t.update();
+        },0);
+        sleep(5);
+    }
+    {
+        vlogi("=====");
+        Ftimel t;
+        Ttimer<std::chrono::milliseconds,100,2> ti;
+        size_t tid1 = ti.push(200,[&](size_t id){
+            vlogd($(t.to_string()));
+            t.update();
+        },0);
+        sleep(5);
+    }
+    {
+        vlogi("=====");
+        Ftimel t;
+        Ttimer<std::chrono::milliseconds,200,2> ti;
+        size_t tid1 = ti.push(200,[&](size_t id){
+            vlogd($(t.to_string()));
+            t.update();
+        },0);
+        sleep(5);
+    }
+    {
+        vlogi("=====");
+        Ftimel t;
+        Ttimer<std::chrono::milliseconds,500,2> ti;
+        size_t tid1 = ti.push(200,[&](size_t id){
+            vlogd($(t.to_string()));
+            t.update();
+        },0);
+        sleep(5);
+    }
+}
+
+void test_4()
+{
+    {
+        vlogi("=====");
+        Ftimel t;
+        Ttimer<std::chrono::seconds,1,2> ti;
+        size_t tid1 = ti.push(3,[&](size_t id){
+            vlogd($(t.to_string()));
+            t.update();
+        },0);
+        sleep(10);
+    }
+    {
+        vlogi("=====");
+        Ftimel t;
+        Ttimer<std::chrono::nanoseconds,100,2> ti;
+        size_t tid1 = ti.push(500,[&](size_t id){
+            vlogd($(t.to_string()) $(ti._heap.size_node()) );
+            t.update();
+        },0);
+        sleep(10);
+    }
+    {
+        vlogi("=====");
+        Ftimel t;
+        Ttimer<std::chrono::milliseconds,200,2> ti;
+        size_t tid1 = ti.push(300,[&](size_t id){
+            vlogd($(t.to_string()));
+            t.update();
+        },0);
+        sleep(10);
+    }
+
+}
+
+void test_5()
+{
+    {
+        vlogi("=====");
+        Ftimel t;
+        Ttimer<std::chrono::milliseconds,50,2> ti;
+        size_t tid1 = ti.push(std::chrono::seconds(1),[&](size_t id){
+            vlogd($(t.to_string()));
+            t.update();
+        },0);
+        sleep(5);
+    }
+    {
+        vlogi("=====");
+        Ftimel t;
+        Ttimer<std::chrono::milliseconds,50,2> ti;
+        size_t tid1 = ti.push(std::chrono::milliseconds(100),[&](size_t id){
+            vlogd($(t.to_string()));
+            t.update();
+        },0);
+        sleep(5);
+    }
+    {
+        vlogi("=====");
+        Ftimel t;
+        Ttimer<std::chrono::nanoseconds,500,2> ti;
+        size_t tid1 = ti.push(std::chrono::microseconds(1000),[&](size_t id){
+            vlogd($(t.to_string()));
+            t.update();
+        },0);
+        sleep(5);
+    }
+    {
+        vlogi("=====");
+        Ftimel t;
+        Ttimer<std::chrono::microseconds,100,2> ti;
+        size_t tid1 = ti.push(std::chrono::milliseconds(1),[&](size_t id){
+            vlogd($(t.to_string()));
+            t.update();
+        },0);
+        sleep(5);
+    }
+
+}
+
+void test_6()
+{
+    {
+        int count = 0;
+        vlogi("=====");
+        Ftimel t;
+        Ttimer<std::chrono::microseconds,100,2> ti;
+        size_t tid1 = ti.push(std::chrono::milliseconds(1),[&](size_t id){
+            auto s1 = t.time_interval();
+            auto data = t.to_data(s1);
+            if(data.mic > 1100 || data.mic < 900)
+            {
+                vlogw($("====="));
+                count++;
+            }
+            else 
+            {
+                vlogd($(t.to_string(s1)));    
+            }
+            t.update();
+
+        },0);
+        sleep(30);
+        vlogd($(count));     // 5253
+    }
+}
 
 int main(int argc, char *argv[])
 {
     // test_1();   
-    test_2();   
+    // test_2();   
     // test_3();   
     // test_4();   
     // test_5();
-    // test_6();
+    test_6();
 
     return 0;
 }
