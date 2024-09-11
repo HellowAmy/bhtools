@@ -2,30 +2,11 @@
 #ifndef THEAP_H
 #define THEAP_H
 
-// #include <iostream>
 #include <vector>
 #include <cmath>
 #include <queue>
 
-// #include <assert.h>
-// #include "Tlog.h"
-
-
 namespace bhtools {
-
-
-// 大小堆树节点
-template<typename T>
-struct Theap_node
-{
-    Theap_node() { }
-    Theap_node(T val) : _value(val) { }
-
-    Theap_node *_parent = nullptr;  // 父节点
-    Theap_node *_right = nullptr;   // 右节点
-    Theap_node *_left = nullptr;    // 左节点
-    T _value;                       // 存储的值
-};
 
 
 // 最大堆对比函数-总是大的在上
@@ -52,8 +33,28 @@ struct Theap_comp_min
 };
 
 
+// 大小堆树节点
+template<typename T>
+struct Theap_node
+{
+    Theap_node() { }
+    Theap_node(T val) : _value(val) { }
+
+    Theap_node *_parent = nullptr;  // 父节点
+    Theap_node *_right = nullptr;   // 右节点
+    Theap_node *_left = nullptr;    // 左节点
+    T _value;                       // 存储的值
+};
+
+
+// 当使用堆数传入结构体时使用对比模板 Theap_comp_max Theap_comp_min
+//      需要实现如下对比操作符:
+//          bool operator>(const T &ct) { return true; }    // 最大堆需实现
+//          bool operator<(const T &ct) { return true; }    // 最小堆需实现
+//          bool operator==(const T &ct) { return true; }   // 需要移除指定节点时需实现
+// 
 // 大小堆二叉树
-template<typename Tval,typename Tcomp>
+template<typename Tval,template<typename> class Tcomp>
 struct Theap
 {
     // 初始化树根
@@ -133,8 +134,6 @@ struct Theap
 
         while (que_clear.empty() == false)
         {
-            std::queue<Theap_node<Tval>*> que_level;
-
             size_t size = que_clear.size();
             for(size_t i=0;i<size;i++)
             {
@@ -168,6 +167,67 @@ struct Theap
         Theap_node<Tval> *tail = tail_node();
         if(tail) { return tail->_value; }
         return _root->_value; 
+    }
+
+    // template<Tfn>
+    // void remove_node(Tfn fn)
+    // {
+        
+    // }
+
+    // 找到节点指向的指针-未找到返回NULL
+    Theap_node<Tval>* find_node(Tval val)
+    {
+        if(_size == 0) { return nullptr; }
+
+        std::queue<Theap_node<Tval>*> que_node;
+        que_node.push(_root);
+
+        while (que_node.empty() == false)
+        {
+            size_t size = que_node.size();
+            for(size_t i=0;i<size;i++)
+            {
+                Theap_node<Tval> *node = que_node.front();
+                que_node.pop();
+                if(node->_value == val)
+                { return node; }
+
+                Theap_node<Tval> *nl = node->_left;
+                if(nl) { que_node.push(nl); }
+
+                Theap_node<Tval> *nr = node->_right;
+                if(nr) { que_node.push(nr); }
+            }
+        }
+        return nullptr;
+    }
+
+    // 从堆数中移除传入值-移除成功返回true-未找到返回false
+    bool remove_node(Tval val)
+    {
+        Theap_node<Tval> *node = find_node(val);
+        if(node == nullptr) { return false; }
+
+        if(node == _root) { pop_root(); }
+        else 
+        {
+            // 交换查询节点和根节点-将交换节点移动到根节点的前一层等待交换-弹出根节点
+            // 弹出交换节点过程中尾节点开始下沉会将在前一层等待原本的根节点重新归位到根节点位置
+            swap_value(_root,node);
+            while(true)
+            {
+                if(node->_parent == _root) { break; }
+                if(Tcomp<Tval>::comp(node->_value,node->_parent->_value))
+                {
+                    swap_value(node,node->_parent);
+                    node = node->_parent;
+                }
+                else { break; }
+            }
+            pop_root();
+        }
+        return true;
     }
 
     // 返回节点数
@@ -211,7 +271,7 @@ struct Theap
         {
             if(next->_parent == nullptr) { break; }
 
-            if(Tcomp::comp(next->_value,next->_parent->_value))
+            if(Tcomp<Tval>::comp(next->_value,next->_parent->_value))
             { swap_value(next,next->_parent); next = next->_parent; }
             else { break; }
         }
@@ -227,7 +287,7 @@ struct Theap
             Theap_node<Tval> *snode = nullptr;
             if(next->_right) 
             { 
-                if(Tcomp::comp(next->_right->_value,next->_value)) 
+                if(Tcomp<Tval>::comp(next->_right->_value,next->_value)) 
                 { snode = next->_right; }
             }
 
@@ -236,12 +296,12 @@ struct Theap
             {
                 if(snode)
                 {
-                    if(Tcomp::comp(next->_left->_value,next->_right->_value)) 
+                    if(Tcomp<Tval>::comp(next->_left->_value,next->_right->_value)) 
                     { snode = next->_left; }
                 }
                 else 
                 {
-                    if(Tcomp::comp(next->_left->_value,next->_value)) 
+                    if(Tcomp<Tval>::comp(next->_left->_value,next->_value)) 
                     { snode = next->_left; }
                 }
             }
@@ -301,7 +361,6 @@ struct Theap
 
 
     size_t _size = 0;                               // 堆树大小
-    Tcomp _comp;                                    // 对比函数
     Theap_node<Tval> *_root = nullptr;              // 根节点-总是存在
     Theap_node<Tval> *_tail = nullptr;              // 尾节点-总是指向下一个加入的位置
     static const size_t _max_one = (1UL << 63);     // 最高位对比标记
