@@ -9,7 +9,7 @@
 namespace bhtools {
 
 
-// 最大堆对比函数-总是大的在上
+// 最大堆对比函数-总是大的在树根-需存在操作符
 template<typename T>
 struct Theap_comp_max
 {
@@ -21,7 +21,7 @@ struct Theap_comp_max
 };
 
 
-// 最小堆对比函数-总是小的在上
+// 最小堆对比函数-总是小的在树根-需存在操作符
 template<typename T>
 struct Theap_comp_min
 {
@@ -47,7 +47,7 @@ struct Theap_node
 };
 
 
-// 当使用堆数传入结构体时使用对比模板 Theap_comp_max Theap_comp_min
+// 当使用堆数传入结构体时使用对比模板: Theap_comp_max Theap_comp_min
 //      需要实现如下对比操作符:
 //          bool operator>(const T &ct) { return true; }    // 最大堆需实现
 //          bool operator<(const T &ct) { return true; }    // 最小堆需实现
@@ -169,42 +169,8 @@ struct Theap
         return _root->_value; 
     }
 
-    // template<Tfn>
-    // void remove_node(Tfn fn)
-    // {
-        
-    // }
-
-    // 找到节点指向的指针-未找到返回NULL
-    Theap_node<Tval>* find_node(Tval val)
-    {
-        if(_size == 0) { return nullptr; }
-
-        std::queue<Theap_node<Tval>*> que_node;
-        que_node.push(_root);
-
-        while (que_node.empty() == false)
-        {
-            size_t size = que_node.size();
-            for(size_t i=0;i<size;i++)
-            {
-                Theap_node<Tval> *node = que_node.front();
-                que_node.pop();
-                if(node->_value == val)
-                { return node; }
-
-                Theap_node<Tval> *nl = node->_left;
-                if(nl) { que_node.push(nl); }
-
-                Theap_node<Tval> *nr = node->_right;
-                if(nr) { que_node.push(nr); }
-            }
-        }
-        return nullptr;
-    }
-
     // 从堆数中移除传入值-移除成功返回true-未找到返回false
-    bool remove_node(Tval val)
+    inline bool remove_node(Tval val)
     {
         Theap_node<Tval> *node = find_node(val);
         if(node == nullptr) { return false; }
@@ -236,7 +202,38 @@ struct Theap
     // 判断堆树是否为空
     inline bool is_empty() const { return _size == 0; }
 
+    // 判断值是否存在堆数中
+    inline bool is_exist(Tval val) { return find_node() != nullptr; }
 
+
+
+    // 找到节点指向的指针-未找到返回NULL
+    inline Theap_node<Tval>* find_node(Tval val)
+    {
+        if(_size == 0) { return nullptr; }
+
+        std::queue<Theap_node<Tval>*> que_node;
+        que_node.push(_root);
+
+        while (que_node.empty() == false)
+        {
+            size_t size = que_node.size();
+            for(size_t i=0;i<size;i++)
+            {
+                Theap_node<Tval> *node = que_node.front();
+                que_node.pop();
+                if(node->_value == val)
+                { return node; }
+
+                Theap_node<Tval> *nl = node->_left;
+                if(nl) { que_node.push(nl); }
+
+                Theap_node<Tval> *nr = node->_right;
+                if(nr) { que_node.push(nr); }
+            }
+        }
+        return nullptr;
+    }
 
     // 加入到尾节点位置
     inline void push_node_tail(Theap_node<Tval> *node)
