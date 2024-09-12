@@ -6,11 +6,11 @@
 
 #include <iostream>
 
-#include "Ftest.h"
 #include "Fstm.h"
-#include "Tlog.h"
+#include "Ftest.h"
+// #include "Tlog.h"
 // #include "Tpool.h"
-// #include "Ftime.h"
+#include "Ftime.h"
 
 using namespace bhtools;
 
@@ -18,171 +18,37 @@ using namespace bhtools;
 void test_1()
 {
     vlogi($("== 1 =="));
+    std::string s = "<<abc-hellow world-1992/4/3 15:12:54>>";
     {
-        std::string s = "123#456#789";
-        std::string sf = "#";
-        auto s1 = Fstm::section_forward(s,sf,0,0);
-        BHTEST_EQUAL(s1,"123");
+        auto s1 = Fstm(s)("<<",1,1,">>",0,0);
+        BHTEST_EQUAL(s1,"abc-hellow world-1992/4/3 15:12:54");
     }
     {
-        std::string s = "123#456#789";
-        std::string sf = "#";
-        auto s1 = Fstm::section_forward(s,sf,1,1);
-        BHTEST_EQUAL(s1,"456");
+        auto s1 = Fstm(s)("-",1,1);
+        BHTEST_EQUAL(s1,"hellow world");
     }
     {
-        std::string s = "123#456#789";
-        std::string sf = "#";
-        auto s1 = Fstm::section_forward(s,sf,2,2);
-        BHTEST_EQUAL(s1,"789");
+        auto s1 = Fstm(s)("-",1,1," ",0,0);
+        BHTEST_EQUAL(s1,"hellow");
     }
     {
-        std::string s = "123#456#789";
-        std::string sf = "#";
-        auto s1 = Fstm::section_forward(s,sf,3,3);
-        BHTEST_EQUAL(s1,"");
-    }
-
-    {
-        std::string s = "123##456##789";
-        std::string sf = "##";
-        auto s1 = Fstm::section_forward(s,sf,0,0);
-        BHTEST_EQUAL(s1,"123");
-    }
-    {
-        std::string s = "123##456##789";
-        std::string sf = "##";
-        auto s1 = Fstm::section_forward(s,sf,1,1);
-        BHTEST_EQUAL(s1,"456");
-    }
-    {
-        std::string s = "123##456##789";
-        std::string sf = "##";
-        auto s1 = Fstm::section_forward(s,sf,2,2);
-        BHTEST_EQUAL(s1,"789");
-    }
-    {
-        std::string s = "123##456##789";
-        std::string sf = "##";
-        auto s1 = Fstm::section_forward(s,sf,3,3);
-        BHTEST_EQUAL(s1,"");
-    }
-
-    {
-        std::string s = "123###456###789";
-        std::string sf = "###";
-        auto s1 = Fstm::section_forward(s,sf,0,0);
-        BHTEST_EQUAL(s1,"123");
-    }
-    {
-        std::string s = "123###456###789";
-        std::string sf = "###";
-        auto s1 = Fstm::section_forward(s,sf,1,1);
-        BHTEST_EQUAL(s1,"456");
-    }
-    {
-        std::string s = "123###456###789";
-        std::string sf = "###";
-        auto s1 = Fstm::section_forward(s,sf,2,2);
-        BHTEST_EQUAL(s1,"789");
-    }
-    {
-        std::string s = "123###456###789";
-        std::string sf = "###";
-        auto s1 = Fstm::section_forward(s,sf,3,3);
-        BHTEST_EQUAL(s1,"");
-    }
-
-    {
-        std::string s = "123####456####789";
-        std::string sf = "####";
-        auto s1 = Fstm::section_forward(s,sf,0,0);
-        BHTEST_EQUAL(s1,"123");
-    }
-    {
-        std::string s = "123####456####789";
-        std::string sf = "####";
-        auto s1 = Fstm::section_forward(s,sf,1,1);
-        BHTEST_EQUAL(s1,"456");
-    }
-    {
-        std::string s = "123####456####789";
-        std::string sf = "####";
-        auto s1 = Fstm::section_forward(s,sf,2,2);
-        BHTEST_EQUAL(s1,"789");
-    }
-    {
-        std::string s = "123####456####789";
-        std::string sf = "####";
-        auto s1 = Fstm::section_forward(s,sf,3,3);
-        BHTEST_EQUAL(s1,"");
+        auto s1 = Fstm(s)("-",2,2,">>",0,0," ",0,0);
+        BHTEST_EQUAL(s1,"1992/4/3");
     }
 }
 
 void test_2()
 {
     vlogi($("== 2 =="));
+    int count = 10000000;
     {
-        std::string s = "123#456#789";
-        std::string sf = "#";
-        auto s1 = Fstm::section_forward(s,sf,0,1);
-        BHTEST_EQUAL(s1,"123#456");
-    }
-    {
-        std::string s = "123#456#789";
-        std::string sf = "#";
-        auto s1 = Fstm::section_forward(s,sf,0,2);
-        BHTEST_EQUAL(s1,"123#456#789");
-    }
-    {
-        std::string s = "123#456#789";
-        std::string sf = "#";
-        auto s1 = Fstm::section_forward(s,sf,1,2);
-        BHTEST_EQUAL(s1,"456#789");
-    }
-
-    {
-        std::string s = "123###456###789";
-        std::string sf = "###";
-        auto s1 = Fstm::section_forward(s,sf,0,1);
-        BHTEST_EQUAL(s1,"123###456");
-    }
-    {
-        std::string s = "123###456###789";
-        std::string sf = "###";
-        auto s1 = Fstm::section_forward(s,sf,0,2);
-        BHTEST_EQUAL(s1,"123###456###789");
-    }
-    {
-        std::string s = "123###456###789";
-        std::string sf = "###";
-        auto s1 = Fstm::section_forward(s,sf,1,2);
-        BHTEST_EQUAL(s1,"456###789");
-    }
-
-    {
-        std::string s = "123###456###789";
-        std::string sf = "###";
-        auto s1 = Fstm::section_forward(s,sf,0,3);
-        BHTEST_EQUAL(s1,"");
-    }
-    {
-        std::string s = "123###456###789";
-        std::string sf = "###";
-        auto s1 = Fstm::section_forward(s,sf,0,4);
-        BHTEST_EQUAL(s1,"");
-    }
-    {
-        std::string s = "123###456###789";
-        std::string sf = "###";
-        auto s1 = Fstm::section_forward(s,sf,1,3);
-        BHTEST_EQUAL(s1,"");
-    }
-    {
-        std::string s = "123###456###789";
-        std::string sf = "###";
-        auto s1 = Fstm::section_forward(s,sf,1,4);
-        BHTEST_EQUAL(s1,"");
+        std::string s = "<<abc-hellow world-1992/4/3 15:12:54>>";
+        Ftimel t;
+        for(int i=0;i<count;i++)
+        {
+            auto s1 = Fstm(s)("-",2,2,">>",0,0," ",0,0);
+        }
+        vlogd($(t.to_string()));
     }
     
 }
@@ -190,147 +56,53 @@ void test_2()
 void test_3()
 {
     vlogi($("== 3 =="));
+    std::string s = "##123##456##789##";
+    std::string sf = "##";
     {
-        std::string s = "#123#456#789#";
-        std::string sf = "#";
-        auto s1 = Fstm::section_forward(s,sf,0,0);
+        auto s1 = Fstm(s)(sf,0,0);
         BHTEST_EQUAL(s1,"");
     }
     {
-        std::string s = "#123#456#789#";
-        std::string sf = "#";
-        auto s1 = Fstm::section_forward(s,sf,1,1);
+        auto s1 = Fstm(s)(sf,1,1);
         BHTEST_EQUAL(s1,"123");
     }
     {
-        std::string s = "#123#456#789#";
-        std::string sf = "#";
-        auto s1 = Fstm::section_forward(s,sf,2,2);
+        auto s1 = Fstm(s)(sf,2,2);
         BHTEST_EQUAL(s1,"456");
     }
     {
-        std::string s = "#123#456#789#";
-        std::string sf = "#";
-        auto s1 = Fstm::section_forward(s,sf,3,3);
+        auto s1 = Fstm(s)(sf,3,3);
         BHTEST_EQUAL(s1,"789");
     }
-
     {
-        std::string s = "#123#456#789#";
-        std::string sf = "#";
-        auto s1 = Fstm::section_forward(s,sf,4,4);
+        auto s1 = Fstm(s)(sf,4,4);
         BHTEST_EQUAL(s1,"");
     }
     {
-        std::string s = "#123#456#789#";
-        std::string sf = "#";
-        auto s1 = Fstm::section_forward(s,sf,5,5);
-        BHTEST_EQUAL(s1,"");
-    }
-
-    {
-        std::string s = "###123###456###789###";
-        std::string sf = "###";
-        auto s1 = Fstm::section_forward(s,sf,0,0);
-        BHTEST_EQUAL(s1,"");
+        auto s1 = Fstm(s)(sf,0,-1);
+        BHTEST_EQUAL(s1,"##123##456##789##");
     }
     {
-        std::string s = "###123###456###789###";
-        std::string sf = "###";
-        auto s1 = Fstm::section_forward(s,sf,1,1);
+        auto s1 = Fstm(s)(sf,-2,-2);
+        BHTEST_EQUAL(s1,"789");
+    }
+    {
+        auto s1 = Fstm(s)(sf,-4,-4);
         BHTEST_EQUAL(s1,"123");
     }
     {
-        std::string s = "###123###456###789###";
-        std::string sf = "###";
-        auto s1 = Fstm::section_forward(s,sf,3,3);
-        BHTEST_EQUAL(s1,"789");
+        auto s1 = Fstm(s)(sf,-1,-5);
+        BHTEST_EQUAL(s1,"##123##456##789##");
     }
     {
-        std::string s = "###123###456###789###";
-        std::string sf = "###";
-        auto s1 = Fstm::section_forward(s,sf,4,4);
-        BHTEST_EQUAL(s1,"");
-    }
-    {
-        std::string s = "###123###456###789###";
-        std::string sf = "###";
-        auto s1 = Fstm::section_forward(s,sf,5,5);
-        BHTEST_EQUAL(s1,"");
+        auto s1 = Fstm(s)(sf,-2,-4);
+        BHTEST_EQUAL(s1,"123##456##789");
     }
 }
 
 void test_4()
 {
     vlogi($("== 4 =="));
-    {
-        std::string s = "123#456#789";
-        std::string sf = "#";
-        auto s1 = Fstm::section_forward(s,sf,0,0,true);
-        BHTEST_EQUAL(s1,"789");
-    }
-    {
-        std::string s = "123#456#789";
-        std::string sf = "#";
-        auto s1 = Fstm::section_forward(s,sf,1,1,true);
-        BHTEST_EQUAL(s1,"456");
-    }
-    {
-        std::string s = "123#456#789";
-        std::string sf = "#";
-        auto s1 = Fstm::section_forward(s,sf,2,2,true);
-        BHTEST_EQUAL(s1,"123");
-    }
-    {
-        std::string s = "123#456#789";
-        std::string sf = "#";
-        auto s1 = Fstm::section_forward(s,sf,3,3,true);
-        BHTEST_EQUAL(s1,"");
-    }
-
-    {
-        std::string s = "123##456##789";
-        std::string sf = "##";
-        auto s1 = Fstm::section_forward(s,sf,0,0,true);
-        BHTEST_EQUAL(s1,"789");
-    }
-    {
-        std::string s = "123##456##789";
-        std::string sf = "##";
-        auto s1 = Fstm::section_forward(s,sf,1,1,true);
-        BHTEST_EQUAL(s1,"456");
-    }
-    {
-        std::string s = "123##456##789";
-        std::string sf = "##";
-        auto s1 = Fstm::section_forward(s,sf,2,2,true);
-        BHTEST_EQUAL(s1,"123");
-    }
-    {
-        std::string s = "123##456##789";
-        std::string sf = "##";
-        auto s1 = Fstm::section_forward(s,sf,3,3,true);
-        BHTEST_EQUAL(s1,"");
-    }
-
-    {
-        std::string s = "123##456##789";
-        std::string sf = "##";
-        auto s1 = Fstm::section_forward(s,sf,0,2,true);
-        BHTEST_EQUAL(s1,"123##456##789");
-    }
-    {
-        std::string s = "123##456##789";
-        std::string sf = "##";
-        auto s1 = Fstm::section_forward(s,sf,0,1,true);
-        BHTEST_EQUAL(s1,"456##789");
-    }
-    {
-        std::string s = "123##456##789";
-        std::string sf = "##";
-        auto s1 = Fstm::section_forward(s,sf,1,2,true);
-        BHTEST_EQUAL(s1,"123##456");
-    }
 
 }
 
@@ -611,9 +383,9 @@ int main(int argc, char *argv[])
 {
     // test_1();   
     // test_2();   
-    // test_3();   
+    test_3();   
     // test_4();   
-    test_5();
+    // test_5();
     // test_6();
     // test_7();
 
