@@ -320,6 +320,36 @@
                 "CMake main_stm",
                 "CMake Build"
             ]
+        },
+
+
+
+        
+        {
+            "label": "CMake main_test",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "..",
+                "-Dmain_test=1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build/"
+            },
+        },
+        {
+            "label": "Run main_test",
+            "type": "shell",
+            "command": "cmake",
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "CMake main_test",
+                "CMake Build"
+            ]
         }
 
 

@@ -104,5 +104,9 @@ if(ALL OR main_stm)
     add_executable(main_stm test/main_stm.cpp)
 endif()
 
+if(ALL OR main_test)
+    add_executable(main_test test/main_test.cpp)
+endif()
+
 # 生成目标
 add_executable(${CMAKE_PROJECT_NAME} main.cpp)

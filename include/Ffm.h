@@ -12,57 +12,6 @@
 namespace bhtools {
 
 
-// 处理字符串位置
-struct Ffinds
-{
-    // 发现子串位置
-    // 返回值 < 是否成功 - 成功的下标 >
-    inline static std::tuple<bool,size_t> 
-    find_sub(const std::string &str,const std::string &sub,size_t offset = 0)
-    {
-        auto it = str.find(sub,offset);
-        if(it != std::string::npos)
-        { return std::make_tuple(true,it); }
-        return std::make_tuple(false,0);
-    }
-
-    // 发现子串范围位置-标记位置是最开始和最末尾
-    // 传参数 < 字符串 - 开始标记 - 末尾标记 - 偏移位置 >
-    // 返回值 < 是否成功 - 开始标记的首位 - 末尾标记的末尾 - 标记中间的字符串 >
-    inline static std::tuple<bool,size_t,size_t,std::string> 
-    find_range(const std::string &str,const std::string &fb,const std::string &fe,size_t offset = 0)
-    {
-        auto rb = find_sub(str,fb,offset); 
-        auto re = find_sub(str,fe,offset); 
-        if(std::get<0>(rb) && std::get<0>(re))
-        { 
-            size_t ib = std::get<1>(rb);
-            size_t ie = std::get<1>(re);
-            return std::make_tuple(true,ib,ie + fe.size() -1,section_range(str,ib + fb.size(),ie)); 
-        }
-        return std::make_tuple(false,0,0,"");
-    }
-
-    // 切割字符串-传入开始和末尾下标-获取两个下标间的字符串-开区间和闭区间
-    inline static std::string section_range(const std::string &str,size_t ib,size_t ie)
-    {
-        std::string ret;
-        if(ie > ib && ie <= str.size())
-        {
-            for(size_t i=ib;i<ie;i++)
-            {
-                ret.push_back(str[i]);
-            }
-        }
-        return ret;
-    }
-};
-
-//
-//
-//
-//
-
 // 格式化基本规则-需要使用"{}"符号作为边界线-字符串从构造函数传入
 struct Ffm_base
 {

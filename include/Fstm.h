@@ -4,6 +4,10 @@
 
 // #include <iostream>
 #include <string>
+#include <algorithm>
+
+#include "Tbase.h"
+#include "Tlog.h"
 
 namespace bhtools {
 
@@ -13,27 +17,138 @@ struct Fstm
 {
     Fstm(const std::string &str) : _str(str) {}
 
+    // 
+    template<class ...Tarr>  
+    inline std::string section(){ return _str; }
 
-    template<class ...Tarr> std::string section(){ return _str; }
+    //
     template<class ...Tarr>
-    std::string section(const std::string &sf,int ib,int ie,const Tarr &...arg)
+    inline std::string section(const std::string &sf,int ib,int ie,const Tarr &...arg)
     {
-        if((ib < 0) && (ie < 0)) _str = section_forward(_str,flg,begin,end);
-        else _str = section_back(_str,flg,begin,end);
+        if(_str == "") { return ""; }
+
+        if(ib >= 0 && ie >= 0) 
+        { 
+            // 全整数切割-对比差值
+            size_t ipb = find_part(_str,sf,ib);
+            size_t ipe = find_part(_str,sf,ie,true);
+            if(ipe > ipb) { _str = _str.substr(ipb,ipe - ipb); }
+            else { _str = ""; }
+        }
+        else if(ib < 0 && ie < 0) 
+        {
+            // 负数切割-转成整数后反向查找-矫正反向下标后切割
+            ib = revise_reverse_index(ib);
+            ie = revise_reverse_index(ie);
+            size_t ipb = find_part(_str,sf,ib,false,true);
+            size_t ipe = find_part(_str,sf,ie,true,true);
+            if(_str.size() >= ipe && ipe > ipb) { _str = _str.substr(_str.size() - ipe,ipe - ipb); }
+            else { _str = ""; }
+        }
+        else if(ib < 0) 
+        { 
+            // 前负数切割-从矫正的前下标开始-获取前后下标的差值
+            ib = revise_reverse_index(ib);
+            size_t ipb = find_part(_str,sf,ib,true,true);
+            size_t ipe = find_part(_str,sf,ie,true);
+            if((_str.size() >= ipb) && (ipe > (_str.size() - ipb))) 
+            { _str = _str.substr(_str.size() - ipb, ipe - (_str.size() - ipb)); }
+            else { _str = ""; }
+        }
+        else if(ie < 0) 
+        { 
+            // 后负数切割-从前下标开始-对比矫正的后下标差值进行切割
+            ie = revise_reverse_index(ie);
+            size_t ipb = find_part(_str,sf,ib,false);
+            size_t ipe = find_part(_str,sf,ie,false,true);
+            if(_str.size() > ipe) { _str = _str.substr(ipb,_str.size() - ipe); }
+            else { _str = ""; }
+        }
+
         return section(arg...);
     }
 
-    std::string section_forward(const std::string &sf,int ib,int ie)
+    // 
+    template<class ...Tarr>
+    inline std::string operator()(const Tarr &...arg)
+    {   return section(arg...); }
+
+    //
+    inline static int revise_reverse_index(int index)
     {
+        index *= -1;
+        index -= 1;
+        return index;
+    }
+
+    //
+    inline static size_t find_part(std::string str,const std::string &sub,size_t part,bool back = false,bool reverse = false)
+    {
+        if(str == "" || str.size() <= sub.size()) { return 0; }
+        if(reverse) { std::reverse(str.begin(),str.end()); }
+        if(back) { part += 1; }
+
+        bool over = false;
+        size_t index = 0;
+        for(size_t i=0;i<part;i++)
+        {
+            if(over) { return 0; }
+            auto btup = Ffinds::find_sub(str,sub,index);
+            if(std::get<0>(btup))
+            {
+                index = std::get<1>(btup);
+                index += sub.size();
+            }
+            else { index = str.size(); over = true; }
+        }
+        if(back && over == false && index != 0) { index -= sub.size(); }
+        return index;
+    }
+
+    // 
+    inline static std::string section_forward(std::string str,const std::string &sub,int ib,int ie,bool reverse = false)
+    {
+        if(str == "" || ib > ie) { return ""; }
+        if(reverse) { std::reverse(str.begin(),str.end()); } 
+
+        size_t secb = 0;
+        size_t sece = 0;
+        for(int i=0;i<ib;i++)
+        {
+            auto btup = Ffinds::find_sub(str,sub,secb);
+            if(std::get<0>(btup))
+            {
+                secb = std::get<1>(btup);
+                secb += sub.size();
+            }
+            else { return ""; }
+        }
+        sece = secb;
+
+        bool over = false;
+        for(int i=ib;i<=ie;i++)
+        {
+            if(sece == str.size()) { sece = 0; break; }
+
+            auto btup = Ffinds::find_sub(str,sub,sece);
+            if(std::get<0>(btup))
+            {
+                sece = std::get<1>(btup);
+                sece += sub.size();
+            }
+            else { sece = str.size(); over = true; }
+        }
+        if(sece != 0 && over == false) { sece -= sub.size(); }
+        if(sece > secb) 
+        { 
+            str = str.substr(secb,sece - secb); 
+            if(reverse) { std::reverse(str.begin(),str.end()); } 
+            return str; 
+        }
         return "";
     }
 
-    std::string section_back(const std::string &sf,int ib,int ie)
-    {
-        return "";
-    }
-
-    std::string _str;
+    std::string _str;   // 存储需切割字符-处理结束时返回的结果
 };
 
 /*
