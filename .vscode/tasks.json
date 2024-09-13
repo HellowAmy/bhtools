@@ -350,6 +350,36 @@
                 "CMake main_test",
                 "CMake Build"
             ]
+        },
+
+
+
+
+        {
+            "label": "CMake main_byte",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "..",
+                "-Dmain_byte=1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build/"
+            },
+        },
+        {
+            "label": "Run main_byte",
+            "type": "shell",
+            "command": "cmake",
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "CMake main_byte",
+                "CMake Build"
+            ]
         }
 
 
