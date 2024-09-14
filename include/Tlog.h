@@ -128,7 +128,7 @@ struct Tlog_base
     { if(_el.pass()){ out_end(); _buf.clear(); _el.status(false); } return *this; };
 
     // 传入换行
-    template<class T>
+    template<typename T>
     inline Tlog_base& operator<<(const T &log)
     { if(_el.pass()){ _buf.push(log); } return *this; };
 
@@ -315,7 +315,7 @@ struct Tlog_asyn_file4 : public Tlog_base <Tlog_level<bhenum::level4>,Tlog_buf,T
 //
 
 // 标准容器打印
-template<class T>
+template<typename T>
 std::string Tlog_con(const T& con,size_t len = 1,const std::string &flg = " ",const std::string &prev = "| ")
 {
     std::string ret = "\n";

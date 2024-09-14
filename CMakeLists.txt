@@ -112,5 +112,9 @@ if(ALL OR main_byte)
     add_executable(main_byte test/main_byte.cpp)
 endif()
 
+if(ALL OR main_design)
+    add_executable(main_design test/main_design.cpp)
+endif()
+
 # 生成目标
 add_executable(${CMAKE_PROJECT_NAME} main.cpp)

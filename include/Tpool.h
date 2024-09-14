@@ -48,7 +48,7 @@ struct Tpool
     }
 
     // 加入任务
-    template<class Tfunc, class... Targs>
+    template<typename Tfunc, typename... Targs>
     auto push(Tfunc&& func, Targs&&... args) -> std::future<typename std::result_of<Tfunc(Targs...)>::type>
     {
         using ret_type = typename std::result_of<Tfunc(Targs...)>::type;                // 分析任务函数返回类型

@@ -16,11 +16,11 @@ struct Fstm
     Fstm(const std::string &str) : _str(str) {}
 
     // 退出函数
-    template<class ...Tarr>  
+    template<typename ...Tarr>  
     inline std::string section(){ return _str; }
 
     // 根据分隔符和获取部分标记切割字符串-可以对同一字符进行多次切割
-    template<class ...Tarr>
+    template<typename ...Tarr>
     inline std::string section(const std::string &sf,int ib,int ie,const Tarr &...arg)
     {
         if(_str == "") { return ""; }
@@ -67,7 +67,7 @@ struct Fstm
     }
 
     // 切割参数进入
-    template<class ...Tarr>
+    template<typename ...Tarr>
     inline std::string operator()(const Tarr &...arg)
     {   return section(arg...); }
 

@@ -53,8 +53,38 @@
         },
 
 
-        
 
+
+        {
+            "label": "CMake ALL",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "..",
+                "-DALL=1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build/"
+            },
+        },
+        {
+            "label": "Run ALL",
+            "type": "shell",
+            "command": "cmake",
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "CMake ALL",
+                "CMake Build"
+            ]
+        },
+
+
+
+        
         {
             "label": "CMake main_log",
             "type": "shell",
@@ -378,6 +408,36 @@
             },
             "dependsOn": [
                 "CMake main_byte",
+                "CMake Build"
+            ]
+        },
+
+
+
+
+        {
+            "label": "CMake main_design",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "..",
+                "-Dmain_design=1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build/"
+            },
+        },
+        {
+            "label": "Run main_design",
+            "type": "shell",
+            "command": "cmake",
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "CMake main_design",
                 "CMake Build"
             ]
         }

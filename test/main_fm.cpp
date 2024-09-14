@@ -241,7 +241,7 @@ void test_3()
     }
 }
 
-template<class... T>
+template<typename... T>
 std::string formatf(const char *fmt, const T&...t)
 {
     const auto len = snprintf(nullptr, 0, fmt, t...);

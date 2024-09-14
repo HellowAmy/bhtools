@@ -32,12 +32,12 @@ struct Fsfm : public Ffm_base
     using Ffm_base::Ffm_base;
 
     // 传入替换参数-不限类型
-    template<class ...Tarr>
+    template<typename ...Tarr>
     inline std::string operator()(const Tarr &...arg)
     { return fms(arg...); }
 
     // 解析参数到容器-可随机位置替换
-    template<class T,class ...Tarr>
+    template<typename T,typename ...Tarr>
     inline std::string fms(T && val,const Tarr &...arg)
     {
         _vec.push_back(Tto_string(std::forward<T>(val)));
@@ -45,7 +45,7 @@ struct Fsfm : public Ffm_base
     }
 
     // 格式化字符串
-    template<class ...Tarr>
+    template<typename ...Tarr>
     inline std::string fms()
     {
         std::string ret;
@@ -82,7 +82,7 @@ struct Fffm : public Ffm_base
     using Ffm_base::Ffm_base;
 
     // 传入替换参数-不限类型
-    template<class ...Tarr>
+    template<typename ...Tarr>
     inline std::string operator()(const Tarr &...arg)
     { 
         if(strb().size() == 1 && stre().size() == 1) 
@@ -95,7 +95,7 @@ struct Fffm : public Ffm_base
     }
 
     // 查找并格式化字符串-单字符
-    template<class T,class ...Tarr>
+    template<typename T,typename ...Tarr>
     inline std::string cfms(T && val,const Tarr &...arg)
     {
         if(proc(Tto_string(val),_cfb,_cfe)) { return cfms(arg...); }
@@ -103,7 +103,7 @@ struct Fffm : public Ffm_base
     }
 
     // 查找并格式化字符串-多字符
-    template<class T,class ...Tarr>
+    template<typename T,typename ...Tarr>
     inline std::string sfms(T && val,const Tarr &...arg)
     {
         auto tsub = Ffinds::find_range(_str,strb(),stre(),_offset);

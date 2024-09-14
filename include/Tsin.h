@@ -92,9 +92,9 @@ private:
 
 
 // 静态变量外部声明
-template<class T> T *Tsins<T>:: _obj = new T;
-template<class T> T *Tsind<T>::_obj = nullptr;
-template<class T> std::mutex Tsind<T>::_mut;
+template<typename T> T *Tsins<T>:: _obj = new T;
+template<typename T> T *Tsind<T>::_obj = nullptr;
+template<typename T> std::mutex Tsind<T>::_mut;
 
 
 // 单例模板限制宏-在需要生成单例模板时声明
