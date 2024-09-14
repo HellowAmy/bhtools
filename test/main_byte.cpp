@@ -428,6 +428,44 @@ void test_8()
 }
 
 
+void test_9()
+{
+    {
+        int i = 1023;
+        auto s1 = Tbyte::b2_s2(i);
+        int i2 = Tbyte::s2_b2<int>(s1);
+        vlogd($(i) $(s1) $(i2));
+    }
+    {
+        int i = 1023;
+        auto s1 = Tbyte::b2_s10(i);
+        int i2 = Tbyte::s10_b2<int>(s1);
+        vlogd($(i) $(s1) $(i2));
+    }
+    {
+        int i = 1023;
+        auto s1 = Tbyte::b2_s8(i);
+        int i2 = Tbyte::s8_b2<int>(s1);
+        vlogd($(i) $(s1) $(i2));
+    }
+    {
+        int i = 1023;
+        auto s1 = Tbyte::b2_s16(i);
+        int i2 = Tbyte::s16_b2<int>(s1);
+        vlogd($(i) $(s1) $(i2));
+    }
+    {
+        std::string i = "00000000000000000000001111111111";
+        auto s1 = Tbyte::s2_b2<int>(i);
+        auto i2 = Tbyte::b2_s10(s1);
+        auto i3 = Tbyte::b2_s2(s1);
+        auto i4 = Tbyte::b2_s8(s1);
+        auto i5 = Tbyte::b2_s16(s1);
+
+        vlogd($(i) $(s1) $(i2) $(i3) $(i4) $(i5));
+    }
+}
+
 int main(int argc, char *argv[])
 {
     // test_1();   
@@ -437,7 +475,8 @@ int main(int argc, char *argv[])
     // test_5();
     // test_6();
     // test_7();
-    test_8();
+    // test_8();
+    test_9();
 
     return 0;
 }
