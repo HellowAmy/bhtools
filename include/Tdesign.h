@@ -9,7 +9,7 @@ namespace bhtools {
 
 
 // 执行模板职责链判断函数-可返回处理函数类型-带返回值
-template<typename Tclass,typename Treturn,size_t now>
+template<typename Treturn,typename Tclass,size_t now>
 struct Twork_action_ret
 {
     // 执行类对象的 accept 判断函数-如果为真则代表接收处理并结束
@@ -20,13 +20,13 @@ struct Twork_action_ret
         auto it = std::get<now -1>(obj);
         auto pair = it.accept(arg...);
         if(pair.first) { return pair; }
-        return Twork_action_ret<Tclass,Treturn,now -1>::action(obj,arg...);
+        return Twork_action_ret<Treturn,Tclass,now -1>::action(obj,arg...);
     }
 };
 
 // 退出模板职责链-带返回值
-template<typename Tclass,typename Treturn>
-struct Twork_action_ret<Tclass,Treturn,0>
+template<typename Treturn,typename Tclass>
+struct Twork_action_ret<Treturn,Tclass,0>
 {
     template<typename ...Targ>
     static std::pair<bool,Treturn> action(Tclass obj,Targ ...arg) { return {}; }
@@ -62,8 +62,8 @@ struct Twork_chain
     std::pair<bool,Treturn> start(Targ ...arg)
     { 
         return Twork_action_ret<
-                std::tuple<Tclass...>,
                 Treturn,
+                std::tuple<Tclass...>,
                 std::tuple_size<std::tuple<Tclass...>>::value
             >::action(_objs,arg...); 
     }
