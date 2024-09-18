@@ -440,6 +440,36 @@
                 "CMake main_design",
                 "CMake Build"
             ]
+        },
+
+
+
+
+        {
+            "label": "CMake main_cont",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "..",
+                "-Dmain_cont=1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build/"
+            },
+        },
+        {
+            "label": "Run main_cont",
+            "type": "shell",
+            "command": "cmake",
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "CMake main_cont",
+                "CMake Build"
+            ]
         }
 
 
