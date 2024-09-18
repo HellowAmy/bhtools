@@ -8,9 +8,9 @@ namespace bhtools {
 
 
 // 值是否相等
-#define BHTEST_EQUAL(a,b)                                                   \
-    if(a == b)  vlogd("[SUCC] [BHTEST_EQUAL] [A: "<<a<<"] == [B: "<<b<<"]");      \
-    else        vloge("[FAIL] [BHTEST_EQUAL] [A: "<<a<<"] != [B: "<<b<<"]");      \
+#define BHTEST_EQUAL(a,b)                                                           \
+    if(a == b)  vlogd("[SUCC] [BHTEST_EQUAL] [A: "<<a<<"] == [B: "<<b<<"]");        \
+    else        vloge("[FAIL] [BHTEST_EQUAL] [A: "<<a<<"] != [B: "<<b<<"]");        \
 
 
 // 值是否为真
