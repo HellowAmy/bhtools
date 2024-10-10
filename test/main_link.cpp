@@ -35,10 +35,11 @@ void test_1()
         {
             v1.set_nonotify_data(150);
         }
+        
         if(self)
         {
-            v1.set_data(350);
-            v1.set_nonotify_data(450);
+            // v1.set_data(350);    // 相互通知-死循环
+            // v1.set_nonotify_data(450);   // 不通知-正常工作
         }
     };
 
