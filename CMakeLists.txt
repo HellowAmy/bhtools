@@ -120,5 +120,9 @@ if(ALL OR main_cont)
     add_executable(main_cont test/main_cont.cpp)
 endif()
 
+if(ALL OR main_link)
+    add_executable(main_link test/main_link.cpp)
+endif()
+
 # 生成目标
 add_executable(${CMAKE_PROJECT_NAME} main.cpp)

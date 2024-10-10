@@ -470,6 +470,36 @@
                 "CMake main_cont",
                 "CMake Build"
             ]
+        },
+
+
+
+
+        {
+            "label": "CMake main_link",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "..",
+                "-Dmain_link=1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build/"
+            },
+        },
+        {
+            "label": "Run main_link",
+            "type": "shell",
+            "command": "cmake",
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "CMake main_link",
+                "CMake Build"
+            ]
         }
 
 
