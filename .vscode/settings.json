@@ -57,6 +57,8 @@
         "variant": "cpp",
         "iomanip": "cpp",
         "future": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "set": "cpp",
+        "unordered_set": "cpp"
     }
 }
