@@ -77,8 +77,6 @@ struct Tlog_level
 // 日志缓冲区
 struct Tlog_buf 
 { 
-
-
     template<typename T>
     inline void push(const T &val) 
     { _str += Tto_string(val); }
@@ -202,7 +200,7 @@ struct Tlog_file
     void out(const Tlog_buf &buf) { _fs<<buf.value()<<"\n"; update_file(); } 
 
     //初始化日志
-    inline bool reopen(const std::string &file = "Tflog.log",bool app = true)
+    inline bool reopen(const std::string &file,bool app = true)
     {
         _file = file;
         if(app) { _mode = std::ios::app; } 
@@ -217,11 +215,15 @@ struct Tlog_file
     inline void set_limit(size_t max) { _limit_max = max; } 
 
     // 设置单个文件最大长度-默认64M
-    inline void set_length(size_t len) { _len_max = len;}  
+    inline void set_length(size_t len) { _len_max = len; }  
+
+    // 设置每行写入时是否刷新文件
+    inline void set_flush(bool flush) { _flush = flush; }  
 
     // 超出最大文件限制后更新文件名
     bool update_file() 
     {
+        if(_flush) { _fs.flush(); }
         if(_len_max < _fs.tellg())
         {
             if(_limit_max == 0) { return write_unlimited(); }
@@ -266,12 +268,13 @@ struct Tlog_file
     { std::ifstream f(filename); return f.is_open(); }
 
 
-    size_t _limit_max = 0;          //日志文件限制数量
-    size_t _limit_now = 1;          //当前写入日志
-    size_t _len_max = (1 << 26);    //最大长度--64M
-    std::string _file;              //文件名
-    std::fstream _fs;               //文件对象
-    std::ios_base::openmode _mode;  //文件打开模式
+    bool _flush = true;             // 刷入缓冲区
+    size_t _limit_max = 0;          // 日志文件限制数量
+    size_t _limit_now = 1;          // 当前写入日志
+    size_t _len_max = (1 << 26);    // 最大长度--64M
+    std::string _file;              // 文件名
+    std::fstream _fs;               // 文件对象
+    std::ios_base::openmode _mode;  // 文件打开模式
 };
 
 // 空打印日志 等级4
@@ -298,14 +301,24 @@ struct Tlog_cmd8 : public Tlog_base <Tlog_level<bhenum::level8>,Tlog_buf,Tlog_en
 // 文件打印日志 等级4
 struct Tlog_file4 : public Tlog_base <Tlog_level<bhenum::level4>,Tlog_buf,Tlog_end,Tlog_file> 
 {
-    Tlog_file4() { set_level(Tlog_level<bhenum::level4>(bhenum::level4::e_deb)); _out.reopen(); }
+    Tlog_file4(const std::string &file = "Tflog.log") 
+    { 
+        set_level(Tlog_level<bhenum::level4>(bhenum::level4::e_deb)); 
+        _out.reopen(file); 
+        _out.set_flush(true);
+    }
     void flush() { _out._fs.flush(); }
 };
 
 // 文件打印日志-异步 等级4
 struct Tlog_asyn_file4 : public Tlog_base <Tlog_level<bhenum::level4>,Tlog_buf,Tlog_end,Tlog_asyn<Tlog_file,Tlog_buf,1000>> 
 {
-    Tlog_asyn_file4() { set_level(Tlog_level<bhenum::level4>(bhenum::level4::e_deb)); _out._out.reopen(); }
+    Tlog_asyn_file4(const std::string &file = "Taflog.log") 
+    { 
+        set_level(Tlog_level<bhenum::level4>(bhenum::level4::e_deb)); 
+        _out._out.reopen(file); 
+        _out._out.set_flush(true);
+    }
     void flush() { _out._out._fs.flush(); }
 };
 
@@ -357,39 +370,39 @@ std::string Tlog_con(const T& con,size_t len = 1,const std::string &flg = " ",co
 
 
 // 生成快捷打印宏-带颜色-等级4
-#define BHLOG_MAKE_COL_L4D(out,...)                                                 \
-    BHLOG_PRINT(out,"\033[32m[Deb]","\033[0m"<<(*_sp_end_),BHLOG_FORMAT_VSC,        \
-    _sp_level4_->set_level(bhenum::level4::e_deb),__VA_ARGS__)                      \
+#define BHLOG_MAKE_COL_L4D(out,end,el,...)                                  \
+    BHLOG_PRINT(out,"\033[32m[Deb]","\033[0m"<<end,BHLOG_FORMAT_VSC,        \
+    el->set_level(bhenum::level4::e_deb),__VA_ARGS__)                       \
 
-#define BHLOG_MAKE_COL_L4I(out,...)                                                 \
-    BHLOG_PRINT(out,"\033[36m[Inf]","\033[0m"<<(*_sp_end_),BHLOG_FORMAT_VSC,        \
-    _sp_level4_->set_level(bhenum::level4::e_inf),__VA_ARGS__)                      \
+#define BHLOG_MAKE_COL_L4I(out,end,el,...)                                  \
+    BHLOG_PRINT(out,"\033[36m[Inf]","\033[0m"<<end,BHLOG_FORMAT_VSC,        \
+    el->set_level(bhenum::level4::e_inf),__VA_ARGS__)                       \
 
-#define BHLOG_MAKE_COL_L4W(out,...)                                                 \
-    BHLOG_PRINT(out,"\033[33m[War]","\033[0m"<<(*_sp_end_),BHLOG_FORMAT_VSC,        \
-    _sp_level4_->set_level(bhenum::level4::e_war),__VA_ARGS__)                      \
+#define BHLOG_MAKE_COL_L4W(out,end,el,...)                                  \
+    BHLOG_PRINT(out,"\033[33m[War]","\033[0m"<<end,BHLOG_FORMAT_VSC,        \
+    el->set_level(bhenum::level4::e_war),__VA_ARGS__)                       \
 
-#define BHLOG_MAKE_COL_L4E(out,...)                                                 \
-    BHLOG_PRINT(out,"\033[31m[Err]","\033[0m"<<(*_sp_end_),BHLOG_FORMAT_VSC,        \
-    _sp_level4_->set_level(bhenum::level4::e_err),__VA_ARGS__)                      \
+#define BHLOG_MAKE_COL_L4E(out,end,el,...)                                  \
+    BHLOG_PRINT(out,"\033[31m[Err]","\033[0m"<<end,BHLOG_FORMAT_VSC,        \
+    el->set_level(bhenum::level4::e_err),__VA_ARGS__)                       \
 
 
 // 生成快捷打印宏-等级4
-#define BHLOG_MAKE_L4D(out,...)                                         \
-    BHLOG_PRINT(out,"[Deb]",(*_sp_end_),BHLOG_FORMAT_VSC,               \
-    _sp_level4_->set_level(bhenum::level4::e_deb),__VA_ARGS__)          \
+#define BHLOG_MAKE_L4D(out,end,el,...)                          \
+    BHLOG_PRINT(out,"[Deb]",end,BHLOG_FORMAT_VSC,               \
+    el->set_level(bhenum::level4::e_deb),__VA_ARGS__)           \
 
-#define BHLOG_MAKE_L4I(out,...)                                         \
-    BHLOG_PRINT(out,"[Inf]",(*_sp_end_),BHLOG_FORMAT_VSC,               \
-    _sp_level4_->set_level(bhenum::level4::e_inf),__VA_ARGS__)          \
+#define BHLOG_MAKE_L4I(out,end,el,...)                          \
+    BHLOG_PRINT(out,"[Inf]",end,BHLOG_FORMAT_VSC,               \
+    el->set_level(bhenum::level4::e_inf),__VA_ARGS__)           \
 
-#define BHLOG_MAKE_L4W(out,...)                                         \
-    BHLOG_PRINT(out,"[War]",(*_sp_end_),BHLOG_FORMAT_VSC,               \
-    _sp_level4_->set_level(bhenum::level4::e_war),__VA_ARGS__)          \
+#define BHLOG_MAKE_L4W(out,end,el,...)                          \
+    BHLOG_PRINT(out,"[War]",end,BHLOG_FORMAT_VSC,               \
+    el->set_level(bhenum::level4::e_war),__VA_ARGS__)           \
 
-#define BHLOG_MAKE_L4E(out,...)                                         \
-    BHLOG_PRINT(out,"[Err]",(*_sp_end_),BHLOG_FORMAT_VSC,               \
-    _sp_level4_->set_level(bhenum::level4::e_err),__VA_ARGS__)          \
+#define BHLOG_MAKE_L4E(out,end,el,...)                          \
+    BHLOG_PRINT(out,"[Err]",end,BHLOG_FORMAT_VSC,               \
+    el->set_level(bhenum::level4::e_err),__VA_ARGS__)           \
 
 
 // 快捷打印宏
@@ -397,19 +410,19 @@ std::string Tlog_con(const T& con,size_t len = 1,const std::string &flg = " ",co
 
     // 快捷命令行打印 等级4
     #ifndef BHLOG_CLOSE_COL
-        #define vlogd(...) BHLOG_MAKE_COL_L4D((*_sp_cmd4_),__VA_ARGS__)
-        #define vlogi(...) BHLOG_MAKE_COL_L4I((*_sp_cmd4_),__VA_ARGS__)
-        #define vlogw(...) BHLOG_MAKE_COL_L4W((*_sp_cmd4_),__VA_ARGS__)
-        #define vloge(...) BHLOG_MAKE_COL_L4E((*_sp_cmd4_),__VA_ARGS__)
+        #define vlogd(...) BHLOG_MAKE_COL_L4D((*_sp_cmd4_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
+        #define vlogi(...) BHLOG_MAKE_COL_L4I((*_sp_cmd4_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
+        #define vlogw(...) BHLOG_MAKE_COL_L4W((*_sp_cmd4_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
+        #define vloge(...) BHLOG_MAKE_COL_L4E((*_sp_cmd4_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
         // #define vlogd(...) BHLOG_PRINT((*_sp_cmd4_),"\033[32m[Deb]","\033[0m"<<(*_sp_end_),BHLOG_FORMAT_VSC,_sp_level4_->set_level(bhenum::level4::e_deb),__VA_ARGS__)
         // #define vlogi(...) BHLOG_PRINT((*_sp_cmd4_),"\033[36m[Inf]","\033[0m"<<(*_sp_end_),BHLOG_FORMAT_VSC,_sp_level4_->set_level(bhenum::level4::e_inf),__VA_ARGS__)
         // #define vlogw(...) BHLOG_PRINT((*_sp_cmd4_),"\033[33m[War]","\033[0m"<<(*_sp_end_),BHLOG_FORMAT_VSC,_sp_level4_->set_level(bhenum::level4::e_war),__VA_ARGS__)
         // #define vloge(...) BHLOG_PRINT((*_sp_cmd4_),"\033[31m[Err]","\033[0m"<<(*_sp_end_),BHLOG_FORMAT_VSC,_sp_level4_->set_level(bhenum::level4::e_err),__VA_ARGS__)
     #else
-        #define vlogd(...) BHLOG_MAKE_L4D((*_sp_cmd4_),__VA_ARGS__)
-        #define vlogi(...) BHLOG_MAKE_L4I((*_sp_cmd4_),__VA_ARGS__)
-        #define vlogw(...) BHLOG_MAKE_L4W((*_sp_cmd4_),__VA_ARGS__)
-        #define vloge(...) BHLOG_MAKE_L4E((*_sp_cmd4_),__VA_ARGS__)
+        #define vlogd(...) BHLOG_MAKE_L4D((*_sp_cmd4_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
+        #define vlogi(...) BHLOG_MAKE_L4I((*_sp_cmd4_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
+        #define vlogw(...) BHLOG_MAKE_L4W((*_sp_cmd4_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
+        #define vloge(...) BHLOG_MAKE_L4E((*_sp_cmd4_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
         // #define vlogd(...) BHLOG_PRINT((*_sp_cmd4_),"[Deb]",(*_sp_end_),BHLOG_FORMAT_VSC,_sp_level4_->set_level(bhenum::level4::e_deb),__VA_ARGS__)
         // #define vlogi(...) BHLOG_PRINT((*_sp_cmd4_),"[Inf]",(*_sp_end_),BHLOG_FORMAT_VSC,_sp_level4_->set_level(bhenum::level4::e_inf),__VA_ARGS__)
         // #define vlogw(...) BHLOG_PRINT((*_sp_cmd4_),"[War]",(*_sp_end_),BHLOG_FORMAT_VSC,_sp_level4_->set_level(bhenum::level4::e_war),__VA_ARGS__)
@@ -424,26 +437,26 @@ std::string Tlog_con(const T& con,size_t len = 1,const std::string &flg = " ",co
     #endif
 
     // 快捷文件打印 等级4
-    #define flogd(...) BHLOG_MAKE_L4D((*_sp_file4_),__VA_ARGS__)
-    #define flogi(...) BHLOG_MAKE_L4I((*_sp_file4_),__VA_ARGS__)
-    #define flogw(...) BHLOG_MAKE_L4W((*_sp_file4_),__VA_ARGS__)
-    #define floge(...) BHLOG_MAKE_L4E((*_sp_file4_),__VA_ARGS__)
+    #define flogd(...) BHLOG_MAKE_L4D((*_sp_file4_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
+    #define flogi(...) BHLOG_MAKE_L4I((*_sp_file4_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
+    #define flogw(...) BHLOG_MAKE_L4W((*_sp_file4_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
+    #define floge(...) BHLOG_MAKE_L4E((*_sp_file4_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
     // #define flogd(...) BHLOG_PRINT((*_sp_file4_),"[Deb]",(*_sp_end_),BHLOG_FORMAT_VSC,_sp_level4_->set_level(bhenum::level4::e_deb),__VA_ARGS__)
     // #define flogi(...) BHLOG_PRINT((*_sp_file4_),"[Inf]",(*_sp_end_),BHLOG_FORMAT_VSC,_sp_level4_->set_level(bhenum::level4::e_inf),__VA_ARGS__)
     // #define flogw(...) BHLOG_PRINT((*_sp_file4_),"[War]",(*_sp_end_),BHLOG_FORMAT_VSC,_sp_level4_->set_level(bhenum::level4::e_war),__VA_ARGS__)
     // #define floge(...) BHLOG_PRINT((*_sp_file4_),"[Err]",(*_sp_end_),BHLOG_FORMAT_VSC,_sp_level4_->set_level(bhenum::level4::e_err),__VA_ARGS__)
 
     // 快捷文件打印 等级4
-    #define aflogd(...) BHLOG_MAKE_L4D((*_sp_afile4_),__VA_ARGS__)
-    #define aflogi(...) BHLOG_MAKE_L4I((*_sp_afile4_),__VA_ARGS__)
-    #define aflogw(...) BHLOG_MAKE_L4W((*_sp_afile4_),__VA_ARGS__)
-    #define afloge(...) BHLOG_MAKE_L4E((*_sp_afile4_),__VA_ARGS__)
+    #define aflogd(...) BHLOG_MAKE_L4D((*_sp_afile4_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
+    #define aflogi(...) BHLOG_MAKE_L4I((*_sp_afile4_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
+    #define aflogw(...) BHLOG_MAKE_L4W((*_sp_afile4_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
+    #define afloge(...) BHLOG_MAKE_L4E((*_sp_afile4_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
     
     // 快捷空值打印 等级4
-    #define nulogd(...) BHLOG_MAKE_L4D((*_sp_null4_),__VA_ARGS__)
-    #define nulogi(...) BHLOG_MAKE_L4I((*_sp_null4_),__VA_ARGS__)
-    #define nulogw(...) BHLOG_MAKE_L4W((*_sp_null4_),__VA_ARGS__)
-    #define nuloge(...) BHLOG_MAKE_L4E((*_sp_null4_),__VA_ARGS__)
+    #define nulogd(...) BHLOG_MAKE_L4D((*_sp_null4_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
+    #define nulogi(...) BHLOG_MAKE_L4I((*_sp_null4_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
+    #define nulogw(...) BHLOG_MAKE_L4W((*_sp_null4_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
+    #define nuloge(...) BHLOG_MAKE_L4E((*_sp_null4_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
 
 #else
     #define vlogd(...)

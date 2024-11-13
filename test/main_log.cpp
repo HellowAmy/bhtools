@@ -357,15 +357,15 @@ void test_10()
 
 void test_11()
 {
-    #define aflogd_th1(...) BHLOG_MAKE_L4D((*_sp_th1_),__VA_ARGS__)
-    #define aflogi_th1(...) BHLOG_MAKE_L4I((*_sp_th1_),__VA_ARGS__)
-    #define aflogw_th1(...) BHLOG_MAKE_L4W((*_sp_th1_),__VA_ARGS__)
-    #define afloge_th1(...) BHLOG_MAKE_L4E((*_sp_th1_),__VA_ARGS__)
+    #define aflogd_th1(...) BHLOG_MAKE_L4D((*_sp_th1_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
+    #define aflogi_th1(...) BHLOG_MAKE_L4I((*_sp_th1_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
+    #define aflogw_th1(...) BHLOG_MAKE_L4W((*_sp_th1_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
+    #define afloge_th1(...) BHLOG_MAKE_L4E((*_sp_th1_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
 
-    #define aflogd_th2(...) BHLOG_MAKE_L4D((*_sp_th2_),__VA_ARGS__)
-    #define aflogi_th2(...) BHLOG_MAKE_L4I((*_sp_th2_),__VA_ARGS__)
-    #define aflogw_th2(...) BHLOG_MAKE_L4W((*_sp_th2_),__VA_ARGS__)
-    #define afloge_th2(...) BHLOG_MAKE_L4E((*_sp_th2_),__VA_ARGS__)
+    #define aflogd_th2(...) BHLOG_MAKE_L4D((*_sp_th2_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
+    #define aflogi_th2(...) BHLOG_MAKE_L4I((*_sp_th2_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
+    #define aflogw_th2(...) BHLOG_MAKE_L4W((*_sp_th2_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
+    #define afloge_th2(...) BHLOG_MAKE_L4E((*_sp_th2_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
 
     static Tlog_asyn_file4 *_sp_th1_ = new Tlog_asyn_file4;
     _sp_th1_->_out._out.reopen("Tflog_th1.log");
@@ -433,6 +433,35 @@ void test_11()
 
 }
 
+void test_12()
+{
+
+    std::string h = "hellow world";
+
+    aflogd($(h));
+    aflogi($(h));
+    aflogw($(h));
+    afloge($(h));
+
+    aflogd("Debug");
+    aflogi("Info");
+    aflogw("Warn");
+    afloge("Error");
+
+    flogd($(h));
+    flogi($(h));
+    flogw($(h));
+    floge($(h));
+
+    vlogd($(h));
+    vlogi($(h));
+    vlogw($(h));
+    vloge($(h));
+
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+
+}
+
 int main(int argc, char *argv[])
 {
     // test_1();   
@@ -445,7 +474,8 @@ int main(int argc, char *argv[])
     // test_8();
     // test_9();
     // test_10();
-    test_11();
+    // test_11();
+    test_12();
 
 
 
