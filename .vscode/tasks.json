@@ -530,7 +530,39 @@
                 "CMake main_publish",
                 "CMake Build"
             ]
+        },
+
+
+
+
+        {
+            "label": "CMake main_unpack",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "..",
+                "-Dmain_unpack=1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build/"
+            },
+        },
+        {
+            "label": "Run main_unpack",
+            "type": "shell",
+            "command": "cmake",
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "CMake main_unpack",
+                "CMake Build"
+            ]
         }
+
+
 
 
     ]

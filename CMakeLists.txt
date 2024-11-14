@@ -128,5 +128,10 @@ if(ALL OR main_publish)
     add_executable(main_publish test/main_publish.cpp)
 endif()
 
+if(ALL OR main_unpack)
+    add_executable(main_unpack test/main_unpack.cpp)
+    target_link_libraries(main_unpack ${LIBHV})
+endif()
+
 # 生成目标
 add_executable(${CMAKE_PROJECT_NAME} main.cpp)
