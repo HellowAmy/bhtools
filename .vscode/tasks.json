@@ -560,6 +560,36 @@
                 "CMake main_unpack",
                 "CMake Build"
             ]
+        },
+
+
+
+
+        {
+            "label": "CMake main_opt",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "..",
+                "-Dmain_opt=1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build/"
+            },
+        },
+        {
+            "label": "Run main_opt",
+            "type": "shell",
+            "command": "cmake",
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "CMake main_opt",
+                "CMake Build"
+            ]
         }
 
 

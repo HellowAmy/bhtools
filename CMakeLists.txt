@@ -133,5 +133,10 @@ if(ALL OR main_unpack)
     target_link_libraries(main_unpack ${LIBHV})
 endif()
 
+if(ALL OR main_opt)
+    add_executable(main_opt test/main_opt.cpp)
+    target_link_libraries(main_opt ${LIBHV})
+endif()
+
 # 生成目标
 add_executable(${CMAKE_PROJECT_NAME} main.cpp)
