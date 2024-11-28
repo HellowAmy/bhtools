@@ -135,7 +135,10 @@ endif()
 
 if(ALL OR main_opt)
     add_executable(main_opt test/main_opt.cpp)
-    target_link_libraries(main_opt ${LIBHV})
+endif()
+
+if(ALL OR main_any)
+    add_executable(main_any test/main_any.cpp)
 endif()
 
 # 生成目标
