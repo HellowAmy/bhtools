@@ -14,7 +14,7 @@ namespace bhtools {
 struct Tsstream_string
 {
     template<typename T>
-    std::string operator()(T val) { std::stringstream ss; ss<<val; return ss.str(); }
+    std::string operator()(const T &val) { std::stringstream ss; ss<<val; return ss.str(); }
 };
 
 //
