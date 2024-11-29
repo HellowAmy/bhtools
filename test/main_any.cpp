@@ -5,6 +5,7 @@
 #include "Tlog.h"
 #include "Tany.h"
 #include "Ftest.h"
+#include "Ftime.h"
 
 using namespace bhtools;
 using namespace std;
@@ -93,6 +94,28 @@ void test_1()
 
 void test_2()
 {
+    int count = 1000*10000;
+
+    {
+        Ftimel t;
+        Tany any;
+        for(int i=0;i<count;i++)
+        {
+            any = i;
+        }
+        vlogd($(t.to_string()));
+    }
+    {
+        Ftimel t;
+        Tany any;
+        for(int i=0;i<count;i++)
+        {
+            Tany any1;
+            any1 = i;
+            any = any1;
+        }
+        vlogd($(t.to_string()));
+    }
 
 }
 
@@ -104,7 +127,7 @@ void test_3()
 int main(int argc, char *argv[])
 {
     test_1();   
-    // test_2();   
+    test_2();   
     // test_3();   
 
     return 0;
