@@ -15,57 +15,64 @@ void test_1()
         BHTEST_EQUAL(ret,true);
     }
     {
+        std::string f1 = "/home/red/open/github/bhtools/test";
+        bool ret = Ffile::is_exist_file(f1);
+        BHTEST_EQUAL(ret,true);
+    }
+
+    {
         std::string f1 = "/home/red/open/github/bhtools/main2.cpp";
         bool ret = Ffile::is_exist_file(f1);
         BHTEST_EQUAL(ret,false);
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/test/ppqq.txt";
+        std::string f1 = "/home/red/open/github/bhtools/test2";
+        bool ret = Ffile::is_exist_file(f1);
+        BHTEST_EQUAL(ret,false);
+    }
+
+    {
+        std::string f1 = "/home/red/open/github/bhtools/main.cpp";
         bool ret = Ffile::is_file_type(f1);
         BHTEST_EQUAL(ret,true);
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/test/ppqq.txt";
+        std::string f1 = "/home/red/open/github/bhtools/test";
         bool ret = Ffile::is_dir_type(f1);
+        BHTEST_EQUAL(ret,true);
+    }
+
+    {
+        std::string f1 = "../main.cpp";
+        bool ret = Ffile::is_file_type(f1);
+        BHTEST_EQUAL(ret,true);
+    }
+    {
+        std::string f1 = "../test";
+        bool ret = Ffile::is_dir_type(f1);
+        BHTEST_EQUAL(ret,true);
+    }
+
+    {
+        std::string f1 = "../main.cpp";
+        bool ret = Ffile::is_exist_file(f1);
+        BHTEST_EQUAL(ret,true);
+    }
+    {
+        std::string f1 = "../test";
+        bool ret = Ffile::is_exist_dir(f1);
+        BHTEST_EQUAL(ret,true);
+    }
+
+    {
+        std::string f1 = "/home/red/open/github/bhtools/test";
+        bool ret = Ffile::is_file_type(f1);
         BHTEST_EQUAL(ret,false);
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/test/ppqq2.txt";
-        bool ret = Ffile::remove_file(f1);
-        BHTEST_EQUAL(ret,true);
-    }
-    {
-        std::string f1 = "/home/red/open/github/bhtools/test/ppqq.txt";
-        std::string f2 = "/home/red/open/github/bhtools/test/ppqq3.txt";
-        bool ret = Ffile::copy_file(f1,f2);
-        BHTEST_EQUAL(ret,true);
-    }
-    {
-        std::string f1 = "/home/red/open/github/bhtools/test/ppqq3.txt";
-        std::string f2 = "/home/red/open/github/bhtools/ppqq4.txt";
-        bool ret = Ffile::copy_file(f1,f2);
-        BHTEST_EQUAL(ret,true);
-    }
-    {
-        std::string f1 = "/home/red/open/github/bhtools/test/ppqq3.txt";
-        std::string f2 = "/home/red/open/github/bhtools/test/ppqq5.txt";
-        bool ret = Ffile::copy_file(f1,f2);
-        BHTEST_EQUAL(ret,true);
-    }
-    {
-        std::string f1 = "/home/red/open/github/bhtools/test/ppqq5.txt";
-        std::string f2 = "/home/red/open/github/bhtools/test/ppqq6.txt";
-        bool ret = Ffile::move_file(f1,f2);
-        BHTEST_EQUAL(ret,true);
-    }
-    {
-        std::string f1 = "/home/red/1国产会议系统软件V3.139(TS-0300GCR-V1.0.3)-itc.zip";
-        std::string f2 = "/home/red/open/github/bhtools/test/1itc.zip";
-        if(Ffile::is_exist_file(f1))
-        {
-            bool ret = Ffile::copy_file(f1,f2);
-            BHTEST_EQUAL(ret,true);
-        }
+        std::string f1 = "/home/red/open/github/bhtools/main.cpp";
+        bool ret = Ffile::is_dir_type(f1);
+        BHTEST_EQUAL(ret,false);
     }
 
 }
@@ -73,34 +80,74 @@ void test_1()
 void test_2()
 {
     {
-        std::string f1 = "/home/red/open/github/bhtools/test";
+        std::string f1 = "/home/red/open/github/bhtools/build";
         bool ret = Ffile::is_exist_dir(f1);
         BHTEST_EQUAL(ret,true);
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/test2";
+        std::string f1 = "/home/red/open/github/bhtools/build/test_file";
         bool ret = Ffile::is_exist_dir(f1);
         BHTEST_EQUAL(ret,false);
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/CMakeLists.txt";
-        bool ret = Ffile::is_exist_file(f1);
+        std::string f1 = "/home/red/open/github/bhtools/build/test_file2";
+        bool ret = Ffile::create_dir(f1);
         BHTEST_EQUAL(ret,true);
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/CMakeLists.txt";
-        bool ret = Ffile::is_file_type(f1);
-        BHTEST_EQUAL(ret,true);
-    }
-    {
-        std::string f1 = "/home/red/open/github/bhtools/test/";
-        bool ret = Ffile::is_dir_type(f1);
-        BHTEST_EQUAL(ret,true);
-    }
-    {
-        std::string f1 = "/home/red/open/github/bhtools/test2/";
-        bool ret = Ffile::is_dir_type(f1);
+        std::string f1 = "/home/red/open/github/bhtools/build/test_file/level1/level1_0";
+        bool ret = Ffile::create_dir(f1);
         BHTEST_EQUAL(ret,false);
+    }
+
+    {
+        std::string f1 = "/home/red/open/github/bhtools/build/test_file/level1/level1_1";
+        std::string f2 = "/home/red/open/github/bhtools/build/test_file/level1/level1_2";
+        std::string f3 = "/home/red/open/github/bhtools/build/test_file/level1/level1_3";
+        bool ret1 = Ffile::make_dir(f1);
+        bool ret2 = Ffile::make_dir(f2);
+        bool ret3 = Ffile::make_dir(f3);
+        BHTEST_EQUAL(ret1,true);
+        BHTEST_EQUAL(ret2,true);
+        BHTEST_EQUAL(ret3,true);
+    }
+    {
+        std::string f1 = "/home/red/open/github/bhtools/CMakeLists.txt";
+        std::string f2 = "/home/red/open/github/bhtools/CMakeLists2.txt";
+        bool ret = Ffile::copy_file(f1,f2);
+        BHTEST_EQUAL(ret,true);
+    }
+    {
+        std::string f1 = "/home/red/open/github/bhtools/CMakeLists2.txt";
+        std::string f2 = "/home/red/open/github/bhtools/build/test_file/CMakeLists.txt";
+        bool ret = Ffile::move_file(f1,f2);
+        BHTEST_EQUAL(ret,true);
+    }
+    {
+        std::string f1 = "/home/red/open/github/bhtools/build/test_file/CMakeLists.txt";
+        std::string f2 = "/home/red/open/github/bhtools/build/test_file/CMakeLists2.txt";
+        std::string f3 = "/home/red/open/github/bhtools/build/test_file/CMakeLists3.txt";
+        std::string f4 = "/home/red/open/github/bhtools/build/test_file/CMakeLists4.txt";
+        std::string f5 = "/home/red/open/github/bhtools/build/test_file/CMakeLists5.txt";
+        bool ret1 = Ffile::copy_file(f1,f2);
+        bool ret2 = Ffile::copy_file(f1,f3);
+        bool ret3 = Ffile::copy_file(f1,f4);
+        bool ret4 = Ffile::copy_file(f1,f5);
+        BHTEST_EQUAL(ret1,true);
+        BHTEST_EQUAL(ret2,true);
+        BHTEST_EQUAL(ret3,true);
+        BHTEST_EQUAL(ret4,true);
+    }
+    {
+        std::string f1 = "/home/red/open/github/bhtools/build/test_file/CMakeLists3.txt";
+        std::string f2 = "/home/red/open/github/bhtools/build/test_file/CMakeLists33.txt";
+        bool ret = Ffile::move_file(f1,f2);
+        BHTEST_EQUAL(ret,true);
+    }
+    {
+        std::string f1 = "/home/red/open/github/bhtools/build/test_file/CMakeLists4.txt";
+        bool ret = Ffile::remove_file(f1);
+        BHTEST_EQUAL(ret,true);
     }
 }
 
@@ -191,8 +238,8 @@ void test_3()
 int main(int argc, char *argv[])
 {
     // test_1();   
-    // test_2();   
-    test_3();   
+    test_2();   
+    // test_3();   
 
     return 0;
 }
