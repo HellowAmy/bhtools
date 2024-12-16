@@ -620,6 +620,36 @@
                 "CMake main_any",
                 "CMake Build"
             ]
+        },
+
+        
+
+
+        {
+            "label": "CMake main_file",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "..",
+                "-Dmain_file=1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build/"
+            },
+        },
+        {
+            "label": "Run main_file",
+            "type": "shell",
+            "command": "cmake",
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "CMake main_file",
+                "CMake Build"
+            ]
         }
 
 
