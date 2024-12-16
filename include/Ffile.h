@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <cassert>
+#include <vector>
 #include "Tlog.h"
 
 // 跨平台处理函数
@@ -17,6 +18,18 @@
 
         // 分隔符
         inline static std::string file_splitter() { return "/"; }
+
+        // 合并路径
+        inline static std::string path_merge(const std::string &prefix,const std::string &file) 
+        {
+            if(prefix.size() > 0)
+            {
+                std::string sp = prefix.substr(prefix.size() - file_splitter().size());
+                if(sp == file_splitter()) { return prefix + file; }
+                else { return prefix + file_splitter() + file; }
+            }
+            return prefix + file; 
+        }
         
         // 判断文件夹存在
         inline static bool is_exist_dir(const std::string &path)
@@ -77,6 +90,39 @@
 
             if(create_dir(level,mode) == false) { return false; }
             return true;
+        }
+
+        // 获取文件与目录列表
+        inline static bool get_dir_info(const std::string &path,
+                                        std::vector<std::string> &files,
+                                        std::vector<std::string> &dirs,
+                                        bool recursion)
+        {
+            DIR *dir = opendir(path.c_str());
+            if(dir)
+            {
+                struct dirent *entry;
+                std::vector<std::string> level;
+                while((entry = readdir(dir)) != nullptr) 
+                {
+                    if(std::string(entry->d_name) != "." && std::string(entry->d_name) != "..")
+                    {
+                        std::string path_name = bhtools_platform::path_merge(path,std::string(entry->d_name));
+                        if(is_dir_type(path_name))
+                        { level.push_back(path_name); }
+                        else { files.push_back(path_name); }
+                    }
+                }
+                for(auto &a : level)
+                {
+                    dirs.push_back(a); 
+                    if(recursion) 
+                    { get_dir_info(a,files,dirs,recursion); }
+                }
+                closedir(dir);
+                return true;
+            }
+            return false;
         }
 
     } // bhtools_platform
@@ -147,7 +193,9 @@ struct Ffile
 
     // 
     inline static bool remove_dir(const std::string &dir)
-    {   }
+    {   
+
+    }
 
     inline static std::string get_suffix(const std::string &file)
     {
@@ -162,6 +210,26 @@ struct Ffile
     inline static std::string get_basename(const std::string &file)
     {
 
+    }
+
+    // 
+    inline static std::vector<std::string> get_files(const std::string &path,bool recursion = true)
+    { 
+        std::vector<std::string> files;
+        std::vector<std::string> dirs;
+        if(bhtools_platform::get_dir_info(path,files,dirs,recursion))
+        { return files; }
+        return {};
+    }
+
+    // 
+    inline static std::vector<std::string> get_dirs(const std::string &path,bool recursion = true)
+    { 
+        std::vector<std::string> files;
+        std::vector<std::string> dirs;
+        if(bhtools_platform::get_dir_info(path,files,dirs,recursion))
+        { return dirs; }
+        return {};
     }
 
     

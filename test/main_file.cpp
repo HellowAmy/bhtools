@@ -154,92 +154,28 @@ void test_2()
 void test_3()
 {
     {
-        std::string f1 = "/home/red/open/github/bhtools/test2/";
-        bool ret = Ffile::is_exist_dir(f1);
-        BHTEST_EQUAL(ret,false);
-        if(ret == false)
-        {
-            bool ret = Ffile::make_dir(f1);
-            BHTEST_EQUAL(ret,true);
-        }
+        auto vec = Ffile::get_files("/home/red/open/github/bhtools/build/test_file");
+        vlogd($C(vec));
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/test3/t1/t2/t3/";
-        bool ret = Ffile::is_exist_dir(f1);
-        BHTEST_EQUAL(ret,false);
-        if(ret == false)
-        {
-            bool ret = Ffile::make_dir(f1);
-            BHTEST_EQUAL(ret,true);
-        }
+        auto vec = Ffile::get_dirs("/home/red/open/github/bhtools/build/test_file");
+        vlogd($C(vec));
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/test3/t1/t2/t4/";
-        bool ret = Ffile::is_exist_dir(f1);
-        BHTEST_EQUAL(ret,false);
-        if(ret == false)
-        {
-            bool ret = Ffile::make_dir(f1);
-            BHTEST_EQUAL(ret,true);
-        }
+        auto vec = Ffile::get_files("/home/red/open/github/bhtools/build/test_file",false);
+        vlogd($C(vec));
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/test3/t2/t2/t3";
-        bool ret = Ffile::is_exist_dir(f1);
-        BHTEST_EQUAL(ret,false);
-        if(ret == false)
-        {
-            bool ret = Ffile::make_dir(f1);
-            BHTEST_EQUAL(ret,true);
-        }
-    }
-    {
-        std::string f1 = "/home/red/open/github/bhtools/test3/t2/t2/t4";
-        bool ret = Ffile::is_exist_dir(f1);
-        BHTEST_EQUAL(ret,false);
-        if(ret == false)
-        {
-            bool ret = Ffile::make_dir(f1);
-            BHTEST_EQUAL(ret,true);
-        }
-    }
-    {
-        std::string f1 = "/home/red/open/github/bhtools/test6/t5";
-        bool ret = Ffile::is_exist_dir(f1);
-        BHTEST_EQUAL(ret,false);
-        if(ret == false)
-        {
-            bool ret = Ffile::create_dir(f1);
-            BHTEST_EQUAL(ret,false);
-        }
-    }
-    {
-        std::string f1 = "/home/red/open/github/bhtools/test4";
-        bool ret = Ffile::is_exist_dir(f1);
-        BHTEST_EQUAL(ret,false);
-        if(ret == false)
-        {
-            bool ret = Ffile::create_dir(f1);
-            BHTEST_EQUAL(ret,true);
-        }
-    }
-    {
-        std::string f1 = "/home/red/open/github/bhtools/test5";
-        bool ret = Ffile::is_exist_dir(f1);
-        BHTEST_EQUAL(ret,false);
-        if(ret == false)
-        {
-            bool ret = Ffile::create_dir(f1);
-            BHTEST_EQUAL(ret,true);
-        }
+        auto vec = Ffile::get_dirs("/home/red/open/github/bhtools/build/test_file",false);
+        vlogd($C(vec));
     }
 }
 
 int main(int argc, char *argv[])
 {
     // test_1();   
-    test_2();   
-    // test_3();   
+    // test_2();   
+    test_3();   
 
     return 0;
 }
