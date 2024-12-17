@@ -70,12 +70,62 @@ void test_2()
 
 }
 
+void test_3()
+{
+    {
+        auto s1 = Tfrom_string_opt<int>("123");
+        auto s2 = Tfrom_string_opt<size_t>("2003998899");
+        auto s3 = Tfrom_string_opt<double>("123.456");
+
+        vlogd($(s1.use()) $(s2.use()) $(s3.use()));
+        vlogd($(s1.value()) $(s2.value()) $(s3.value()));
+    }
+    {
+        auto s1 = Tfrom_string_opt<int>("2a");
+        auto s2 = Tfrom_string_opt<size_t>("3dva2");
+        auto s3 = Tfrom_string_opt<double>("909.aw02");
+
+        vlogd($(s1.use()) $(s2.use()) $(s3.use()));
+        vlogd($(s1.value()) $(s2.value()) $(s3.value()));
+    }
+}
+
+void test_4()
+{
+    {
+        Topt<int> s1 = Tfrom_string_opt<int>("123");
+        Topt<int> s2 = Tfrom_string_opt<int>("a123");
+        if(s1.use())
+        {
+            vlogd($(s1.value()));
+        }
+        if(s2.use())
+        {
+            vlogd($(s2.value()));
+        }
+    }
+    {
+        auto s1 = Tfrom_string_opt<int>("123");
+        auto s2 = Tfrom_string_opt<int>("a123");
+        if(s1)
+        {
+            vlogd($(*s1));
+        }
+        if(s2)
+        {
+            vlogd($(*s2));
+        }
+    }
+    
+
+}
+
 int main(int argc, char *argv[])
 {
-    test_1();   
-    test_2();   
+    // test_1();   
+    // test_2();   
     // test_3();   
-    // test_4();   
+    test_4();   
     // test_5();
     // test_6();
 

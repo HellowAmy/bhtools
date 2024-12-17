@@ -16,6 +16,12 @@ struct Topt
     template <typename... Targ>
     constexpr Topt(Targ&&... arg) : _use(true), _val(std::forward<Targ>(arg)...) {}
 
+    // 重载-判断有效
+    operator bool() { return use(); }
+
+    // 重载-取值
+    T& operator *() { return value(); }
+
     // 使用状态
     bool use() { return _use; } 
 

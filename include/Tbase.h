@@ -7,6 +7,8 @@
 #include <sstream>
 #include <tuple>
 
+#include "Topt.h"
+
 namespace bhtools {
 
 
@@ -51,13 +53,15 @@ bool Tfrom_string(const std::string &str,T &ret)
 {
     bool suc = true;
     try {
-        if(std::is_same<T,double>::value) { ret = std::stod(str); }
-        else if(std::is_same<T,float>::value) { ret = std::stof(str); }
-        if(std::is_same<T,int>::value || std::is_same<T,unsigned int>::value)
+        if(std::is_same<T,double>::value) 
+        { ret = std::stod(str); }
+        else if(std::is_same<T,float>::value) 
+        { ret = std::stof(str); }
+        else if(std::is_same<T,int>::value || std::is_same<T,unsigned int>::value) 
         { ret = std::stoi(str); }
-        else if(std::is_same<T,long>::value || std::is_same<T,unsigned long>::value)
+        else if(std::is_same<T,long>::value || std::is_same<T,unsigned long>::value) 
         { ret = std::stol(str); }
-        else if(std::is_same<T,long long>::value || std::is_same<T,unsigned long long>::value)
+        else if(std::is_same<T,long long>::value || std::is_same<T,unsigned long long>::value) 
         { ret = std::stoll(str); }
         else { suc = false; }
     } catch(...) { suc = false; }
@@ -67,6 +71,14 @@ bool Tfrom_string(const std::string &str,T &ret)
 template<typename T>
 T Tfrom_string(const std::string &str)
 { T ret; std::istringstream ss(str); ss>>ret; return ret; }
+
+template<typename T>
+Topt<T> Tfrom_string_opt(const std::string &str)
+{ 
+    T ret; 
+    if(Tfrom_string(str,ret)) { return Topt<T>(ret); } 
+    return Topt<T>();
+}
 
 //
 //
