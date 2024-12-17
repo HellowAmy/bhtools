@@ -3,6 +3,7 @@
 #define FFILE_H
 
 #include <fstream>
+#include <functional>
 #include <vector>
 #include "Tlog.h"
 #include "Fstm.h"
@@ -176,7 +177,7 @@ namespace bhtools {
 
 
 // 文件处理类-提供跨平台处理文件与目录的功能
-struct Ffile
+struct Ffsys
 {
     // 判断存在-文件
     inline static bool is_exist_file(const std::string &path)
@@ -276,6 +277,57 @@ struct Ffile
         return {};
     }
     
+};
+
+// 文件读写扩展类
+struct Ffio
+{
+    Ffio(std::fstream &fs) 
+    { _fs = &fs; } 
+
+    // 读取所有字节
+    std::string read_all() 
+    {
+        std::string buf;
+        buf.resize(file_len_max());
+        _fs->read((char *)buf.c_str(),file_len_max());
+        return buf;
+    }
+
+    // 读取一行文本
+    std::string read_line() 
+    {
+        std::string buf;
+        std::getline(*_fs, buf);
+        return buf;
+    }   
+
+    // 写入缓冲字节
+    size_t write(const std::string &buf) 
+    {
+        size_t bnow = _fs->tellp();
+        _fs->write(buf.c_str(),buf.size());
+
+        size_t enow = _fs->tellp();
+        size_t len = enow - bnow;
+        if(buf.size() == len)
+        { return len; }
+        return 0;
+    }
+
+    // 获取文件最大长度
+    size_t file_len_max()
+    {
+        size_t now = _fs->tellg();
+        _fs->seekg(0,std::ios::end);
+
+        size_t end = _fs->tellg();
+        _fs->seekg(now,std::ios::beg);
+        return end;
+    }
+
+
+    std::fstream *_fs = nullptr;    // 操作的文件指针
 };
 
 
