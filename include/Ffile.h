@@ -2,19 +2,22 @@
 #ifndef FFILE_H
 #define FFILE_H
 
-#include <iostream>
 #include <fstream>
-#include <cassert>
 #include <vector>
 #include "Tlog.h"
+#include "Fstm.h"
+
+
+namespace bhtools {
+
 
 // 跨平台处理函数
 #ifdef __linux__
-    #include <sys/stat.h>
-    #include <dirent.h>
-    #include <cstdio>
-
     namespace bhtools_platform {
+        #include <sys/stat.h>
+        #include <dirent.h>
+        #include <cstdio>
+        #include <unistd.h>
 
         // 分隔符
         inline static std::string file_splitter() { return "/"; }
@@ -47,7 +50,7 @@
         inline static bool is_file_type(const std::string &path)
         {
             struct stat st;
-            stat(path.c_str(),&st);
+            lstat(path.c_str(),&st);
             if(st.st_mode & S_IFREG) { return true; }
             return false;
         }
@@ -56,7 +59,7 @@
         inline static bool is_dir_type(const std::string &path)
         {
             struct stat st;
-            stat(path.c_str(),&st);
+            lstat(path.c_str(),&st);
             if(st.st_mode & S_IFDIR) { return true; }
             return false;
         }
@@ -125,6 +128,40 @@
             return false;
         }
 
+        // 删除文件
+        inline static bool rm_file(const std::string &path)
+        { return remove(path.c_str()) == 0; }
+
+        // 删除空目录
+        inline static bool rm_dir(const std::string &path)
+        { return rmdir(path.c_str()) == 0; }
+
+        // 删除目录包括目录下所有内容
+        inline static bool remove_dir(const std::string &dir)
+        {
+            std::vector<std::string> files;
+            std::vector<std::string> dirs;
+            if(bhtools_platform::get_dir_info(dir,files,dirs,true))
+            {
+                for(auto it = files.rbegin();it != files.rend();it++)
+                {   
+                    if(bhtools_platform::rm_file(*it) == false)
+                    { return false; }
+                }
+                for(auto it = dirs.rbegin();it != dirs.rend();it++)
+                {   
+                    if(bhtools_platform::rm_dir(*it) == false)
+                    { return false; }
+                }
+                if(bhtools_platform::rm_dir(dir) == false)
+                { return false; }
+
+                return true;
+            }
+            return false;
+        }
+
+
     } // bhtools_platform
 #elif
     namespace bhtools_platform {
@@ -138,10 +175,7 @@
 
 
 
-namespace bhtools {
-
-
-// 
+// 文件处理类-提供跨平台处理文件与目录的功能
 struct Ffile
 {
     // 判断存在-文件
@@ -191,28 +225,27 @@ struct Ffile
     inline static bool make_dir(const std::string &dir,int mode = 0755)
     { return bhtools_platform::make_dir(dir,mode); }
 
-    // 
+    // 删除目录包括目录下所有内容-目录不存在则认为删除成功
     inline static bool remove_dir(const std::string &dir)
-    {   
-
+    { 
+        if(is_exist_dir(dir))
+        { return bhtools_platform::remove_dir(dir); }
+        else { return true; }
     }
 
+    // 返回后缀
     inline static std::string get_suffix(const std::string &file)
-    {
+    { return Fstm(file)(".",-1,-1); }
 
-    }
-
+    // 返回全名称
     inline static std::string get_name(const std::string &file)
-    {
+    { return Fstm(file)(bhtools_platform::file_splitter(),-1,-1); }
 
-    }
-
+    // 返回无后缀名
     inline static std::string get_basename(const std::string &file)
-    {
+    { return Fstm(file)(bhtools_platform::file_splitter(),-1,-1,".",0,0); }
 
-    }
-
-    // 
+    // 获取文件
     inline static std::vector<std::string> get_files(const std::string &path,bool recursion = true)
     { 
         std::vector<std::string> files;
@@ -222,7 +255,7 @@ struct Ffile
         return {};
     }
 
-    // 
+    // 获取目录
     inline static std::vector<std::string> get_dirs(const std::string &path,bool recursion = true)
     { 
         std::vector<std::string> files;
@@ -232,6 +265,16 @@ struct Ffile
         return {};
     }
 
+    // 获取文件和目录
+    inline static std::tuple<std::vector<std::string>,std::vector<std::string>>
+        get_files_and_dirs(const std::string &path,bool recursion = true)
+    { 
+        std::vector<std::string> files;
+        std::vector<std::string> dirs;
+        if(bhtools_platform::get_dir_info(path,files,dirs,recursion))
+        { return std::make_tuple(files,dirs); }
+        return {};
+    }
     
 };
 

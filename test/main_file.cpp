@@ -149,6 +149,24 @@ void test_2()
         bool ret = Ffile::remove_file(f1);
         BHTEST_EQUAL(ret,true);
     }
+    {
+        std::string f1 = "/home/red/open/github/bhtools/build/test_file/level1/level1_2/1";
+        std::string f2 = "/home/red/open/github/bhtools/build/test_file/level1/level1_2/2";
+        std::string f3 = "/home/red/open/github/bhtools/build/test_file/level1/level1_3/CMakeLists1.txt";
+        std::string f4 = "/home/red/open/github/bhtools/build/test_file/level1/level1_3/CMakeLists2.txt";
+        std::string f5 = "/home/red/open/github/bhtools/build/test_file/level1/level1_3/CMakeLists3.txt";
+        std::string f6 = "/home/red/open/github/bhtools/build/test_file/CMakeLists.txt";
+        bool ret1 = Ffile::make_dir(f1);
+        bool ret2 = Ffile::make_dir(f2);
+        bool ret3 = Ffile::copy_file(f6,f3);
+        bool ret4 = Ffile::copy_file(f6,f4);
+        bool ret5 = Ffile::copy_file(f6,f5);
+        BHTEST_EQUAL(ret1,true);
+        BHTEST_EQUAL(ret2,true);
+        BHTEST_EQUAL(ret3,true);
+        BHTEST_EQUAL(ret4,true);
+        BHTEST_EQUAL(ret5,true);
+    }
 }
 
 void test_3()
@@ -169,13 +187,61 @@ void test_3()
         auto vec = Ffile::get_dirs("/home/red/open/github/bhtools/build/test_file",false);
         vlogd($C(vec));
     }
+    {
+        auto tup = Ffile::get_files_and_dirs("/home/red/open/github/bhtools/build/test_file",true);
+        vlogd($C(std::get<0>(tup)) $C(std::get<1>(tup)));
+    }
+    {
+        auto tup = Ffile::get_files_and_dirs("/home/red/open/github/bhtools/build/test_file",false);
+        vlogd($C(std::get<0>(tup)) $C(std::get<1>(tup)));
+    }
+}
+
+void test_4()
+{
+    {
+        std::string f1 = "/home/red/open/github/bhtools/build/test_file";
+        bool ret = Ffile::remove_dir(f1);
+        BHTEST_EQUAL(ret,true);
+    }
+    {
+        std::string f1 = "/home/red/open/github/bhtools/build/test_file2";
+        bool ret = Ffile::remove_dir(f1);
+        BHTEST_EQUAL(ret,true);
+    }
+    {
+        std::string f1 = "/home/red/open/github/bhtools/build/delete";
+        bool ret = Ffile::remove_dir(f1);
+        BHTEST_EQUAL(ret,true);
+    }
+}
+
+void test_5()
+{
+    {
+        std::string f1 = "/home/red/open/github/bhtools/build/test_file/CMakeLists4.txt";
+        std::string ret = Ffile::get_suffix(f1);
+        BHTEST_EQUAL(ret,"txt");
+    }
+    {
+        std::string f1 = "/home/red/open/github/bhtools/build/test_file/CMakeLists4.txt";
+        std::string ret = Ffile::get_name(f1);
+        BHTEST_EQUAL(ret,"CMakeLists4.txt");
+    }
+    {
+        std::string f1 = "/home/red/open/github/bhtools/build/test_file/CMakeLists4.txt";
+        std::string ret = Ffile::get_basename(f1);
+        BHTEST_EQUAL(ret,"CMakeLists4");
+    }
 }
 
 int main(int argc, char *argv[])
 {
-    // test_1();   
-    // test_2();   
+    test_1();   
+    test_2();   
     test_3();   
+    test_4();   
+    test_5();   
 
     return 0;
 }
