@@ -329,12 +329,21 @@ endfunction()
         if(fs.is_open())
         {
             Ffio f(fs);
+            vlogd($(fs.good()) $(fs.eof()) $(fs.tellg()));
             auto s = f.read_all();
-            vlogd($(s) $(fs.good()) $(fs.eof()));
+
+            vlogd($(fs.good()) $(fs.eof()) $(fs.tellg()));
+
+            auto buf1 = f.read_line();
+            vlogd($(buf1));
+            vlogd($(fs.good()) $(fs.eof()) $(fs.tellg()));
 
             f.reset_pos();
-
-            vlogd($(s) $(fs.good()) $(fs.eof()));
+            vlogd($(fs.good()) $(fs.eof()) $(fs.tellg()));
+            
+            auto buf2 = f.read_line();
+            vlogd($(buf2));
+            vlogd($(fs.good()) $(fs.eof()) $(fs.tellg()));
             fs.close();
         }
     }

@@ -104,14 +104,14 @@ struct Ftimes
     typedef typename std::chrono::time_point<std::chrono::system_clock,std::chrono::nanoseconds> time_point;
 
     // 日期相关预设值
-    static constexpr size_t _tunix_epoch = 1970;
-    static constexpr size_t _tunix_year = 365;
-    static constexpr size_t _tnan_sec = 1000 * 1000 * 1000;
-    static constexpr size_t _tnan_mil = 1000 * 1000;
-    static constexpr size_t _tnan_mic = 1000;
-    static constexpr size_t _tsec_min = 60;
-    static constexpr size_t _tsec_hou = 60 * 60;
-    static constexpr size_t _tsec_day = 60 * 60 * 24;
+    static constexpr int64_t _tunix_epoch = 1970;
+    static constexpr int64_t _tunix_year = 365;
+    static constexpr int64_t _tnan_sec = 1000 * 1000 * 1000;
+    static constexpr int64_t _tnan_mil = 1000 * 1000;
+    static constexpr int64_t _tnan_mic = 1000;
+    static constexpr int64_t _tsec_min = 60;
+    static constexpr int64_t _tsec_hou = 60 * 60;
+    static constexpr int64_t _tsec_day = 60 * 60 * 24;
 
     // 自定义格式
     struct data
@@ -168,17 +168,17 @@ struct Ftimes
     {
         // 计算秒到天的时间
         data d;
-        size_t len_sec = std::chrono::duration_cast<seconds>(point).count();
-        size_t len_day = len_sec / _tsec_day;
-        size_t res_hou = len_sec % _tsec_day;
-        size_t res_min = res_hou % _tsec_hou;
+        int64_t len_sec = std::chrono::duration_cast<seconds>(point).count();
+        int64_t len_day = len_sec / _tsec_day;
+        int64_t res_hou = len_sec % _tsec_day;
+        int64_t res_min = res_hou % _tsec_hou;
         d.hou = res_hou / _tsec_hou;
         d.min = (res_hou % _tsec_hou) / _tsec_min;
         d.sec = (res_hou % _tsec_hou) % _tsec_min;
 
         // 计算秒以下的时间
-        size_t len_nan = len_sec * _tnan_sec; 
-        size_t less_nan = point.count() - len_nan;
+        int64_t len_nan = len_sec * _tnan_sec; 
+        int64_t less_nan = point.count() - len_nan;
         d.mil = less_nan / _tnan_mil;
         d.mic = (less_nan % _tnan_mil) % _tnan_mic;
         d.nan = (less_nan % _tnan_mil) / _tnan_mic;
@@ -187,11 +187,11 @@ struct Ftimes
         // 再加上两个时间点之间存在的润日-如果加上润日超过365天则将时间推进到下一年
         // 计算出下一年所经过的天数-如果小时365天则时间被确定后退出计算
         // [代码来源借鉴 GLIBC offtime 函数]
-        size_t year_next = _tunix_epoch;
-        size_t days_less = len_day;
+        int64_t year_next = _tunix_epoch;
+        int64_t days_less = len_day;
         while(days_less < 0 || days_less >= get_year_leap(year_next))
         {
-            size_t year_now = year_next + days_less / _tunix_year - (days_less % _tunix_year < 0);
+            int64_t year_now = year_next + days_less / _tunix_year - (days_less % _tunix_year < 0);
             days_less -= (year_now - year_next) * _tunix_year + count_leap(year_now -1) - count_leap(year_next -1);
             year_next = year_now;
         }
@@ -270,10 +270,10 @@ struct Ftimes
 
     // 得到传入年的每月累加分部天数-包括润年
     inline static const std::vector<size_t>& get_month_leap(int64_t year)
-    { return (is_leap(year) ? month_normal() : month_leap()); }
+    { return (is_leap(year) ? month_leap() : month_normal()); }
 
     // 得到传入年的时间-包括润年
-    inline static size_t get_year_leap(int64_t year)
+    inline static int64_t get_year_leap(int64_t year)
     { return (is_leap(year) ? (_tunix_year +1) : _tunix_year); }
 
     // 判断是否为闰年
