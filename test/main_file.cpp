@@ -306,6 +306,38 @@ endfunction()
             ofs.close();
         }
     }
+    {
+        vlogw("");
+        std::fstream fs("/home/red/open/github/bhtools/CMakeLists.txt",std::ios::in|std::ios::binary);
+        std::fstream ofs("/home/red/open/github/bhtools/build/CMakeLists44.txt",std::ios::out);
+        if(fs.is_open())
+        {
+            Ffio f(fs);
+            Ffio f2(ofs);
+            auto s = f.read_all();
+            auto len = f2.write(s);
+
+            vlogd($(s.size()) $(len));
+
+            fs.close();
+            ofs.close();
+        }
+    }
+    {
+        vlogw("");
+        std::fstream fs("/home/red/open/github/bhtools/CMakeLists.txt");
+        if(fs.is_open())
+        {
+            Ffio f(fs);
+            auto s = f.read_all();
+            vlogd($(s) $(fs.good()) $(fs.eof()));
+
+            f.reset_pos();
+
+            vlogd($(s) $(fs.good()) $(fs.eof()));
+            fs.close();
+        }
+    }
 
 }
 

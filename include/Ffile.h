@@ -5,7 +5,6 @@
 #include <fstream>
 #include <functional>
 #include <vector>
-#include "Tlog.h"
 #include "Fstm.h"
 
 
@@ -324,6 +323,23 @@ struct Ffio
         size_t end = _fs->tellg();
         _fs->seekg(now,std::ios::beg);
         return end;
+    }
+
+    // 清除状态重新开始
+    void reset_pos()
+    {
+        _fs->clear();
+        _fs->seekg(0,std::ios::beg);
+        _fs->seekp(0,std::ios::beg);
+    }
+
+    // 从当前位置跳过指定长度
+    void skip_pos(size_t len)
+    {
+        size_t pnow = _fs->tellp();
+        size_t gnow = _fs->tellg();
+        _fs->seekp(pnow + len,std::ios::beg);
+        _fs->seekg(gnow + len,std::ios::beg);
     }
 
 
