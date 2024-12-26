@@ -264,6 +264,37 @@ void test_6()
     }
     {
         vlogw("");
+        std::fstream fs("/home/red/open/github/bhtools/build/CMakeLists11.txt",std::ios::out);
+        if(fs.is_open())
+        {
+            std::string s1 = "123456789";
+            std::string s2 = "你们是谁";
+            std::string s3 = "qweasdzxc";
+
+            Ffio f(fs);
+            auto sr1 = f.write_line(s1);
+            auto sr2 = f.write_line(s2);
+            auto sr3 = f.write_line(s3);
+            vlogd($(sr1) $(s1));
+            vlogd($(sr2) $(s2));
+            vlogd($(sr3) $(s3));
+
+            fs.close();
+        }
+    }
+    {
+        vlogw("");
+        std::fstream fs("/home/red/open/github/bhtools/build/CMakeLists11.txt");
+        if(fs.is_open())
+        {
+            Ffio f(fs);
+            auto s = f.read_all();
+            vlogd($(s));
+            fs.close();
+        }
+    }
+    {
+        vlogw("");
         std::fstream fs("/home/red/open/github/bhtools/build/CMakeLists22.txt",std::ios::out);
         if(fs.is_open())
         {

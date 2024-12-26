@@ -22,6 +22,9 @@ namespace bhtools {
         // 分隔符
         inline static std::string file_splitter() { return "/"; }
 
+        // 换行符
+        inline static std::string file_break() { return "\n"; }
+
         // 合并路径
         inline static std::string path_merge(const std::string &prefix,const std::string &file) 
         {
@@ -310,6 +313,21 @@ struct Ffio
         size_t enow = _fs->tellp();
         size_t len = enow - bnow;
         if(buf.size() == len)
+        { return len; }
+        return 0;
+    }
+
+    // 写入一行字符-返回带换行符长度
+    size_t write_line(const std::string &buf) 
+    {
+        size_t bnow = _fs->tellp();
+        std::string sbreak = bhtools_platform::file_break();
+        std::string str = buf + sbreak;
+        _fs->write(str.c_str(),str.size());
+
+        size_t enow = _fs->tellp();
+        size_t len = enow - bnow;
+        if((buf.size() + sbreak.size()) == len)
         { return len; }
         return 0;
     }
