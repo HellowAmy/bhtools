@@ -12,11 +12,12 @@
 
 #include "Tlog.h"
 
-using namespace bhtools;
+
 
 
 void test_1()
 {
+    using namespace bhtools;
     Tlog_cmd4 t1;
     t1.set_level(*_sp_level4_<<el4::e_inf);
 
@@ -67,6 +68,7 @@ void test_1()
 
 void test_2()
 {
+    using namespace bhtools;
     Tlog_cmd8 t1;
     t1.set_level(Tlog_level<bhenum::level8>(bhenum::level8::e_war));
 
@@ -113,6 +115,7 @@ void test_2()
 
 void test_3()
 {
+    using namespace bhtools;
     (*_sp_cmd4_)<<Tlog_level<bhenum::level4>(bhenum::level4::e_inf);
     (*_sp_cmd4_)<<"info  ";
     (*_sp_cmd4_)<<123<<456<<"|"<<99.99<<" po ";
@@ -120,12 +123,18 @@ void test_3()
     (*_sp_cmd4_)<<"123";
     (*_sp_cmd4_)<<Tlog_end();
 
+
+    // 快捷命令行打印-自行扩展 等级8
+    #define vlogd8(...) BHLOG_PRINT((*_sp_cmd8_),"\033[32m[Deb-level8]","\033[0m"<<(*_sp_end_),BHLOG_FORMAT_VSC,_sp_level8_->set_level(bhenum::level8::e_deb),__VA_ARGS__)
+    #define vloge8(...) BHLOG_PRINT((*_sp_cmd8_),"\033[31m[Err-level8]","\033[0m"<<(*_sp_end_),BHLOG_FORMAT_VSC,_sp_level8_->set_level(bhenum::level8::e_err),__VA_ARGS__)
+
     vlogd("123"<<123<<"pps");
     vlogi("123"<<123<<"pps");
     vlogw("123"<<123<<"pps");
     vloge("123"<<123<<"pps");
 
     vlogd8("11"<<"OOP"<<999);
+    vloge8("11"<<"OOP"<<999);
 
     int s1 = 100;
     double s2 = 123.123;
@@ -136,6 +145,7 @@ void test_3()
 
 void test_4()
 {
+    using namespace bhtools;
     std::vector<int> c1;
     std::vector<std::string> c2;
     std::list<int> c3;
@@ -160,6 +170,7 @@ void test_4()
 
 void test_5()
 {
+    using namespace bhtools;
     for(int i=0;i<10;i++)
     {
         (*_sp_file4_)<<Tlog_level<bhenum::level4>(bhenum::level4::e_deb);
@@ -181,6 +192,7 @@ void test_5()
 
 void test_6()
 {
+    using namespace bhtools;
     size_t len = (1<<15);
     _sp_file4_->_out.set_length(len);
     _sp_file4_->_out.set_limit(10);
@@ -196,6 +208,7 @@ void test_6()
 
 void test_7()
 {
+    using namespace bhtools;
     size_t len = (1<<15);
     _sp_file4_->_out.set_length(len);
     _sp_file4_->_out.set_limit(10);
@@ -212,6 +225,7 @@ void test_7()
 
 void test_8()
 {
+    using namespace bhtools;
     {
         auto s1 = Tlog_time::get_time();
         for(int i=0;i<100;i++)
@@ -223,6 +237,7 @@ void test_8()
 
 void test_9()
 {
+    using namespace bhtools;
     int count = 10000000;
     double ss1 = 55.5; 
     std::string ss2 = "hellow world"; 
@@ -293,6 +308,7 @@ void test_9()
 
 void test_10()
 {
+    using namespace bhtools;
     int count = 10000000;
     double ss1 = 55.5; 
     std::string ss2 = "hellow world"; 
@@ -357,6 +373,7 @@ void test_10()
 
 void test_11()
 {
+    using namespace bhtools;
     #define aflogd_th1(...) BHLOG_MAKE_L4D((*_sp_th1_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
     #define aflogi_th1(...) BHLOG_MAKE_L4I((*_sp_th1_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
     #define aflogw_th1(...) BHLOG_MAKE_L4W((*_sp_th1_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
@@ -466,7 +483,7 @@ int main(int argc, char *argv[])
 {
     // test_1();   
     // test_2();   
-    // test_3();   
+    test_3();   
     // test_4();   
     // test_5();
     // test_6();
