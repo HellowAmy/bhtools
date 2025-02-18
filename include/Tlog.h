@@ -472,7 +472,7 @@ static Tlog_asyn_file4 *_sp_afile4_ = new Tlog_asyn_file4;
 
 
 #define $(value) "["#value": "<<value<<"] "
-#define $C(value) "["#value": "<<Tlog_con(value)<<"] "
+#define $C(value) "["#value": "<<bhtools::Tlog_con(value)<<"] "
 #define $S(value) "["#value": "<<Tsstream_string()(value)<<"] "
 
 
