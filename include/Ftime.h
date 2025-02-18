@@ -82,6 +82,11 @@ struct Ftimel
     inline std::vector<std::string> check_vec() 
     { return _vec; }
 
+    // 线性休眠时间
+    inline static void sleep(size_t ms)
+    { std::this_thread::sleep_for(std::chrono::milliseconds(ms)); }
+
+
     time_point _begin;              //用于计算上一个时间点
     std::vector<std::string> _vec;  //多点打印记录
 };

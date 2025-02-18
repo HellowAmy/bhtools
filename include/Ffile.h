@@ -288,11 +288,24 @@ struct Ffio
     { _fs = &fs; } 
 
     // 读取所有字节
-    std::string read_all() 
+    std::string read_all(size_t chunk_size = 0) 
     {
         std::string buf;
-        buf.resize(file_len_max());
-        _fs->read((char *)buf.c_str(),file_len_max());
+        if(chunk_size == 0)
+        {
+            buf.resize(file_len_max());
+            _fs->read((char *)buf.c_str(),buf.size());
+        }
+        else 
+        {
+            std::string cache;
+            cache.resize(chunk_size);
+            while(_fs->eof() == false)
+            { 
+                _fs->read((char *)cache.c_str(),cache.size()); 
+                buf += cache;
+            }
+        }
         return buf;
     }
 
@@ -303,6 +316,23 @@ struct Ffio
         std::getline(*_fs, buf);
         return buf;
     }   
+
+    // 读取所有行
+    std::vector<std::string> read_line_all(std::function<bool(const std::string &)> filtrate = nullptr) 
+    {
+        std::vector<std::string> vec;
+        std::string buf;
+        while (std::getline(*_fs, buf))
+        { 
+            if(filtrate)
+            { 
+                if(filtrate(buf))
+                { vec.push_back(buf); }
+            }
+            else { vec.push_back(buf); }
+        }
+        return vec;
+    }  
 
     // 写入缓冲字节
     size_t write(const std::string &buf) 

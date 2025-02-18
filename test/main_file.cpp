@@ -4,6 +4,8 @@
 #include "Tlog.h"
 #include "Ftest.h"
 #include "Ffile.h"
+#include "Ftime.h"
+#include "Tpool.h"
 
 using namespace bhtools;
 
@@ -381,6 +383,70 @@ endfunction()
 
 }
 
+void test_7()
+{
+    {
+        vlogw("");
+        std::fstream fs("/home/red/open/github/bhtools/CMakeLists.txt");
+        if(fs.is_open())
+        {
+            Ffio f(fs);
+            {
+                auto vec = f.read_line_all();
+                vlogd($C(vec));             
+            }
+            {
+                f.reset_pos();
+                auto vec = f.read_line_all([](const std::string &buf){
+                    return buf.size() != 0;
+                });
+                vlogd($C(vec));
+            }
+            fs.close();
+        }
+    }
+}
+
+void test_8()
+{
+    {
+        Ftimel t;
+        std::fstream fs("/home/red/open/download/wps-office_11.1.0.11723.XA_amd64.deb",std::ios::in|std::ios::binary);
+        if(fs.is_open())
+        {
+            Ffio f(fs);
+            auto bin = f.read_all();
+            vlogd($(bin.size()));             
+            fs.close();
+        }
+        vlogw($(t.to_string()));
+    }
+    {
+
+        Ftimel t;
+        Tpool<> pool;
+        pool.push([](){
+            Ftimel t;
+            std::fstream fs("/home/red/open/download/wps-office_11.1.0.11723.XA_amd64.deb",std::ios::in|std::ios::binary);
+            if(fs.is_open())
+            {
+                Ffio f(fs);
+                auto bin = f.read_all(4096);
+                vlogd($(bin.size()));             
+                fs.close();
+            }
+            vlogw("read" $(t.to_string()));
+        });
+
+        vlogw($(t.to_string()));
+    }
+
+    vlogw("sleep_for start");
+    Ftimel::sleep(3000);
+    vlogw("sleep_for end");
+}
+
+
 int main(int argc, char *argv[])
 {
     // test_1();   
@@ -388,7 +454,9 @@ int main(int argc, char *argv[])
     // test_3();   
     // test_4();   
     // test_5();   
-    test_6();   
+    // test_6();   
+    // test_7();   
+    test_8();   
 
     return 0;
 }
