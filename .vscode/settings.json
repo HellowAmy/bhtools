@@ -1,6 +1,7 @@
 {
     "C_Cpp.errorSquiggles": "enabled",
     "files.associations": {
+        "*.qs": "javascript",
         "array": "cpp",
         "atomic": "cpp",
         "strstream": "cpp",
@@ -67,6 +68,7 @@
         "cfenv": "cpp",
         "cstring": "cpp",
         "forward_list": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "cassert": "cpp"
     }
 }

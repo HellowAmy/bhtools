@@ -145,9 +145,12 @@ if(ALL OR main_file)
     add_executable(main_file test/main_file.cpp)
 endif()
 
-
 if(ALL OR main_argv)
     add_executable(main_argv test/main_argv.cpp)
+endif()
+
+if(ALL OR main_async)
+    add_executable(main_async test/main_async.cpp)
 endif()
 
 # 生成目标
