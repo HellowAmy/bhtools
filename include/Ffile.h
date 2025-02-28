@@ -42,8 +42,17 @@ namespace bhtools {
                 else { return prefix + file_splitter() + file; }
             }
             return prefix + file; 
+        }  
+
+        // 判断文件夹存在
+        inline static bool is_exist_file(const std::string &path)
+        {
+            struct stat st;
+            int ret = lstat(path.c_str(),&st);
+            if(ret == 0 && (st.st_mode & S_IFREG)) { return true; } 
+            return false;
         }
-        
+
         // 判断文件夹存在
         inline static bool is_exist_dir(const std::string &path)
         {
@@ -360,7 +369,7 @@ struct Ffsys
 
     // 判断存在-文件
     inline static bool is_exist_file(const std::string &path)
-    { std::ifstream ifs(path); return ifs.good(); } 
+    { return bhtools_platform::is_exist_file(path); } 
 
     // 判断存在-文件夹
     inline static bool is_exist_dir(const std::string &path)
