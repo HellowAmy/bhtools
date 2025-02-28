@@ -572,6 +572,28 @@
             "preLaunchTask": "Run main_file",
             "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
         },
+        {
+            "name": "Run [main_file W]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main_file.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "e:/Strawberry/c/bin/gdb.exe",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Run main_file",
+            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
+        },
 
 
 

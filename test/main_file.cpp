@@ -12,34 +12,34 @@ using namespace bhtools;
 void test_1()
 {
     {
-        std::string f1 = "/home/red/open/github/bhtools/main.cpp";
+        std::string f1 = "../main.cpp";
         bool ret = Ffsys::is_exist_file(f1);
         BHTEST_EQUAL(ret,true);
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/test";
-        bool ret = Ffsys::is_exist_file(f1);
-        BHTEST_EQUAL(ret,true);
-    }
-
-    {
-        std::string f1 = "/home/red/open/github/bhtools/main2.cpp";
-        bool ret = Ffsys::is_exist_file(f1);
-        BHTEST_EQUAL(ret,false);
-    }
-    {
-        std::string f1 = "/home/red/open/github/bhtools/test2";
+        std::string f1 = "../test";
         bool ret = Ffsys::is_exist_file(f1);
         BHTEST_EQUAL(ret,false);
     }
 
     {
-        std::string f1 = "/home/red/open/github/bhtools/main.cpp";
+        std::string f1 = "../main2.cpp";
+        bool ret = Ffsys::is_exist_file(f1);
+        BHTEST_EQUAL(ret,false);
+    }
+    {
+        std::string f1 = "../test2";
+        bool ret = Ffsys::is_exist_file(f1);
+        BHTEST_EQUAL(ret,false);
+    }
+
+    {
+        std::string f1 = "../main.cpp";
         bool ret = Ffsys::is_file_type(f1);
         BHTEST_EQUAL(ret,true);
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/test";
+        std::string f1 = "../test";
         bool ret = Ffsys::is_dir_type(f1);
         BHTEST_EQUAL(ret,true);
     }
@@ -67,12 +67,12 @@ void test_1()
     }
 
     {
-        std::string f1 = "/home/red/open/github/bhtools/test";
+        std::string f1 = "../test";
         bool ret = Ffsys::is_file_type(f1);
         BHTEST_EQUAL(ret,false);
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/main.cpp";
+        std::string f1 = "../main.cpp";
         bool ret = Ffsys::is_dir_type(f1);
         BHTEST_EQUAL(ret,false);
     }
@@ -82,55 +82,60 @@ void test_1()
 void test_2()
 {
     {
-        std::string f1 = "/home/red/open/github/bhtools/build";
+        std::string f1 = "../build/test_file/level1/level1_0";
+        std::string ret = Ffsys::platform_path(f1);
+        vlogd($(ret));
+    }
+    {
+        std::string f1 = "../build";
         bool ret = Ffsys::is_exist_dir(f1);
         BHTEST_EQUAL(ret,true);
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/build/test_file";
+        std::string f1 = "../build/test_file";
         bool ret = Ffsys::is_exist_dir(f1);
         BHTEST_EQUAL(ret,false);
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/build/test_file2";
+        std::string f1 = "../build/test_file2";
         bool ret = Ffsys::create_dir(f1);
         BHTEST_EQUAL(ret,true);
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/build/test_file/level1/level1_0";
+        std::string f1 = "../build/test_file/level1/level1_0";
         bool ret = Ffsys::create_dir(f1);
         BHTEST_EQUAL(ret,false);
     }
 
     {
-        std::string f1 = "/home/red/open/github/bhtools/build/test_file/level1/level1_1";
-        std::string f2 = "/home/red/open/github/bhtools/build/test_file/level1/level1_2";
-        std::string f3 = "/home/red/open/github/bhtools/build/test_file/level1/level1_3";
-        bool ret1 = Ffsys::make_dir(f1);
-        bool ret2 = Ffsys::make_dir(f2);
-        bool ret3 = Ffsys::make_dir(f3);
+        std::string f1 = "../build/test_file/level1/level1_1";
+        std::string f2 = "../build/test_file/level1/level1_2";
+        std::string f3 = "../build/test_file/level1/level1_3";
+        bool ret1 = Ffsys::make_dir(Ffsys::platform_path(f1));
+        bool ret2 = Ffsys::make_dir(Ffsys::platform_path(f2));
+        bool ret3 = Ffsys::make_dir(Ffsys::platform_path(f3));
         BHTEST_EQUAL(ret1,true);
         BHTEST_EQUAL(ret2,true);
         BHTEST_EQUAL(ret3,true);
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/CMakeLists.txt";
-        std::string f2 = "/home/red/open/github/bhtools/CMakeLists2.txt";
+        std::string f1 = "../CMakeLists.txt";
+        std::string f2 = "../CMakeLists2.txt";
         bool ret = Ffsys::copy_file(f1,f2);
         BHTEST_EQUAL(ret,true);
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/CMakeLists2.txt";
-        std::string f2 = "/home/red/open/github/bhtools/build/test_file/CMakeLists.txt";
+        std::string f1 = "../CMakeLists2.txt";
+        std::string f2 = "../build/test_file/CMakeLists.txt";
         bool ret = Ffsys::move_file(f1,f2);
         BHTEST_EQUAL(ret,true);
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/build/test_file/CMakeLists.txt";
-        std::string f2 = "/home/red/open/github/bhtools/build/test_file/CMakeLists2.txt";
-        std::string f3 = "/home/red/open/github/bhtools/build/test_file/CMakeLists3.txt";
-        std::string f4 = "/home/red/open/github/bhtools/build/test_file/CMakeLists4.txt";
-        std::string f5 = "/home/red/open/github/bhtools/build/test_file/CMakeLists5.txt";
+        std::string f1 = "../build/test_file/CMakeLists.txt";
+        std::string f2 = "../build/test_file/CMakeLists2.txt";
+        std::string f3 = "../build/test_file/CMakeLists3.txt";
+        std::string f4 = "../build/test_file/CMakeLists4.txt";
+        std::string f5 = "../build/test_file/CMakeLists5.txt";
         bool ret1 = Ffsys::copy_file(f1,f2);
         bool ret2 = Ffsys::copy_file(f1,f3);
         bool ret3 = Ffsys::copy_file(f1,f4);
@@ -141,23 +146,23 @@ void test_2()
         BHTEST_EQUAL(ret4,true);
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/build/test_file/CMakeLists3.txt";
-        std::string f2 = "/home/red/open/github/bhtools/build/test_file/CMakeLists33.txt";
+        std::string f1 = "../build/test_file/CMakeLists3.txt";
+        std::string f2 = "../build/test_file/CMakeLists33.txt";
         bool ret = Ffsys::move_file(f1,f2);
         BHTEST_EQUAL(ret,true);
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/build/test_file/CMakeLists4.txt";
+        std::string f1 = "../build/test_file/CMakeLists4.txt";
         bool ret = Ffsys::remove_file(f1);
         BHTEST_EQUAL(ret,true);
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/build/test_file/level1/level1_2/1";
-        std::string f2 = "/home/red/open/github/bhtools/build/test_file/level1/level1_2/2";
-        std::string f3 = "/home/red/open/github/bhtools/build/test_file/level1/level1_3/CMakeLists1.txt";
-        std::string f4 = "/home/red/open/github/bhtools/build/test_file/level1/level1_3/CMakeLists2.txt";
-        std::string f5 = "/home/red/open/github/bhtools/build/test_file/level1/level1_3/CMakeLists3.txt";
-        std::string f6 = "/home/red/open/github/bhtools/build/test_file/CMakeLists.txt";
+        std::string f1 = "../build/test_file/level1/level1_2/1";
+        std::string f2 = "../build/test_file/level1/level1_2/2";
+        std::string f3 = "../build/test_file/level1/level1_3/CMakeLists1.txt";
+        std::string f4 = "../build/test_file/level1/level1_3/CMakeLists2.txt";
+        std::string f5 = "../build/test_file/level1/level1_3/CMakeLists3.txt";
+        std::string f6 = "../build/test_file/CMakeLists.txt";
         bool ret1 = Ffsys::make_dir(f1);
         bool ret2 = Ffsys::make_dir(f2);
         bool ret3 = Ffsys::copy_file(f6,f3);
@@ -174,27 +179,27 @@ void test_2()
 void test_3()
 {
     {
-        auto vec = Ffsys::get_files("/home/red/open/github/bhtools/build/test_file");
+        auto vec = Ffsys::get_files(Ffsys::platform_path("../build/test_file/"));
         vlogd($C(vec));
     }
     {
-        auto vec = Ffsys::get_dirs("/home/red/open/github/bhtools/build/test_file");
+        auto vec = Ffsys::get_dirs(Ffsys::platform_path("../build/test_file/"));
         vlogd($C(vec));
     }
     {
-        auto vec = Ffsys::get_files("/home/red/open/github/bhtools/build/test_file",false);
+        auto vec = Ffsys::get_files(Ffsys::platform_path("../build/test_file"),false);
         vlogd($C(vec));
     }
     {
-        auto vec = Ffsys::get_dirs("/home/red/open/github/bhtools/build/test_file",false);
+        auto vec = Ffsys::get_dirs(Ffsys::platform_path("../build/test_file"),false);
         vlogd($C(vec));
     }
     {
-        auto tup = Ffsys::get_files_and_dirs("/home/red/open/github/bhtools/build/test_file",true);
+        auto tup = Ffsys::get_files_and_dirs(Ffsys::platform_path("../build/test_file"),true);
         vlogd($C(std::get<0>(tup)) $C(std::get<1>(tup)));
     }
     {
-        auto tup = Ffsys::get_files_and_dirs("/home/red/open/github/bhtools/build/test_file",false);
+        auto tup = Ffsys::get_files_and_dirs(Ffsys::platform_path("../build/test_file"),false);
         vlogd($C(std::get<0>(tup)) $C(std::get<1>(tup)));
     }
 }
@@ -202,17 +207,17 @@ void test_3()
 void test_4()
 {
     {
-        std::string f1 = "/home/red/open/github/bhtools/build/test_file";
+        std::string f1 = "../build/test_file";
         bool ret = Ffsys::remove_dir(f1);
         BHTEST_EQUAL(ret,true);
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/build/test_file2";
+        std::string f1 = "../build/test_file2";
         bool ret = Ffsys::remove_dir(f1);
         BHTEST_EQUAL(ret,true);
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/build/delete";
+        std::string f1 = "../build/delete";
         bool ret = Ffsys::remove_dir(f1);
         BHTEST_EQUAL(ret,true);
     }
@@ -221,18 +226,18 @@ void test_4()
 void test_5()
 {
     {
-        std::string f1 = "/home/red/open/github/bhtools/build/test_file/CMakeLists4.txt";
+        std::string f1 = "../build/test_file/CMakeLists4.txt";
         std::string ret = Ffsys::get_suffix(f1);
         BHTEST_EQUAL(ret,"txt");
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/build/test_file/CMakeLists4.txt";
-        std::string ret = Ffsys::get_name(f1);
+        std::string f1 = "../build/test_file/CMakeLists4.txt";
+        std::string ret = Ffsys::get_name(Ffsys::platform_path(f1));
         BHTEST_EQUAL(ret,"CMakeLists4.txt");
     }
     {
-        std::string f1 = "/home/red/open/github/bhtools/build/test_file/CMakeLists4.txt";
-        std::string ret = Ffsys::get_basename(f1);
+        std::string f1 = "../build/test_file/CMakeLists4.txt";
+        std::string ret = Ffsys::get_basename(Ffsys::platform_path(f1));
         BHTEST_EQUAL(ret,"CMakeLists4");
     }
 }
@@ -241,7 +246,7 @@ void test_6()
 {
     {
         vlogw("");
-        std::fstream fs("/home/red/open/github/bhtools/CMakeLists.txt");
+        std::fstream fs("../CMakeLists.txt");
         if(fs.is_open())
         {
             Ffio f(fs);
@@ -255,7 +260,7 @@ void test_6()
     }
     {
         vlogw("");
-        std::fstream fs("/home/red/open/github/bhtools/CMakeLists.txt");
+        std::fstream fs("../CMakeLists.txt");
         if(fs.is_open())
         {
             Ffio f(fs);
@@ -266,7 +271,7 @@ void test_6()
     }
     {
         vlogw("");
-        std::fstream fs("/home/red/open/github/bhtools/build/CMakeLists11.txt",std::ios::out);
+        std::fstream fs("../build/CMakeLists11.txt",std::ios::out);
         if(fs.is_open())
         {
             std::string s1 = "123456789";
@@ -286,7 +291,7 @@ void test_6()
     }
     {
         vlogw("");
-        std::fstream fs("/home/red/open/github/bhtools/build/CMakeLists11.txt");
+        std::fstream fs("../build/CMakeLists11.txt");
         if(fs.is_open())
         {
             Ffio f(fs);
@@ -297,7 +302,7 @@ void test_6()
     }
     {
         vlogw("");
-        std::fstream fs("/home/red/open/github/bhtools/build/CMakeLists22.txt",std::ios::out);
+        std::fstream fs("../build/CMakeLists22.txt",std::ios::out);
         if(fs.is_open())
         {
             std::string ss = R"(
@@ -324,8 +329,8 @@ endfunction()
     }
     {
         vlogw("");
-        std::fstream fs("/home/red/open/github/bhtools/CMakeLists.txt");
-        std::fstream ofs("/home/red/open/github/bhtools/build/CMakeLists33.txt",std::ios::out);
+        std::fstream fs("../CMakeLists.txt",std::ios::in);
+        std::fstream ofs("../build/CMakeLists33.txt",std::ios::out);
         if(fs.is_open())
         {
             Ffio f(fs);
@@ -341,8 +346,8 @@ endfunction()
     }
     {
         vlogw("");
-        std::fstream fs("/home/red/open/github/bhtools/CMakeLists.txt",std::ios::in|std::ios::binary);
-        std::fstream ofs("/home/red/open/github/bhtools/build/CMakeLists44.txt",std::ios::out);
+        std::fstream fs("../CMakeLists.txt",std::ios::in|std::ios::binary);
+        std::fstream ofs("../build/CMakeLists44.txt",std::ios::out|std::ios::binary);
         if(fs.is_open())
         {
             Ffio f(fs);
@@ -358,7 +363,7 @@ endfunction()
     }
     {
         vlogw("");
-        std::fstream fs("/home/red/open/github/bhtools/CMakeLists.txt");
+        std::fstream fs("../CMakeLists.txt");
         if(fs.is_open())
         {
             Ffio f(fs);
@@ -387,7 +392,7 @@ void test_7()
 {
     {
         vlogw("");
-        std::fstream fs("/home/red/open/github/bhtools/CMakeLists.txt");
+        std::fstream fs("../CMakeLists.txt");
         if(fs.is_open())
         {
             Ffio f(fs);

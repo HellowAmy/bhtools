@@ -7,6 +7,17 @@
 #include <vector>
 #include "Fstm.h"
 
+#ifdef __linux__
+    #include <sys/stat.h>
+    #include <dirent.h>
+    #include <cstdio>
+    #include <unistd.h>
+#elif __WIN32__
+    #include <Windows.h>
+    #include <cstdio>
+    #include <sys/stat.h>
+    #include <string>
+#endif
 
 namespace bhtools {
 
@@ -14,10 +25,6 @@ namespace bhtools {
 // 跨平台处理函数
 #ifdef __linux__
     namespace bhtools_platform {
-        #include <sys/stat.h>
-        #include <dirent.h>
-        #include <cstdio>
-        #include <unistd.h>
 
         // 分隔符
         inline static std::string file_splitter() { return "/"; }
@@ -166,12 +173,155 @@ namespace bhtools {
 
 
     } // bhtools_platform
-#elif
+#elif __WIN32__
+
     namespace bhtools_platform {
 
-        // //
-        // static bool is_file_type(const std::string &file)
-        // { return false; }
+        // 分隔符
+        inline static std::string file_splitter() { return "\\"; }
+
+        // 换行符
+        inline static std::string file_break() { return "\r\n"; }
+
+        // 合并路径
+        inline static std::string path_merge(const std::string &prefix,const std::string &file) 
+        {
+            if(prefix.size() > 0)
+            {
+                std::string sp = prefix.substr(prefix.size() - file_splitter().size());
+                if(sp == file_splitter()) { return prefix + file; }
+                else { return prefix + file_splitter() + file; }
+            }
+            return prefix + file; 
+        }
+
+        // 判断文件夹存在
+        inline static bool is_exist_dir(const std::string &path)
+        {
+            struct stat info;
+            if(stat(path.c_str(), &info) == 0) 
+            { return true; }
+            return false;
+        }
+
+        // 判断为文件
+        inline static bool is_file_type(const std::string &path)
+        {
+            struct stat info;
+            stat(path.c_str(), &info);
+            if(S_ISREG(info.st_mode)) { return true; }
+            return false;
+        }
+
+        // 判断为目录
+        inline static bool is_dir_type(const std::string &path)
+        {
+            struct stat info;
+            stat(path.c_str(), &info);
+            if(S_ISDIR(info.st_mode)) { return true; }
+            return false;
+        }
+
+        // 删除文件
+        inline static bool remove_file(const std::string &file)
+        { return remove(file.c_str()) == 0; }
+
+        // 移动文件
+        inline static bool move_file(const std::string &src,const std::string &dst)
+        { return rename(src.c_str(), dst.c_str()) == 0; }
+
+        // 创建单层目录
+        inline static bool create_dir(const std::string &dir,int mode)
+        { return (!dir.empty() && !is_exist_dir(dir) && (mkdir(dir.c_str()) != 0)) == false; }
+
+        // 创建多层目录
+        inline static bool make_dir(const std::string &dir,int mode)
+        {
+            size_t pos = 0;
+            std::string level;
+            while((pos = dir.find(file_splitter(), pos)) != std::string::npos) 
+            {
+                level = dir.substr(0, pos);
+                if(create_dir(level,mode) == false)
+                { return false; }
+                pos++;
+            }
+            if(pos != dir.size())
+            { level = dir.substr(0, dir.size()); }
+
+            if(create_dir(level,mode) == false) { return false; }
+            return true;
+        }
+
+        // 获取文件与目录列表
+        inline static bool get_dir_info(std::string path,
+                                        std::vector<std::string> &files,
+                                        std::vector<std::string> &dirs,
+                                        bool recursion)
+        {
+            if(path[path.size() -1] != bhtools_platform::file_splitter()[0])
+            { path += bhtools_platform::file_splitter(); }
+            
+            WIN32_FIND_DATA fdata;
+            HANDLE hfile = FindFirstFileA(std::string(path + "*").c_str(), &fdata);
+            if(hfile != INVALID_HANDLE_VALUE)
+            {
+                std::vector<std::string> level;
+                do {
+                    if(std::string(fdata.cFileName) != "." && std::string(fdata.cFileName) != "..")
+                    {
+                        std::string path_name = bhtools_platform::path_merge(path,std::string(fdata.cFileName));
+                        if(is_dir_type(path_name))
+                        { level.push_back(path_name); }
+                        else { files.push_back(path_name); }
+                    }
+                } while (FindNextFile(hfile, &fdata) != 0);
+
+                for(auto &a : level)
+                {
+                    dirs.push_back(a); 
+                    if(recursion) 
+                    { get_dir_info(a + file_splitter(),files,dirs,recursion); }
+                }
+                FindClose(hfile);
+                return true;
+            }
+            return false;
+        }
+
+        // 删除文件
+        inline static bool rm_file(const std::string &path)
+        { return remove(path.c_str()) == 0; }
+
+        // 删除空目录
+        inline static bool rm_dir(const std::string &path)
+        { return rmdir(path.c_str()) == 0; }
+
+        // 删除目录包括目录下所有内容
+        inline static bool remove_dir(const std::string &dir)
+        {
+            std::vector<std::string> files;
+            std::vector<std::string> dirs;
+            if(bhtools_platform::get_dir_info(dir,files,dirs,true))
+            {
+                for(auto it = files.rbegin();it != files.rend();it++)
+                {   
+                    if(bhtools_platform::rm_file(*it) == false)
+                    { return false; }
+                }
+                for(auto it = dirs.rbegin();it != dirs.rend();it++)
+                {   
+                    if(bhtools_platform::rm_dir(*it) == false)
+                    { return false; }
+                }
+                if(bhtools_platform::rm_dir(dir) == false)
+                { return false; }
+
+                return true;
+            }
+            return false;
+        }
+
 
     } // bhtools_platform
 #endif
@@ -181,6 +331,33 @@ namespace bhtools {
 // 文件处理类-提供跨平台处理文件与目录的功能
 struct Ffsys
 {
+    // 平台分割符
+    inline static std::string splitter_linux() { return "/"; }
+    inline static std::string splitter_win32() { return "\\"; }
+
+    // 替换字符串
+    inline static std::string replace_str(std::string str, const std::string& from, const std::string& to) 
+    {
+        size_t pos = 0;
+        while ((pos = str.find(from, pos)) != std::string::npos) 
+        {
+            str.replace(pos, from.length(), to);
+            pos++;
+        }
+        return str;
+    }
+
+    // 替换为当前平台路径
+    inline static std::string platform_path(std::string path)
+    {
+        std::string sp = bhtools_platform::file_splitter();
+        if(sp == splitter_linux())
+        { path = replace_str(path,splitter_win32(),sp); }
+        else 
+        { path = replace_str(path,splitter_linux(),sp); }
+        return path;
+    }
+
     // 判断存在-文件
     inline static bool is_exist_file(const std::string &path)
     { std::ifstream ifs(path); return ifs.good(); } 
