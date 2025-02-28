@@ -205,6 +205,15 @@ namespace bhtools {
         }
 
         // 判断文件夹存在
+        inline static bool is_exist_file(const std::string &path)
+        {
+            struct stat info;
+            int ret = stat(path.c_str(),&info);
+            if(ret == 0 && S_ISREG(info.st_mode)) { return true; } 
+            return false;
+        }
+
+        // 判断文件夹存在
         inline static bool is_exist_dir(const std::string &path)
         {
             struct stat info;
