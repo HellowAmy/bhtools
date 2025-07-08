@@ -155,3 +155,9 @@ endif()
 
 # 生成目标
 add_executable(${CMAKE_PROJECT_NAME} main.cpp)
+
+# 安装头文件到目录
+set(CMAKE_INSTALL_PREFIX install/bhtools)
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
+    DESTINATION .
+)
