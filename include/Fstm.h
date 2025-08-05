@@ -5,7 +5,7 @@
 #include <string>
 #include <algorithm>
 
-#include "Tbase.h"
+#include "Tstr.h"
 
 namespace bhtools {
 
@@ -71,6 +71,8 @@ struct Fstm
     inline std::string operator()(const Tarr &...arg)
     {   return section(arg...); }
 
+
+    // internal
     // 修正传入负数参数所属的部分
     inline static int revise_reverse_index(int index)
     {
@@ -91,7 +93,7 @@ struct Fstm
         for(size_t i=0;i<part;i++)
         {
             if(over) { return 0; }
-            auto btup = Ffinds::find_sub(str,sub,index);
+            auto btup = Tstr::find_sub(str,sub,index);
             if(std::get<0>(btup))
             {
                 index = std::get<1>(btup);
@@ -103,10 +105,8 @@ struct Fstm
         return index;
     }
 
-
     std::string _str;   // 存储需切割字符-处理结束时返回的结果
 };
-
 
 
 } // bhtools

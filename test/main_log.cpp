@@ -42,6 +42,16 @@ void test_1()
     }
     vlogd($C(vec));
     vlogd($C(mp));
+
+    // 地址打印
+    const char *pnull = nullptr;
+    // vlogd($S(&a1));
+    // vlogd($S(&a2));
+    // vlogd($S(&pnull));
+    vlogd($(&pnull));
+    vlogd($((void*)&pnull));
+    vlogd($(&a1));
+    vlogd($((void*)&a2));
 }
 
 void test_2()
@@ -209,10 +219,10 @@ void test_4()
 
 int main(int argc, char *argv[])
 {
-    // test_1();
+    test_1();
     // test_2();
     // test_3();
-    test_4();
+    // test_4();
 
     return 0;
 }

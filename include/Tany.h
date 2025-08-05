@@ -6,8 +6,6 @@
 #include <typeindex>
 #include <memory>
 
-#include "Topt.h"
-
 namespace bhtools {
 
 
@@ -67,6 +65,16 @@ struct Tany
     // 释放保存值
     ~Tany() { reset(); }
 
+    // 查询使用的类型
+    template<typename T>
+    bool use() { return _type == std::type_index(typeid(T)) && _val != nullptr; }
+
+    // 直接返回保存值-需要先查询
+    template<typename T>
+    T& value() { return (static_cast<type_pack<T>*>(_val))->_val; }
+
+
+    // internal
     // 构造传入值时创建新的保存值指针
     template<typename T>
     void set(const T &val)
@@ -89,23 +97,7 @@ struct Tany
         _type = std::type_index(typeid(void));
         if(_val) { delete _val; _val = nullptr; }
     }
-
-    // 查询使用的类型
-    template<typename T>
-    bool use() { return _type == std::type_index(typeid(T)) && _val != nullptr; }
-
-    // 直接返回保存值-需要先查询
-    template<typename T>
-    T& value() { return (static_cast<type_pack<T>*>(_val))->_val; }
-
-    // 返回较为安全的可选版本
-    template<typename T>
-    Topt<T> value_opt()
-    {
-        if(use<T>) { return Topt<T>(value<T>()); }
-        return Topt<T>();
-    }
-
+ 
     // 用于拷贝构造复制对象保存值
     type_base* copy() const
     { 
@@ -113,11 +105,9 @@ struct Tany
         return nullptr;
     }
 
-
     std::type_index _type;      // 保存值得类型
     type_base *_val = nullptr;  // 保存值的无类型指针
 };
-
 
 
 } // bhtools

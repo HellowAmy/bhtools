@@ -4,8 +4,8 @@
 
 #include <iostream>
 #include <vector>
-#include "Fstm.h"
 
+#include "Fstm.h"
 
 namespace bhtools {
 
@@ -128,13 +128,14 @@ struct Fargv
         return "";
     }
 
+
+    // internal
     // 判断字符串是否存在子串
     inline static bool is_exist_sub(const std::string &str,const std::string &sub)
     {
-        auto tup = Ffinds::find_sub(str,sub);
+        auto tup = Tstr::find_sub(str,sub);
         return std::get<0>(tup);
     }
-
 
     std::vector<std::string> _vec;      // 存储所有传入的参数
 };

@@ -180,7 +180,6 @@ namespace bhtools {
             return false;
         }
 
-
     } // bhtools_platform
 #elif __WIN32__
 
@@ -340,10 +339,8 @@ namespace bhtools {
             return false;
         }
 
-
     } // bhtools_platform
 #endif
-
 
 
 // 文件处理类-提供跨平台处理文件与目录的功能
@@ -585,13 +582,10 @@ struct Ffio
         _fs->seekg(gnow + len,std::ios::beg);
     }
 
-
     std::fstream *_fs = nullptr;    // 操作的文件指针
 };
 
 
-
 } // bhtools
-
 
 #endif // FFILE_H

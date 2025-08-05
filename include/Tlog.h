@@ -14,8 +14,9 @@
 #include <mutex>
 #include <memory>
 
+#include "Tstr.h"
 #include "Ftime.h"
-#include "Tbase.h"
+// #include "Tbase.h"
 #include "Tsin.h"
 #include "Fstm.h"
 
@@ -46,7 +47,7 @@ struct Tlog_buf
 { 
     template<typename T>
     inline void push(const T &val) 
-    { _str += Tto_string(val); }
+    { _str += Tstr::to_string(val); }
 
     inline void clear() 
     { _str.clear(); }
@@ -370,7 +371,7 @@ struct Tlog_con
         for(const auto &a:con)
         {
             if(len != 0 && count >= len) { count = 0; ret += "\n" + prev; }
-            ret += Tto_string(a) + flg;
+            ret += Tstr::to_string(a) + flg;
             count++;
         }
         ret += "\n";
@@ -527,7 +528,6 @@ struct Tsin_log_conf
 // 快捷打印操作
 #define $(value) "["#value": "<<value<<"] "
 #define $C(value) "["#value": "<<bhtools::Tlog_con::print(value)<<"] "
-#define $S(value) "["#value": "<<Tsstream_string()(value)<<"] "
 
 
 } // bhtools

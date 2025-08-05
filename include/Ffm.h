@@ -7,7 +7,7 @@
 #include <tuple>
 #include <algorithm>
 
-#include "Tbase.h"
+#include "Tstr.h"
 
 namespace bhtools {
 
@@ -36,11 +36,13 @@ struct Fsfm : public Ffm_base
     inline std::string operator()(const Tarr &...arg)
     { return fms(arg...); }
 
+
+    // internal
     // 解析参数到容器-可随机位置替换
     template<typename T,typename ...Tarr>
     inline std::string fms(T && val,const Tarr &...arg)
     {
-        _vec.push_back(Tto_string(std::forward<T>(val)));
+        _vec.push_back(Tstr::to_string(std::forward<T>(val)));
         return fms(arg...);
     }
 
@@ -53,27 +55,26 @@ struct Fsfm : public Ffm_base
         size_t offset = 0;
         while(true)
         {
-            auto tsub = Ffinds::find_range(_str,strb(),stre(),offset);
+            auto tsub = Tstr::find_range(_str,strb(),stre(),offset);
             if(std::get<0>(tsub))
             {
-                ret += Ffinds::section_range(_str,offset,std::get<1>(tsub));
+                ret += Tstr::section_range(_str,offset,std::get<1>(tsub));
                 size_t index = 0;
-                bool ok = Tfrom_string(std::get<3>(tsub),index);
+                bool ok = Tstr::from_string(std::get<3>(tsub),index);
 
                 if(ok && index < _vec.size()) { ret += _vec[index]; }
-                else { ret += Ffinds::section_range(_str,std::get<1>(tsub),std::get<2>(tsub) +1); }
+                else { ret += Tstr::section_range(_str,std::get<1>(tsub),std::get<2>(tsub) +1); }
 
                 offset = std::get<2>(tsub) +1;
             }
             else { break; }
         }
-        ret += Ffinds::section_range(_str,offset,_str.size());
+        ret += Tstr::section_range(_str,offset,_str.size());
         return ret;
     }
 
     std::vector<std::string> _vec;  // 存储参数容器
 };
-
 
 
 // 快速格式化-不支持随机位置-单字符时速度提升一倍
@@ -94,23 +95,28 @@ struct Fffm : public Ffm_base
         else { return sfms(arg...); }
     }
 
+
+    // internal
     // 查找并格式化字符串-单字符
     template<typename T,typename ...Tarr>
     inline std::string cfms(T && val,const Tarr &...arg)
     {
-        if(proc(Tto_string(val),_cfb,_cfe)) { return cfms(arg...); }
+        if(proc(Tstr::to_string(val),_cfb,_cfe)) { return cfms(arg...); }
         return cfms();
     }
+
+    // 终止函数
+    inline std::string cfms() { return fms(); }
 
     // 查找并格式化字符串-多字符
     template<typename T,typename ...Tarr>
     inline std::string sfms(T && val,const Tarr &...arg)
     {
-        auto tsub = Ffinds::find_range(_str,strb(),stre(),_offset);
+        auto tsub = Tstr::find_range(_str,strb(),stre(),_offset);
         if(std::get<0>(tsub))
         {
-            _ret += Ffinds::section_range(_str,_offset,std::get<1>(tsub));
-            _ret += Tto_string(val);
+            _ret += Tstr::section_range(_str,_offset,std::get<1>(tsub));
+            _ret += Tstr::to_string(val);
             _offset = std::get<2>(tsub) +1;
             return sfms(arg...);
         }
@@ -120,16 +126,12 @@ struct Fffm : public Ffm_base
     // 终止函数
     inline std::string sfms() { return fms(); }
 
-    // 终止函数
-    inline std::string cfms() { return fms(); }
-
     // 退出时回收尾部字符
     inline std::string fms()
     {
-        _ret += Ffinds::section_range(_str,_offset,_str.size());
+        _ret += Tstr::section_range(_str,_offset,_str.size());
         return _ret;
     }
-
 
     // 单字符时优化-速度翻倍
     inline bool proc(const std::string &val,char fb,char fe)
@@ -153,6 +155,5 @@ struct Fffm : public Ffm_base
 
 
 } // bhtools
-
 
 #endif // FFM_H
