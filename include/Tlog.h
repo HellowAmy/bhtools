@@ -16,7 +16,6 @@
 
 #include "Tstr.h"
 #include "Ftime.h"
-// #include "Tbase.h"
 #include "Tsin.h"
 #include "Fstm.h"
 
@@ -522,7 +521,7 @@ struct Tsin_log_conf
     { _afile._out.exit_th(); }
 
     static Tsin_log_conf* get() 
-    { return Tsins<Tsin_log_conf>::get(); }
+    { return Tsind<Tsin_log_conf>::get(); }
 };
 
 // 快捷打印操作

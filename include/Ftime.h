@@ -87,6 +87,7 @@ struct Ftimel
     { std::this_thread::sleep_for(std::chrono::milliseconds(ms)); }
 
 
+    // internal
     time_point _begin;              //用于计算上一个时间点
     std::vector<std::string> _vec;  //多点打印记录
 };
@@ -131,7 +132,6 @@ struct Ftimes
         size_t mon;
         size_t yea;
     };
-
 
     // 当前时间的C-tm格式时间
     inline static std::string to_ctime(const std::string &format = "[ %Y-%m-%d.%H:%M:%S ]")
@@ -216,7 +216,6 @@ struct Ftimes
         return d;
     }
 
-
     // 格式化日期格式-格式的替换字符如下-[%XC][百分号加字符串长度加类型]
     // %4Y-%2M-%2D.%2H:%2T:%2S.%3L.%3C.%3N >>>> 2024-09-02.15:44:28.804.245.495
     inline static std::string format_time(const data &d,const std::string &fm = "%4Y-%2M-%2D.%2H:%2T:%2S.%3L.%3C.%3N")
@@ -253,6 +252,8 @@ struct Ftimes
         return ret;
     }
 
+
+    // internal
     // 格式化为指定长度的字符串
     inline static std::string to_time_len(size_t time,size_t len,bool reverse = false)
     {
@@ -271,7 +272,6 @@ struct Ftimes
         }
         return s;
     }
-
 
     // 得到传入年的每月累加分部天数-包括润年
     inline static const std::vector<size_t>& get_month_leap(int64_t year)
@@ -310,8 +310,5 @@ struct Ftimes
 
 
 } // bhtools
-
-
-
 
 #endif // FTIME_H

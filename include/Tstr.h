@@ -103,7 +103,6 @@ struct Tstr
         }
         return ret;
     }
-
 };
 
 

@@ -42,6 +42,34 @@ struct Ttimer
     // 析构时退出事件循环
     ~Ttimer() { close_timer(); }
 
+    // 加入定时任务到执行队列
+    inline size_t push(Tduration delay,std::function<void(size_t)> fn,size_t active = 1)
+    {
+        task ct;
+        ct._id = _count++;
+        ct._start = time_now() + delay;
+        ct._delay = Tduration(delay);
+        ct._active = active;
+        ct._task = fn;
+        if(active == 0) { ct._never = true; }
+        else { ct._never = false; }
+
+        insert_task_th(ct);
+        return ct._id;
+    }
+
+    // 加入定时任务到执行队列-重载
+    inline size_t push(size_t delay,std::function<void(size_t)> fn,size_t active = 1)
+    { return push(std::chrono::duration_cast<Tduration>(Tduration(delay)),fn,active); }
+
+    // 移除指定ID定时任务
+    inline bool remove(size_t id) { return remove_task_th(id); }
+
+    // 关闭定时器
+    inline void close_timer() { _run = false; }
+
+
+    // internal
     // 开始定时器时间循环
     inline void start_event_loop()
     {
@@ -75,46 +103,6 @@ struct Ttimer
             else { break; }
         }
     }
-
-    // 加入定时任务到执行队列
-    inline size_t push(Tduration delay,std::function<void(size_t)> fn,size_t active = 1)
-    {
-        task ct;
-        ct._id = _count++;
-        ct._start = time_now() + delay;
-        ct._delay = Tduration(delay);
-        ct._active = active;
-        ct._task = fn;
-        if(active == 0) { ct._never = true; }
-        else { ct._never = false; }
-
-        insert_task_th(ct);
-        return ct._id;
-    }
-
-    // 加入定时任务到执行队列-重载
-    inline size_t push(size_t delay,std::function<void(size_t)> fn,size_t active = 1)
-    { return push(std::chrono::duration_cast<Tduration>(Tduration(delay)),fn,active); }
-
-    // 移除指定ID定时任务
-    inline bool remove(size_t id) { return remove_task_th(id); }
-
-    // 关闭定时器
-    inline void close_timer() { _run = false; }
-
-    // 重启定时器
-    inline void restart_timer()
-    { 
-        close_timer();
-        std::this_thread::sleep_for(Tduration(Tinterval * 2));
-        if(_run == false) 
-        { 
-            _run = true;
-            _works.push(&Ttimer::start_event_loop,this);
-        } 
-    }
-
-
 
     // 加入任务到堆树排队
     inline void insert_task_th(const task &ct)
@@ -151,7 +139,6 @@ struct Ttimer
         return std::chrono::duration_cast<Tduration>(now);
     }
 
-
     bool _run = true;                       // 事件循环运行标记
     size_t _count = 0;                      // 任务数量累计-并作为新的任务ID发布
     std::mutex _mut;                        // 定时器任务锁
@@ -161,6 +148,5 @@ struct Ttimer
 
 
 } // bhtools
-
 
 #endif // TTIMER_H

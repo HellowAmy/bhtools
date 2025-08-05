@@ -17,6 +17,7 @@ template <typename Tval = nullptr_t>
 struct Tasync
 {
     Tasync() {}
+    
     ~Tasync() { quit_th(); }
 
     // 首先任务
@@ -123,6 +124,7 @@ struct Tasync
     bool is_run() { return _run; }
 
 
+    // internal
     bool _suc = false;              // 运算结果是否成功
     bool _run = false;              // 继续执行标记
     Tval _val;                      // 运行结果值
@@ -136,8 +138,5 @@ struct Tasync
 
 
 } // bhtools
-
-
-
 
 #endif // TASYNC_H

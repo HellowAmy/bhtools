@@ -44,12 +44,11 @@ struct Tpublish
         }
     }
 
-
+    // internal
     std::set<Tsub<Targ>*> _sub;    // 存储同类型订阅者
 };
 
 
 } // bhtools
-
 
 #endif // TPUBLISH_H

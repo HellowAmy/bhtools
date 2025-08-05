@@ -10,7 +10,6 @@
 #include <future>
 #include <functional>
 
-
 namespace bhtools {
 
 
@@ -65,6 +64,7 @@ struct Tpool
     }
 
 
+    // internal
     bool _run = true;                           // 运行标记
     std::mutex _mut;                            // 线程池锁
     std::condition_variable _cond;              // 条件变量
@@ -73,11 +73,6 @@ struct Tpool
 };
 
 
-// 全局线程池
-static Tpool<> *_sp_pool_ = new Tpool<>;
-
-
 } // bhtools
-
 
 #endif // TPOOL_H

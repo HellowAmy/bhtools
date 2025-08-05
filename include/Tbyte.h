@@ -13,9 +13,6 @@
 #endif
 
 
-namespace bhtools {
-
-
 // 检测系统定义的字节序
 #ifndef BIG_ENDIAN
     #define BIG_ENDIAN 4321
@@ -54,10 +51,8 @@ namespace bhtools {
     #define BHEND_NOW
 #endif
 
-//
-//
-//
-//
+namespace bhtools {
+
 
 // 最高位为1的值-主要用于高位右移判断-
 static const uint8_t  _BH_ONE_HIGH_INT08_   = (1UL << 7);
@@ -100,7 +95,7 @@ struct Tendian
     template<typename T>
     inline static T to_host(T val)
     {
-        #if IS_BIG_ENDIAN
+        #if BHEND_IS_BIG
             return val;
         #else
             return swap_endian(val);
@@ -111,7 +106,7 @@ struct Tendian
     template<typename T>
     inline static T to_net(T val)
     {
-        #if IS_BIG_ENDIAN
+        #if BHEND_IS_BIG
             return val;
         #else
             return swap_endian(val);
@@ -150,7 +145,6 @@ struct Tbyte
         { ret += b2_s2<char>(mem[i]); }
         return ret;
     }
-
 
     // 2进制转8进制字符串
     template<typename T>
@@ -397,11 +391,9 @@ struct Tbyte
         { sum *= val; }
         return sum; 
     }
-
 };
 
 
 } // bhtools
-
 
 #endif // TBYTE_H

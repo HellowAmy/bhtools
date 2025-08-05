@@ -13,7 +13,7 @@ namespace bhtools {
 template<typename T>
 struct Theap_comp_max
 {
-    inline static bool comp(T a, T b)
+    inline static bool comp(const T &a, const T &b)
     {
         if(a > b) { return true; } 
         return false;
@@ -25,7 +25,7 @@ struct Theap_comp_max
 template<typename T>
 struct Theap_comp_min
 {
-    inline static bool comp(T a, T b)
+    inline static bool comp(const T &a, const T &b)
     {
         if(a < b) { return true; } 
         return false;
@@ -43,7 +43,7 @@ struct Theap_node
     Theap_node *_parent = nullptr;  // 父节点
     Theap_node *_right = nullptr;   // 右节点
     Theap_node *_left = nullptr;    // 左节点
-    T _value;                       // 存储的值
+    T _value;                       // 存储值
 };
 
 
@@ -206,7 +206,7 @@ struct Theap
     inline bool is_exist(Tval val) { return find_node() != nullptr; }
 
 
-
+    // internal
     // 找到节点指向的指针-未找到返回NULL
     inline Theap_node<Tval>* find_node(Tval val)
     {
@@ -356,15 +356,25 @@ struct Theap
         return tnode;
     }
 
-
     size_t _size = 0;                               // 堆树大小
     Theap_node<Tval> *_root = nullptr;              // 根节点-总是存在
     Theap_node<Tval> *_tail = nullptr;              // 尾节点-总是指向下一个加入的位置
     static const size_t _max_one = (1UL << 63);     // 最高位对比标记
 };
 
+//
+//
+//
+//
+
+// 定义快捷使用类型
+template <typename T> 
+using Theap_max = Theap<T,Theap_comp_max>;
+
+template <typename T>
+using Theap_min = Theap<T,Theap_comp_min>;
+
 
 } // bhtools
-
 
 #endif // THEAP_H

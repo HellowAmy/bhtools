@@ -161,9 +161,6 @@ protected:
 };
 
 
-
 }; // bhtools
-
-
 
 #endif // TCONT_H

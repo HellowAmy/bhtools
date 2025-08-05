@@ -4,7 +4,6 @@
 
 #include <tuple>
 
-
 namespace bhtools {
 
 
@@ -81,15 +80,7 @@ struct Twork_chain
     std::tuple<Tclass...> _objs;    // 存储类对象模板-非类指针而是类本身
 };
 
-//
-//
-//
-//
-
-
 
 } // bhtools
-
-
 
 #endif // TDESIGN_H

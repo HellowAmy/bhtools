@@ -109,4 +109,5 @@ template<typename T> std::mutex Tsind<T>::_mut;
 
 
 } // bhtools
+
 #endif // TSINGLE_H
