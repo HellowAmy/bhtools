@@ -13,15 +13,24 @@ namespace bhtools {
 struct Tstr
 {
     // 各类型转字符串函数
-    template<typename T>
-    inline static std::string to_string(const T &val) 
-    { return std::to_string(val); }
+    inline static std::string to_string(bool val) 
+    {
+        if(val) { return "true"; } 
+        return "false"; 
+    }
 
     inline static std::string to_string(const char *val) 
-    { return val; }
+    {
+        if(val) { return val; } 
+        return "NULL"; 
+    }
 
     inline static std::string to_string(const std::string &val) 
     { return val; }
+
+    template<typename T>
+    inline static std::string to_string(const T &val) 
+    { return std::to_string(val); }
 
     template<typename T>
     inline static std::string to_string(T* val) 

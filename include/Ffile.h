@@ -347,22 +347,6 @@ namespace bhtools {
 // 文件处理类-提供跨平台处理文件与目录的功能
 struct Ffsys
 {
-    // 平台分割符
-    inline static std::string splitter_linux() { return "/"; }
-    inline static std::string splitter_win32() { return "\\"; }
-
-    // 替换字符串
-    inline static std::string replace_str(std::string str, const std::string& from, const std::string& to) 
-    {
-        size_t pos = 0;
-        while ((pos = str.find(from, pos)) != std::string::npos) 
-        {
-            str.replace(pos, from.length(), to);
-            pos++;
-        }
-        return str;
-    }
-
     // 替换为当前平台路径
     inline static std::string platform_path(std::string path)
     {
@@ -442,7 +426,8 @@ struct Ffsys
     { return Fstm(file)(bhtools_platform::file_splitter(),-1,-1,".",0,0); }
 
     // 获取文件
-    inline static std::vector<std::string> get_files(const std::string &path,bool recursion = true)
+    inline static std::vector<std::string> 
+    get_files(const std::string &path,bool recursion = true)
     { 
         std::vector<std::string> files;
         std::vector<std::string> dirs;
@@ -452,7 +437,8 @@ struct Ffsys
     }
 
     // 获取目录
-    inline static std::vector<std::string> get_dirs(const std::string &path,bool recursion = true)
+    inline static std::vector<std::string> 
+    get_dirs(const std::string &path,bool recursion = true)
     { 
         std::vector<std::string> files;
         std::vector<std::string> dirs;
@@ -463,7 +449,7 @@ struct Ffsys
 
     // 获取文件和目录
     inline static std::tuple<std::vector<std::string>,std::vector<std::string>>
-        get_files_and_dirs(const std::string &path,bool recursion = true)
+    get_files_and_dirs(const std::string &path,bool recursion = true)
     { 
         std::vector<std::string> files;
         std::vector<std::string> dirs;
@@ -471,8 +457,26 @@ struct Ffsys
         { return std::make_tuple(files,dirs); }
         return {};
     }
+
     
+    // internal
+    // 平台分割符
+    inline static std::string splitter_linux() { return "/"; }
+    inline static std::string splitter_win32() { return "\\"; }
+
+    // 替换字符串
+    inline static std::string replace_str(std::string str, const std::string& from, const std::string& to) 
+    {
+        size_t pos = 0;
+        while ((pos = str.find(from, pos)) != std::string::npos) 
+        {
+            str.replace(pos, from.length(), to);
+            pos++;
+        }
+        return str;
+    }
 };
+
 
 // 文件读写扩展类
 struct Ffio
@@ -584,6 +588,25 @@ struct Ffio
     }
 
     std::fstream *_fs = nullptr;    // 操作的文件指针
+};
+
+
+// 文件路径拼接
+struct Fjoin
+{
+    // 退出函数
+    std::string operator()(std::string str)
+    { return _str + str; }
+
+    // 拼接路径
+    template<typename ...Targ>
+    std::string operator()(const std::string &str,Targ ...arg)
+    {
+        _str += str + bhtools_platform::file_splitter();
+        return (*this)(arg...);
+    }
+
+    std::string _str;   // 存储拼接内容
 };
 
 

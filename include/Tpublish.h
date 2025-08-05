@@ -19,7 +19,7 @@ struct Tpubmsg
 };
 
 // 发布类-单个类代表一种消息-只存储同订阅类型的对象
-template<typename Targ,template<typename> class Tsub>
+template<template<typename> class Tsub,typename Targ>
 struct Tpublish
 {
     // 插入对象

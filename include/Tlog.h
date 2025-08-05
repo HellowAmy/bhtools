@@ -62,8 +62,6 @@ struct Tlog_buf
 struct Tlog_end { };
 
 
-
-
 // 日志基本类-用于创建各种输出类型的模板-不提供打印只提供写入与缓存
 template<typename Tbuf,typename Tend,typename Tout>
 struct Tlog_base
@@ -114,7 +112,7 @@ struct Tlog_base
 //
 //
 
-//  空打印-用于测试 << 操作的耗时
+// 空打印-用于测试 << 操作的耗时
 struct Tlog_out_null 
 {
     void out(const Tlog_buf &buf) { }    
@@ -129,7 +127,8 @@ struct Tlog_out_cmd
 
 
 // 文件打印
-// 打印一千万行时换行符比换行函数速度提升近一倍-但换行符是可能会导致无法及时刷新缓冲区丢失数据
+// 打印一千万行时换行符比换行函数速度提升近一倍
+// 但换行符是可能会导致无法及时刷新缓冲区丢失数据
 struct Tlog_out_file
 {   
     using pair_name = std::pair<std::string,std::string>;
