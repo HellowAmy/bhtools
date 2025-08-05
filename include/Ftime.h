@@ -71,11 +71,11 @@ struct Ftimel
     inline void update() { _begin = steady_clock::now(); }
 
     // 加入时间点-用于多点记录时一起打印-可选择清空容器-可选择重置时间
-    inline void push_point(const std::string &tips = "",bool reset = false,bool now = false) 
+    inline void push_point(const std::string &tips = "",bool now = false,bool reset = false) 
     { 
         if(reset) { _vec.clear(); }
-        if(now) { update(); }
         _vec.push_back(tips +" "+ to_string());
+        if(now) { update(); }
     }
 
     // 获取加入时间点-可选择清空容器

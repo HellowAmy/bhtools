@@ -42,6 +42,11 @@ inline static std::string Tto_string(T* val)
 inline static std::string Tto_string(void *val) 
 { std::stringstream ss; ss<<val; return ss.str(); }
 
+template<typename T1,typename T2>
+inline static std::string Tto_string(std::pair<T1,T2> pair) 
+{ return "["+Tto_string(pair.first)+" : " +Tto_string(pair.second)+"]"; }
+
+
 //
 //
 //
@@ -89,6 +94,7 @@ Topt<T> Tfrom_string_opt(const std::string &str)
 struct Ffinds
 {
     // 发现子串位置
+    // 传参数 < 字符串 - 子串 - 偏移位置 >
     // 返回值 < 是否成功 - 成功的下标 >
     inline static std::tuple<bool,size_t> 
     find_sub(const std::string &str,const std::string &sub,size_t offset = 0)
@@ -117,6 +123,8 @@ struct Ffinds
     }
 
     // 切割字符串-传入开始和末尾下标-获取两个下标间的字符串-开区间和闭区间
+    // 传参数 < 字符串 - 开区间 - 闭区间 >
+    // 返回值 < 分割的字符串 >
     inline static std::string section_range(const std::string &str,size_t ib,size_t ie)
     {
         std::string ret;

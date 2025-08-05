@@ -1,6 +1,7 @@
 {
     "C_Cpp.errorSquiggles": "enabled",
     "files.associations": {
+        "*.ts": "xml",
         "*.qs": "javascript",
         "array": "cpp",
         "atomic": "cpp",
@@ -77,6 +78,7 @@
         "numbers": "cpp",
         "semaphore": "cpp",
         "span": "cpp",
-        "stop_token": "cpp"
+        "stop_token": "cpp",
+        "complex": "cpp"
     }
 }

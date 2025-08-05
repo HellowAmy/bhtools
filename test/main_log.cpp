@@ -1,8 +1,5 @@
-
-
 // #define BHLOG_CLOSE_LOG
 // #define BHLOG_CLOSE_COL
-
 
 #include <iostream>
 #include <vector>
@@ -11,491 +8,211 @@
 #include <unistd.h>
 
 #include "Tlog.h"
-
-
-
+#include "Ffm.h"
+#include "Ftime.h"
 
 void test_1()
 {
-    using namespace bhtools;
-    Tlog_cmd4 t1;
-    t1.set_level(*_sp_level4_<<el4::e_inf);
+    // 颜色打印
+    vlogd("vlogd");
+    vlogi("vlogi");
+    vlogw("vlogw");
+    vloge("vloge");
 
-    const char *s1 = "s11";
-    std::string s2 = "s22";
-    int si3 = 1024;
+    // 打印变量
+    bool a1 = true;
+    int a2 = 10;
+    size_t a3 = 64;
+    double a4 = 6.66;
+    std::string a5 = "ss hellow";
+    const char *a6 = "cs hellow";
+    vlogd(a1 << a2 << a3 << a4 << a5 << a6);
 
-    t1<<Tlog_level<bhenum::level4>(bhenum::level4::e_deb);
-    t1<<"debug  ";
-    t1<<123;
-    t1<<123.123;
-    t1<<"123";
-    t1<<s1;
-    t1<<s2;
-    t1<<si3;
-    t1<<Tlog_end();
+    //带变量名称打印
+    vlogi($(a1) $(a2) $(a3) $(a4) $(a5) $(a6));
 
-    t1<<Tlog_level<bhenum::level4>(bhenum::level4::e_inf);
-    t1<<"info  ";
-    t1<<123<<456<<"|"<<99.99<<" po ";
-    t1<<123.123;
-    t1<<"123";
-    t1<<s1;
-    t1<<s2;
-    t1<<si3;
-    t1<<Tlog_end();
-
-    t1<<Tlog_level<bhenum::level4>(bhenum::level4::e_war);
-    t1<<"war  ";
-    t1<<123;
-    t1<<123.123;
-    t1<<"123";
-    t1<<s1;
-    t1<<s2;
-    t1<<si3;
-    t1<<Tlog_end();
-
-    t1<<Tlog_level<bhenum::level4>(bhenum::level4::e_err);
-    t1<<"err  ";
-    t1<<123;
-    t1<<123.123;
-    t1<<"123";
-    t1<<s1;
-    t1<<s2;
-    t1<<si3;
-    t1<<Tlog_end();
+    // 容器打印
+    std::vector<int> vec;
+    std::map<int,std::string> mp;
+    for(int i=0;i<10;i++)
+    {
+        std::string val = bhtools::Fffm("index{}")(i);
+        vec.push_back(i);
+        mp.emplace(i,val);
+    }
+    vlogd($C(vec));
+    vlogd($C(mp));
 }
 
 void test_2()
 {
-    using namespace bhtools;
-    Tlog_cmd8 t1;
-    t1.set_level(Tlog_level<bhenum::level8>(bhenum::level8::e_war));
+    // 设置日志
+    auto log = bhtools::Tsin_log_conf::get();
+ 
+    // 无效打印
+    nlogd("nlogd");
+    nlogi("nlogi");
+    nlogw("nlogw");
+    nloge("nloge");
 
-    const char *s1 = "s11";
-    std::string s2 = "s22";
-    int si3 = 1024;
+    // 文件打印
+    flogd("flogd");
+    flogi("flogi");
+    flogw("flogw");
+    floge("floge");
 
-    t1<<Tlog_level<bhenum::level8>(bhenum::level8::e_all);
-    t1<<"e_all";
-    t1<<Tlog_end();
+    // 异步文件打印
+    alogd("alogd");
+    alogi("alogi");
+    alogw("alogw");
+    aloge("aloge");
+    
+    // 异步文件打印换文件,退出时刷入文件
+    log->exit_flush_afile();
+    log->reopen(log->_afile,"Talogv2.log",true);
+    alogd("alogdv2");
+    alogi("alogiv2");
+    alogw("alogwv2");
+    aloge("alogev2");
+    
+    // 刷新异步日志到文件,否则程序退出时会丢失日志
+    log->exit_flush_afile();
 
-    t1<<Tlog_level<bhenum::level8>(bhenum::level8::e_tra);
-    t1<<"e_trace";
-    t1<<Tlog_end();
+    // 文件等级打印
+    log->set_level(log->_file,bhtools::bhenum::level::e_war);
+    log->set_level(log->_afile,bhtools::bhenum::level::e_war);
+    log->set_level(log->_cmd,bhtools::bhenum::level::e_war);
 
-    t1<<Tlog_level<bhenum::level8>(bhenum::level8::e_deb);
-    t1<<"e_debug";
-    t1<<Tlog_end();
+    flogd("flogd level");
+    flogi("flogi level");
+    flogw("flogw level");
+    floge("floge level");
+ 
+    vlogd("vlogd level");
+    vlogi("vlogi level");
+    vlogw("vlogw level");
+    vloge("vloge level");
 
-    t1<<Tlog_level<bhenum::level8>(bhenum::level8::e_inf);
-    t1<<"e_info";
-    t1<<Tlog_end();
+    alogd("alogdv2 level");
+    alogi("alogiv2 level");
+    alogw("alogwv2 level");
+    aloge("alogev2 level");
 
-    t1<<Tlog_level<bhenum::level8>(bhenum::level8::e_war);
-    t1<<"e_warning";
-    t1<<Tlog_end();
-
-    t1<<Tlog_level<bhenum::level8>(bhenum::level8::e_err);
-    t1<<"e_error";
-    t1<<Tlog_end();
-
-    t1<<Tlog_level<bhenum::level8>(bhenum::level8::e_fat);
-    t1<<"e_fatal";
-    t1<<Tlog_end();
-
-    t1<<Tlog_level<bhenum::level8>(bhenum::level8::e_all);
-    t1<<"e_all";
-    t1<<Tlog_end();
-
-    t1<<Tlog_level<bhenum::level8>(bhenum::level8::e_off);
-    t1<<"e_off";
-    t1<<Tlog_end();
+    log->exit_flush_afile();
 }
 
 void test_3()
 {
-    using namespace bhtools;
-    (*_sp_cmd4_)<<Tlog_level<bhenum::level4>(bhenum::level4::e_inf);
-    (*_sp_cmd4_)<<"info  ";
-    (*_sp_cmd4_)<<123<<456<<"|"<<99.99<<" po ";
-    (*_sp_cmd4_)<<123.123;
-    (*_sp_cmd4_)<<"123";
-    (*_sp_cmd4_)<<Tlog_end();
+    // 设置文件最大长度,无限制
+    auto log = bhtools::Tsin_log_conf::get();
+    log->set_length(log->_file,(1 << 16));
 
+    log->reopen(log->_file,"Tlogv2.log",true);
+    log->set_limit(log->_file,0);
+    
+    int num = 10000;
+    for(int i=0;i<num;i++)
+    {
+        flogd("flogdlevel v2 " << bhtools::Fffm("{}")(i));
+    }
 
-    // 快捷命令行打印-自行扩展 等级8
-    #define vlogd8(...) BHLOG_PRINT((*_sp_cmd8_),"\033[32m[Deb-level8]","\033[0m"<<(*_sp_end_),BHLOG_FORMAT_VSC,_sp_level8_->set_level(bhenum::level8::e_deb),__VA_ARGS__)
-    #define vloge8(...) BHLOG_PRINT((*_sp_cmd8_),"\033[31m[Err-level8]","\033[0m"<<(*_sp_end_),BHLOG_FORMAT_VSC,_sp_level8_->set_level(bhenum::level8::e_err),__VA_ARGS__)
+    // 5文件限制
+    log->reopen(log->_file,"Tlogv3.log",true);
+    log->set_limit(log->_file,5);
 
-    vlogd("123"<<123<<"pps");
-    vlogi("123"<<123<<"pps");
-    vlogw("123"<<123<<"pps");
-    vloge("123"<<123<<"pps");
+    for(int i=0;i<num;i++)
+    {
+        flogd("flogdlevel v3 " << bhtools::Fffm("{}")(i));
+    }
 
-    vlogd8("11"<<"OOP"<<999);
-    vloge8("11"<<"OOP"<<999);
+    // 1文件限制
+    log->reopen(log->_file,"Tlogv4.log",true);
+    log->set_limit(log->_file,1);
 
-    int s1 = 100;
-    double s2 = 123.123;
-    std::string s3 = "asdsa";
+    for(int i=0;i<num;i++)
+    {
+        flogd("flogdlevel v4 " << bhtools::Fffm("{}")(i));
+    }
 
-    vlogd($("123") $(s1) $(s2) $(s3));
+    // 异步
+    log->reopen(log->_afile,"Talogv3.log",true);
+    log->set_length(log->_afile,(1 << 16));
+    log->set_limit(log->_afile,1);
+
+    for(int i=0;i<num;i++)
+    {
+        alogd("alogdlevel v3 " << bhtools::Fffm("{}")(i));
+    }
+    log->exit_flush_afile();
+
+    log->reopen(log->_afile,"Talogv4.log",true);
+    log->set_limit(log->_afile,5);
+    for(int i=0;i<num;i++)
+    {
+        alogd("alogdlevel v4 " << bhtools::Fffm("{}")(i));
+    }
+    log->exit_flush_afile();
 }
 
 void test_4()
 {
+    // 性能测试
     using namespace bhtools;
-    std::vector<int> c1;
-    std::vector<std::string> c2;
-    std::list<int> c3;
-    std::map<double,int> c4;
 
-    for(int i=0;i<50;i++)
+    bhtools::Ftimel t1;
+    int num = 50*10000;
+    bool a1 = true;
+    int a2 = 10;
+    size_t a3 = 64;
+    double a4 = 6.66;
+    std::string a5 = "ss hellow";
+    const char *a6 = "cs hellow";
+
+    t1.push_point("begin",true);
+    for(int i=0;i<num;i++)
     {
-        c1.push_back(i);
-        c2.push_back("po:"+std::to_string(i));
-        c3.push_back(i);
+        vlogd($(a1) $(a2) $(a3) $(a4) $(a5) $(a6) $(i));
     }
-
-    vlogd(Tlog_con(c1,0,",",""));
-    vlogd(Tlog_con(c1,5,"-","| "));
-
-    vlogi(Tlog_con(c2));
-    vlogw(Tlog_con(c3));
-
-    vloge($C(c1));
-}
-
-
-void test_5()
-{
-    using namespace bhtools;
-    for(int i=0;i<10;i++)
-    {
-        (*_sp_file4_)<<Tlog_level<bhenum::level4>(bhenum::level4::e_deb);
-        (*_sp_file4_)<<123<<456<<"|"<<99.99<<" po ";
-        (*_sp_file4_)<<123.123;
-        (*_sp_file4_)<<"123";
-        (*_sp_file4_)<<Tlog_end();
-
-    }
-
-    for(int i=0;i<10;i++)
-    {
-        flogd($("123")$(i));
-        flogi($("123")$(i));
-        flogw($("123")$(i));
-        floge($("123")$(i));
-    }
-}
-
-void test_6()
-{
-    using namespace bhtools;
-    size_t len = (1<<15);
-    _sp_file4_->_out.set_length(len);
-    _sp_file4_->_out.set_limit(10);
-
-    for(int i=0;i<100000;i++)
-    {
-        flogd($("123") $("asjnkhdbasd  qwe") $(i) $("--pp=") $(std::to_string(i)));
-        flogi($("123") $("asjnkhdbasd  qwe") $(i) $("--pp=") $(std::to_string(i)));
-        flogw($("123") $("asjnkhdbasd  qwe") $(i) $("--pp=") $(std::to_string(i)));
-        floge($("123") $("asjnkhdbasd  qwe") $(i) $("--pp=") $(std::to_string(i)));
-    }
-}
-
-void test_7()
-{
-    using namespace bhtools;
-    size_t len = (1<<15);
-    _sp_file4_->_out.set_length(len);
-    _sp_file4_->_out.set_limit(10);
-
-    for(int i=0;i<100;i++)
-    {
-        floge($(i) $("2445") $(std::to_string(i)));
-        flogd($(i) $("dd2445") $(std::to_string(i)));
-        vlogd($(i) $("dd2445") $(std::to_string(i)));
-        vloge($(i) $("2445") $(std::to_string(i)));
-        vlogw("war");
-    }
-}
-
-void test_8()
-{
-    using namespace bhtools;
-    {
-        auto s1 = Tlog_time::get_time();
-        for(int i=0;i<100;i++)
-        {
-            vlogd($(s1));
-        }
-    }
-}
-
-void test_9()
-{
-    using namespace bhtools;
-    int count = 10000000;
-    double ss1 = 55.5; 
-    std::string ss2 = "hellow world"; 
-    // {
-    //     Ftimel t;
-    //     for(int i=0;i<count;i++)
-    //     {
-    //         vlogd($(i) $(count) $(ss1) $(ss2));
-    //     }
-    //     vlogd($(t.to_string()));
-    // }
-    {
-        Ftimel t;
-        for(int i=0;i<count;i++)
-        {
-            aflogd($(i) $(count) $(ss1) $(ss2));
-        }
-        vlogd($(t.to_string()));
-    }
-    {
-        Ftimel t;
-        for(int i=0;i<count;i++)
-        {
-            flogd($(i) $(count) $(ss1) $(ss2));
-        }
-        vlogd($(t.to_string()));
-    }
-    // {
-    //     Ftimel t;
-    //     for(int i=0;i<count;i++)
-    //     {
-    //         nulogd($(i) $(count) $(ss1) $(ss2));
-    //     }
-    //     vlogd($(t.to_string()));
-    // }
-    std::string sr1;
-    std::string sr2;
-    std::string sr3;
-    // {
-    //     Ftimel t;
-    //     for(int i=0;i<count;i++)
-    //     {
-    //         std::cout<<i<<count<<ss1<<ss2<<std::endl;
-
-    //         // vlogd($(i) $(count) $(ss1) $(ss2));
-    //     }
-    //     sr3 = t.to_string();
-    // }
-    // {
-    //     Ftimel t;
-    //     for(int i=0;i<count;i++)
-    //     {
-    //         (*_sp_cmd4_)<<Tlog_level<bhenum::level4>(bhenum::level4::e_deb)<<$(i) $(count) $(ss1) $(ss2)<<Tlog_end();
-    //     }
-    //     sr1 = t.to_string();
-    // }
-    // {
-    //     Ftimel t;
-    //     for(int i=0;i<count;i++)
-    //     {
-    //         (*_sp_cmd4_)<<_sp_level4_->set_level(bhenum::level4::e_deb)<<$(i) $(count) $(ss1) $(ss2)<<*_sp_end_;
-    //     }
-    //     sr2 = t.to_string();
-    // }
-    vlogd($(sr1) $(sr2) $(sr3));
-}
-
-
-void test_10()
-{
-    using namespace bhtools;
-    int count = 10000000;
-    double ss1 = 55.5; 
-    std::string ss2 = "hellow world"; 
-
-
-    {
-        Ftimel t;
-        for(int i=0;i<count;i++)
-        {
-            aflogd("==1=="<<$(ss1) $(ss2) $(i));
-        }
-        auto v1 = t.to_string();
-        vlogd(v1);
-    }
-
-    // {
-    //     Ftimel t;
-    //     for(int i=0;i<count;i++)
-    //     {
-    //         flogd("==2=="<<$(ss1) $(ss2) $(i));
-    //     }
-    //     auto v1 = t.to_string();
-    //     vlogd(v1);
-    // }
-
-  
-
-    // auto fn_th1 = [=](){
-    //     {
-    //         Ftimel t;
-    //         for(int i=0;i<count;i++)
-    //         {
-    //             aflogd("==1=="<<$(ss1) $(ss2) $(i));
-    //         }
-    //         auto v1 = t.to_string();
-    //         vlogd(v1);
-    //     }
-    // };
-
-    // auto fn_th2 = [=](){
-    //     {
-    //         Ftimel t;
-    //         for(int i=0;i<count;i++)
-    //         {
-    //             aflogd("==2=="<<$(ss1) $(ss2) $(i));
-    //         }
-    //         auto v1 = t.to_string();
-    //         vlogd(v1);
-    //     }
-    // };
-
-    // _sp_afile4_->_out._out.reopen("Tflog.log",false);
-
-    // std::thread(fn_th1).detach();
-    // std::thread(fn_th2).detach();
-
-
-    sleep(100);
-
+    t1.push_point("time1",true);
     
-}
+    for(int i=0;i<num;i++)
+    {
+        nlogd($(a1) $(a2) $(a3) $(a4) $(a5) $(a6) $(i));
+    }
+    t1.push_point("time2",true);
 
-void test_11()
-{
-    using namespace bhtools;
-    #define aflogd_th1(...) BHLOG_MAKE_L4D((*_sp_th1_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
-    #define aflogi_th1(...) BHLOG_MAKE_L4I((*_sp_th1_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
-    #define aflogw_th1(...) BHLOG_MAKE_L4W((*_sp_th1_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
-    #define afloge_th1(...) BHLOG_MAKE_L4E((*_sp_th1_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
+    for(int i=0;i<num;i++)
+    {
+        flogd($(a1) $(a2) $(a3) $(a4) $(a5) $(a6) $(i));
+    }
+    t1.push_point("time3",true);
 
-    #define aflogd_th2(...) BHLOG_MAKE_L4D((*_sp_th2_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
-    #define aflogi_th2(...) BHLOG_MAKE_L4I((*_sp_th2_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
-    #define aflogw_th2(...) BHLOG_MAKE_L4W((*_sp_th2_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
-    #define afloge_th2(...) BHLOG_MAKE_L4E((*_sp_th2_),(*_sp_end_),_sp_level4_,__VA_ARGS__)
+    for(int i=0;i<num;i++)
+    {
+        alogd($(a1) $(a2) $(a3) $(a4) $(a5) $(a6) $(i));
+    }
+    t1.push_point("time4",true);
 
-    static Tlog_asyn_file4 *_sp_th1_ = new Tlog_asyn_file4;
-    _sp_th1_->_out._out.reopen("Tflog_th1.log");
+    vlogd($C(t1.check_vec()));
 
-    static Tlog_asyn_file4 *_sp_th2_ = new Tlog_asyn_file4;
-    _sp_th2_->_out._out.reopen("Tflog_th2.log");
-
-
-    int count = 1000000;
-    double ss1 = 55.5; 
-    std::string ss2 = "hellow world"; 
-
-    auto fn_th1 = [=](){
-        {
-            Ftimel t;
-            for(int i=0;i<count;i++)
-            {
-                aflogd_th1("==1=="<<$(ss1) $(ss2) $(i));
-            }
-            auto v1 = t.to_string();
-            vlogd(v1);
-
-            // 需要手动刷新否则缓冲区数据丢失-需要等待异步写入完成
-            sleep(2);
-            _sp_th1_->flush();
-        }
-    };
-
-    auto fn_th2 = [=](){
-        {
-            Ftimel t;
-            for(int i=0;i<count;i++)
-            {
-                aflogd_th2("==2=="<<$(ss1) $(ss2) $(i));
-            }
-            auto v1 = t.to_string();
-            vlogd(v1);
-
-            
-            // sleep(2);
-            // _sp_th2_->flush();
-        }
-    };
-
-    auto fn_th3 = [=](){
-        {
-            Ftimel t;
-            for(int i=0;i<count;i++)
-            {
-                flogd("==3=="<<$(ss1) $(ss2) $(i) $(count));
-            }
-            auto v1 = t.to_string();
-            vlogd(v1);
-        }
-        _sp_file4_->flush();
-    };
-
-    _sp_afile4_->_out._out.reopen("Tflog.log",false);
-
-    std::thread (fn_th1).detach();
-    std::thread (fn_th2).detach();
-    std::thread (fn_th3).detach();
-    sleep(15);
-
-
-}
-
-void test_12()
-{
-
-    std::string h = "hellow world";
-
-    aflogd($(h));
-    aflogi($(h));
-    aflogw($(h));
-    afloge($(h));
-
-    aflogd("Debug");
-    aflogi("Info");
-    aflogw("Warn");
-    afloge("Error");
-
-    flogd($(h));
-    flogi($(h));
-    flogw($(h));
-    floge($(h));
-
-    vlogd($(h));
-    vlogi($(h));
-    vlogw($(h));
-    vloge($(h));
-
-    std::this_thread::sleep_for(std::chrono::seconds(2));
-
+    /*
+        [Deb]<<<< [t1.check_vec(): 
+        | size: 5
+        | begin [nan: 1611|mic: 1|mil: 0|sec: 0] 
+        | time1 [nan: 21748766152|mic: 21748766|mil: 21748|sec: 21] 
+        | time2 [nan: 760231027|mic: 760231|mil: 760|sec: 0] 
+        | time3 [nan: 1526813941|mic: 1526813|mil: 1526|sec: 1] 
+        | time4 [nan: 1210863417|mic: 1210863|mil: 1210|sec: 1] 
+        ]  >>>>[/home/red/open/github/bhtools/test/main_log.cpp:198][2025-08-05.15:02:01.403]
+    */
 }
 
 int main(int argc, char *argv[])
 {
-    // test_1();   
-    // test_2();   
-    test_3();   
-    // test_4();   
-    // test_5();
-    // test_6();
-    // test_7();
-    // test_8();
-    // test_9();
-    // test_10();
-    // test_11();
-    test_12();
-
-
-
+    // test_1();
+    // test_2();
+    // test_3();
+    test_4();
 
     return 0;
 }
