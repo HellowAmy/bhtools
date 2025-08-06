@@ -1,9 +1,7 @@
 
 #include <iostream>
 
-#include "Tlog.h"
-
-using namespace bhtools;
+#include "bhtools.h"
 
 void test_1()
 {

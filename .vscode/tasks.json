@@ -710,6 +710,36 @@
                 "CMake main_async",
                 "CMake Build"
             ]
+        },
+
+
+
+
+        {
+            "label": "CMake main_rand",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "..",
+                "-Dmain_rand=1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build/"
+            },
+        },
+        {
+            "label": "Run main_rand",
+            "type": "shell",
+            "command": "cmake",
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "CMake main_rand",
+                "CMake Build"
+            ]
         }
 
 
