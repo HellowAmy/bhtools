@@ -228,11 +228,9 @@ struct Ftimes
             {
                 if(i+2 >= fm.size()) { return ""; } 
                 size_t n = fm[i+1] - '0';
-                char t = fm[i+2];
-                
+
                 if(n < 1 || n > 9) { return ""; } 
-                std::string val;
-                val.resize(n);
+                char t = fm[i+2];
 
                 if(t == 'Y') { ret += to_time_len(d.yea,n,true); }
                 else if(t == 'M') { ret += to_time_len(d.mon,n); }

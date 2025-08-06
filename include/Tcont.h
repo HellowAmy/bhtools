@@ -58,6 +58,14 @@ public:
     void push(const T &val)     { Texit_lock<Tlock> e(&_lock);  _org.push(val); }
     T front()                   { Texit_lock<Tlock> e(&_lock);  return _org.front(); }
     T back()                    { Texit_lock<Tlock> e(&_lock);  return _org.back(); }
+
+    T pop_front()
+    { 
+        Texit_lock<Tlock> e(&_lock);  
+        T val = _org.front(); 
+        _org.pop(); 
+        return val; 
+    }
     
 protected:
     Tlock _lock;            // 上锁对象
@@ -79,6 +87,14 @@ public:
     void pop()                  { Texit_lock<Tlock> e(&_lock);  _org.pop(); }
     void push(const T &val)     { Texit_lock<Tlock> e(&_lock);  _org.push(val); }
     T top()                     { Texit_lock<Tlock> e(&_lock);  return _org.top(); }
+
+    T pop_top()
+    { 
+        Texit_lock<Tlock> e(&_lock);  
+        T val = _org.top(); 
+        _org.pop(); 
+        return val; 
+    }
     
 protected:
     Tlock _lock;            // 上锁对象

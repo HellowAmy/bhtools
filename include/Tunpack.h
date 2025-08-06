@@ -2,145 +2,110 @@
 #ifndef TUNPACK_H
 #define TUNPACK_H
 
-#include <iostream>
 #include <functional>
 #include <mutex>
+#include <vector>
 
 #include "Tbyte.h"
 
 namespace bhtools {
 
+
 // 拆包参数-分隔符
 struct Tunfd_delimit
 {
-    std::string _delimit = "\n";
+    const std::string _delimit = "\n";
 };
 
-// 拆包参数-包长度-仅提供字节长度
-struct Tunfd_length
-{
-    uint16_t _length = 0;
-};
-
-// 
-// 
-// 
-// 
-
-// 生成包数据-分隔符
-template<typename T = Tunfd_delimit>
-struct Tunfmake_delimit
-{
-    // 传入数据返回包体
-    static std::string make(const std::string &ctx)
-    {
-        T arg; 
-        std::string pack = ctx + arg._delimit;
-        return pack;
-    }
-};
-
-// 生成包数据-包长度
-template<typename T = Tunfd_length>
-struct Tunfmake_length 
-{
-    // 传入数据返回包体
-    static std::string make(const std::string &ctx)
-    {
-        T arg;
-        arg._length = ctx.size();
-        arg._length = Tendian::to_net(arg._length);
-        std::string pack = std::string((char*)&arg._length,sizeof(arg._length)) + ctx;
-        return pack;
-    }
-};
-
-// 
-// 
-// 
-// 
 
 // 拆包函数-分隔符
 template<typename T = Tunfd_delimit>
 struct Tunf_delimit
 {
-    // 拆包函数
-    void unpack(const std::string &ctx,bool ths = true)
+    // 传入数据返回包体
+    static std::string pack(const std::string &ctx)
     {
-        std::unique_lock<std::mutex> lock(_mux); // 上锁
+        T arg; 
+        return ctx + arg._delimit;
+    }
 
-        // 不合理退出
-        if(_arg._delimit.size() == 0) { return; }
+    // 拆包函数
+    std::vector<std::string> unpack(const std::string &ctx,bool ths)
+    {
+        size_t sidel = _arg._delimit.size();
+        std::vector<std::string> vec;
+
+        if(sidel == 0) { return vec; }
+        if(ths) { _mux.lock(); }
 
         std::string all = _save + ctx;
         size_t go = _save.size();
-        size_t sidel = _arg._delimit.size();
 
-        // 循环拆包-如果拆包状态未退出下次从0下标开始
-        if(_into) { go = 0; } 
+        // 循环拆包
         while(go < all.size())
         {
             // 检查到分隔符
             if(all[go] == _arg._delimit[0])
             {
+                if((go + sidel) > all.size()) { break; }
 
-                // 进入拆包状态
-                _into = true; 
-                if((all.size() - go) >= sidel)
+                // 检测分割符
+                bool into = true;
+                for(size_t i=0;i<sidel;i++)
                 {
-                    // 检查拆包分隔符是否为字符串
-                    bool match = true;
-                    if(_arg._delimit.size() > 1)
-                    {
-                        for(size_t x=1;x<sidel;x++)
-                        {
-                            if(all[go+x] != _arg._delimit[x])
-                            {
-                                match = false;
-                                break;
-                            }
-                        }
+                    if(all[go + i] != _arg._delimit[i])
+                    { 
+                        into = false;
+                        go += i;
+                        break; 
                     }
+                }
 
-                    // 匹配成功-触发回调并重置状态
-                    if(match)
-                    {
-                        if(_fn_cb) { _fn_cb(std::string(all.begin(),all.begin() + go)); }
+                // 匹配成功
+                if(into)
+                {
+                    std::string data = std::string(all.begin(),all.begin() + go);
+                    vec.push_back(data);
 
-                        all = std::string(all.begin() + go + sidel,all.end());
-                        go = 0;
-                    }
-                    _into = false;
+                    all = std::string(all.begin() + go + sidel,all.end());
+                    go = 0;
                 }
             }
             go++;
         }
         _save = all;
+
+        if(ths) { _mux.unlock(); }
+        return vec;
     }
 
-    // 注册拆包成功的回调函数
-    void read_cb(std::function<void(const std::string &)> fn)
-    { _fn_cb = fn; }
-
-
-    T _arg;                 // 拆包函数参数
-    bool _into = false;     // 拆包状态
-    std::string _save;      // 保存上次数据
-    std::mutex _mux;        // 线程锁
-    std::function<void(const std::string &)> _fn_cb = nullptr;      // 回调函数
+    T _arg;             // 拆包函数参数
+    std::mutex _mux;    // 线程锁
+    std::string _save;  // 保存上次数据
 };
+ 
 
 // 拆包函数-包长度
-template<typename T = Tunfd_length>
+template<typename T = size_t>
 struct Tunf_length
 {
-    // 拆包函数
-    void unpack(const std::string &ctx,bool ths = true)
+    // 传入数据返回包体
+    static std::string pack(const std::string &ctx)
     {
-        std::unique_lock<std::mutex> lock(_mux); // 上锁
+        T arg;
+        arg = ctx.size();
+        arg = Tendian::to_net(arg);
+        return std::string((char*)&arg,sizeof(arg)) + ctx;
+    }
 
+    // 拆包函数
+    std::vector<std::string> unpack(const std::string &ctx,bool ths)
+    {
+        if(ths) { _mux.lock(); }
+
+        std::vector<std::string> vec;
         std::string all = _save + ctx;
-        size_t len_head =  sizeof(_arg._length);
+        size_t len_head =  sizeof(_arg);
 
         while(true)
         {
@@ -150,29 +115,26 @@ struct Tunf_length
             // 数据长度不足退出
             size_t len_data = all.size() - len_head;
             std::string head = std::string(all.begin(),all.begin() + len_head);
-            _arg._length = *(decltype(_arg._length)*)head.c_str();
-            _arg._length = Tendian::to_host(_arg._length);
-            if(len_data < _arg._length) { break; }
+            _arg = *(decltype(_arg)*)head.c_str();
+            _arg = Tendian::to_host(_arg);
 
+            if(len_data < _arg) { break; }
+            
             // 数据达到或超出包范围-回调包体数据
-            std::string data = std::string(all.begin() + len_head,all.begin() + len_head + _arg._length);
-            if(_fn_cb) { _fn_cb(data); }  
-
-            all = std::string(all.begin() + len_head + _arg._length,all.end());
+            std::string data = std::string(all.begin() + len_head,all.begin() + len_head + _arg);
+            vec.push_back(data);
+            
+            all = std::string(all.begin() + len_head + _arg,all.end());
         }
-
         _save = all;
+
+        if(ths) { _mux.unlock(); }
+        return vec;
     }
 
-    // 注册拆包成功的回调函数
-    void read_cb(std::function<void(const std::string &)> fn)       
-    { _fn_cb = fn; }
-
-
-    T _arg;                 // 拆包函数参数
-    std::string _save;      // 保存上次数据
-    std::mutex _mux;        // 线程锁    
-    std::function<void(const std::string &)> _fn_cb = nullptr;      // 回调函数
+    T _arg;             // 拆包函数参数
+    std::mutex _mux;    // 线程锁    
+    std::string _save;  // 保存上次数据
 };
 
 // 
@@ -181,22 +143,18 @@ struct Tunf_length
 // 
 
 // 数据拆包组合
-template<template<typename> class Tfn,template<typename> class Tmake,typename Ttype>
+template<typename Tfn>
 struct Tunpack
 {
     // 拆包函数
-    void unpack(const std::string &ctx,bool ths = true)
-    { _fn.unpack(ctx,ths); }
+    std::vector<std::string> unpack(const std::string &ctx,bool ths = true)
+    { return _fn.unpack(ctx,ths); }
 
-    // 注册拆包成功的回调函数
-    void read_cb(std::function<void(const std::string &)> fn)       
-    { _fn.read_cb(fn); }
+    // 组包函数
+    inline static std::string pack(const std::string &ctx)
+    { return Tfn::pack(ctx); }
 
-    // 生成包数据
-    std::string make(const std::string &ctx)
-    { return Tmake<Ttype>::make(ctx); }
-
-    Tfn<Ttype> _fn;     // 拆包类型
+    Tfn _fn;     // 拆包类型
 };
 
 //
@@ -204,9 +162,9 @@ struct Tunpack
 //
 //
 
-// 快捷默认使用
-typedef Tunpack<Tunf_length,Tunfmake_length,Tunfd_length> Tunpack_len;
-typedef Tunpack<Tunf_delimit,Tunfmake_delimit,Tunfd_delimit> Tunpack_del;
+// 定义快捷使用类型
+using Tunpack_len = Tunpack<Tunf_length<>>;
+using Tunpack_del = Tunpack<Tunf_delimit<>>;
 
 
 } // bhtools

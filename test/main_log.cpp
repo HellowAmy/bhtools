@@ -1,15 +1,12 @@
-// #define BHLOG_CLOSE_LOG
-// #define BHLOG_CLOSE_COL
 
 #include <iostream>
 #include <vector>
 #include <map>
 #include <list>
 #include <unistd.h>
+#include <unordered_map>
 
-#include "Tlog.h"
-#include "Ffm.h"
-#include "Ftime.h"
+#include "bhtools.h"
 
 void test_1()
 {
@@ -33,21 +30,30 @@ void test_1()
 
     // 容器打印
     std::vector<int> vec;
+    std::list<int> ls;
     std::map<int,std::string> mp;
+    std::unordered_map<int,std::string> mp2;
     for(int i=0;i<10;i++)
     {
         std::string val = bhtools::Fffm("index{}")(i);
         vec.push_back(i);
+        ls.push_back(i);
         mp.emplace(i,val);
+        mp2.emplace(i,val);
     }
     vlogd($C(vec));
+    vlogd($C(ls));
     vlogd($C(mp));
+    vlogd($C(mp2));
 
     // 地址打印
     const char *pnull = nullptr;
-    // vlogd($S(&a1));
-    // vlogd($S(&a2));
-    // vlogd($S(&pnull));
+    bool ok1 = true;
+    bool ok2 = false;
+
+    vlogd($(pnull));
+    vlogd($(ok1));
+    vlogd($(ok2));
     vlogd($(&pnull));
     vlogd($((void*)&pnull));
     vlogd($(&a1));
@@ -167,8 +173,6 @@ void test_3()
 void test_4()
 {
     // 性能测试
-    using namespace bhtools;
-
     bhtools::Ftimel t1;
     int num = 50*10000;
     bool a1 = true;
