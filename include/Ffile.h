@@ -6,8 +6,6 @@
 #include <functional>
 #include <vector>
 
-#include "Fstm.h"
-
 #ifdef __linux__
     #include <sys/stat.h>
     #include <dirent.h>
@@ -19,6 +17,8 @@
     #include <sys/stat.h>
     #include <string>
 #endif
+
+#include "Fstm.h"
 
 namespace bhtools {
 

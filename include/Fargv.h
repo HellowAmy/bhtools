@@ -128,6 +128,9 @@ struct Fargv
         return "";
     }
 
+    // 获取所有参数
+    const std::vector<std::string>& get_args() { return _vec; } 
+
 
     // internal
     // 判断字符串是否存在子串
