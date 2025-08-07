@@ -12,6 +12,7 @@ namespace bhtools {
 
 // 多线程定时器-在子线程开启事件循环监控时间-其他子线程处理任务-至少存在2个子线程才能导致定时延时
 // 可自定义定时器的精度-事件循环间隔-任务线程池数量
+// 定时精度不高-精度通常在20毫秒内
 template<typename Tduration = std::chrono::milliseconds,size_t Tinterval = 20,size_t Tths = 2>
 struct Ttimer
 {
@@ -64,6 +65,9 @@ struct Ttimer
 
     // 移除指定ID定时任务
     inline bool remove(size_t id) { return remove_task_th(id); }
+
+    // 查看是否运行-关闭后会自行销毁不可重启
+    inline bool is_run() { return _run; }
 
     // 关闭定时器
     inline void close_timer() { _run = false; }

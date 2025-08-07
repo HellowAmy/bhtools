@@ -1,274 +1,101 @@
 
-
-// #define BHLOG_CLOSE_LOG
-// #define BHLOG_CLOSE_COL
-
-
 #include <iostream>
 #include <sstream>
 
-#include "Tlog.h"
-#include "Ttimer.h"
-#include "Ftime.h"
-
-#include "unistd.h"
-
-
-
-using namespace bhtools;
-
+#include "bhtools.h"
 
 void test_1()
 {
-    Ttimer<> ti;
-    size_t tid1 = ti.push(1000,[&](size_t id){
-        vlogd($("mil: 1000"));
-    });
+    // 不同定时时间
+    bhtools::Ttimer<> t1;
+    bhtools::Ftimel tt1;
+    bhtools::Ftimel tt2;
+    bhtools::Ftimel tt3;
 
-    size_t tid2 = ti.push(2000,[&](size_t id){
-        vlogd($("mil: 2000"));
-    });
+    vlogd($(tt1.to_string()));
+    vlogi($(tt2.to_string()));
+    vlogw($(tt3.to_string()));
 
-    size_t tid3 = ti.push(3000,[&](size_t id){
-        vlogd($("mil: 3000"));
-    });
-
-    size_t tid4 = ti.push(4000,[&](size_t id){
-        vlogd($("mil: 4000"));
-    });
-
-    size_t tid5 = ti.push(100,[&](size_t id){
-        vlogd($("mil: 100"));
-    });
-
-    ti.push(200,[&](size_t id){
-        static int i = 0;
-        i++;
-        vlogd($("mil: 200") $(i));
-        if(i > 20)
-        {
-            ti.remove(id);
-        }
-
-
-
+    // 无限次
+    size_t id1 = t1.push(2000,[&](size_t id){
+        vlogd("id1: " << $(tt1.to_string()));
     },0);
 
-    sleep(1);
-    ti.remove(tid3);
+    // 默认1次
+    size_t id2 = t1.push(1000,[&](size_t id){
+        vlogi("id2: " << $(tt2.to_string()));
+    });
 
-    sleep(100);
+    // 5次
+    size_t id3 = t1.push(500,[&](size_t id){
+        vlogw("id3: " << $(tt3.to_string()));
+    },5);
+
+
+    bhtools::Ftimel::sleep(10 * 1000);
+
+    vlogd($(id1) $(id2) $(id3));
 }
 
 void test_2()
 {
-    {
-        vlogi("=====");
-        Ttimer<> ti;
-        size_t tid1 = ti.push(200,[&](size_t id){
-            vlogd($("mil: 200"));
-            vlogd($S(std::this_thread::get_id()));
+    // 设置为微妙和秒为检查的定时器间隔
+    bhtools::Ttimer<std::chrono::milliseconds,5> t1;
+    bhtools::Ttimer<std::chrono::seconds,1> t2;
+    bhtools::Ftimel tt1;
+    bhtools::Ftimel tt2;
 
-        },0);
+    vlogd($(tt1.to_string()));
+    vlogi($(tt2.to_string()));
 
-        sleep(5);
-    }
-    {
-        vlogi("=====");
-        Ttimer<std::chrono::milliseconds,20,4> ti;
-        size_t tid1 = ti.push(300,[&](size_t id){
-            vlogd($("mil: 300"));
-            vlogd($S(std::this_thread::get_id()));
-        },0);
+    // 无限次
+    size_t id1 = t1.push(200,[&](size_t id){
+        vlogd("id1: " << $(tt1.to_string()));
+        tt1.update();
+    },20);
 
-        sleep(5);
-    }
-    {
-        vlogi("=====");
-        Ttimer<std::chrono::milliseconds,20,1> ti;
-        size_t tid1 = ti.push(400,[&](size_t id){
-            vlogd($("mil: 400"));
-            vlogd($S(std::this_thread::get_id()));
-        },0);
+    size_t id2 = t2.push(4,[&](size_t id){
+        vlogi("id2: " << $(tt2.to_string()));
+    },5);
 
-        sleep(5);
-    }
+    bhtools::Ftimel::sleep(10 * 1000);
 
-    sleep(50);
-    vlogi("===== end =====");
-
+    vlogd($(id1) $(id2));
 }
 
 void test_3()
 {
-    
-    {
-        vlogi("=====");
-        Ftimel t;
-        Ttimer<std::chrono::milliseconds,20,2> ti;
-        size_t tid1 = ti.push(200,[&](size_t id){
-            vlogd($(t.to_string()));
-            t.update();
-        },0);
-        sleep(5);
-    }
-    {
-        vlogi("=====");
-        Ftimel t;
-        Ttimer<std::chrono::milliseconds,50,2> ti;
-        size_t tid1 = ti.push(200,[&](size_t id){
-            vlogd($(t.to_string()));
-            t.update();
-        },0);
-        sleep(5);
-    }
-    {
-        vlogi("=====");
-        Ftimel t;
-        Ttimer<std::chrono::milliseconds,100,2> ti;
-        size_t tid1 = ti.push(200,[&](size_t id){
-            vlogd($(t.to_string()));
-            t.update();
-        },0);
-        sleep(5);
-    }
-    {
-        vlogi("=====");
-        Ftimel t;
-        Ttimer<std::chrono::milliseconds,200,2> ti;
-        size_t tid1 = ti.push(200,[&](size_t id){
-            vlogd($(t.to_string()));
-            t.update();
-        },0);
-        sleep(5);
-    }
-    {
-        vlogi("=====");
-        Ftimel t;
-        Ttimer<std::chrono::milliseconds,500,2> ti;
-        size_t tid1 = ti.push(200,[&](size_t id){
-            vlogd($(t.to_string()));
-            t.update();
-        },0);
-        sleep(5);
-    }
-}
+    // 停止定时任务
+    bhtools::Ttimer<> t1;
+    bhtools::Ftimel tt1;
 
-void test_4()
-{
-    {
-        vlogi("=====");
-        Ftimel t;
-        Ttimer<std::chrono::seconds,1,2> ti;
-        size_t tid1 = ti.push(3,[&](size_t id){
-            vlogd($(t.to_string()));
-            t.update();
-        },0);
-        sleep(10);
-    }
-    {
-        vlogi("=====");
-        Ftimel t;
-        Ttimer<std::chrono::nanoseconds,100,2> ti;
-        size_t tid1 = ti.push(500,[&](size_t id){
-            vlogd($(t.to_string()) $(ti._heap.size_node()) );
-            t.update();
-        },0);
-        sleep(10);
-    }
-    {
-        vlogi("=====");
-        Ftimel t;
-        Ttimer<std::chrono::milliseconds,200,2> ti;
-        size_t tid1 = ti.push(300,[&](size_t id){
-            vlogd($(t.to_string()));
-            t.update();
-        },0);
-        sleep(10);
-    }
+    vlogd($(tt1.to_string()));
 
-}
+    // 无限次
+    size_t id1 = t1.push(200,[&](size_t id){
+        vlogd("id1: " << $(tt1.to_string()));
+    },0);
 
-void test_5()
-{
-    {
-        vlogi("=====");
-        Ftimel t;
-        Ttimer<std::chrono::milliseconds,50,2> ti;
-        size_t tid1 = ti.push(std::chrono::seconds(1),[&](size_t id){
-            vlogd($(t.to_string()));
-            t.update();
-        },0);
-        sleep(5);
-    }
-    {
-        vlogi("=====");
-        Ftimel t;
-        Ttimer<std::chrono::milliseconds,50,2> ti;
-        size_t tid1 = ti.push(std::chrono::milliseconds(100),[&](size_t id){
-            vlogd($(t.to_string()));
-            t.update();
-        },0);
-        sleep(5);
-    }
-    {
-        vlogi("=====");
-        Ftimel t;
-        Ttimer<std::chrono::nanoseconds,500,2> ti;
-        size_t tid1 = ti.push(std::chrono::microseconds(1000),[&](size_t id){
-            vlogd($(t.to_string()));
-            t.update();
-        },0);
-        sleep(5);
-    }
-    {
-        vlogi("=====");
-        Ftimel t;
-        Ttimer<std::chrono::microseconds,100,2> ti;
-        size_t tid1 = ti.push(std::chrono::milliseconds(1),[&](size_t id){
-            vlogd($(t.to_string()));
-            t.update();
-        },0);
-        sleep(5);
-    }
+    bhtools::Ftimel::sleep(2 * 1000);
 
-}
+    bool ok = t1.remove(id1);
+    vlogd($(ok));
 
-void test_6()
-{
-    {
-        int count = 0;
-        vlogi("=====");
-        Ftimel t;
-        Ttimer<std::chrono::microseconds,100,2> ti;
-        size_t tid1 = ti.push(std::chrono::milliseconds(1),[&](size_t id){
-            auto s1 = t.time_interval();
-            auto data = t.to_data(s1);
-            if(data.mic > 1100 || data.mic < 900)
-            {
-                vlogw($("====="));
-                count++;
-            }
-            else 
-            {
-                vlogd($(t.to_string(s1)));    
-            }
-            t.update();
+    bhtools::Ftimel::sleep(2 * 1000);
 
-        },0);
-        sleep(30);
-        vlogd($(count));     // 5253
-    }
+    t1.close_timer();
+    vlogd($(t1.is_run()));
+
+    bhtools::Ftimel::sleep(1 * 1000);
+
+    vlogd("end");
 }
 
 int main(int argc, char *argv[])
 {
-    // test_1();   
-    // test_2();   
-    // test_3();   
-    // test_4();   
-    // test_5();
-    test_6();
+    test_1();   
+    test_2();   
+    test_3();   
 
     return 0;
 }

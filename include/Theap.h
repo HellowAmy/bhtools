@@ -13,7 +13,7 @@ namespace bhtools {
 template<typename T>
 struct Theap_comp_max
 {
-    inline static bool comp(const T &a, const T &b)
+    inline static bool comp(T &a, T &b)
     {
         if(a > b) { return true; } 
         return false;
@@ -25,7 +25,7 @@ struct Theap_comp_max
 template<typename T>
 struct Theap_comp_min
 {
-    inline static bool comp(const T &a, const T &b)
+    inline static bool comp(T &a, T &b)
     {
         if(a < b) { return true; } 
         return false;
