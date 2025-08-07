@@ -479,10 +479,14 @@ struct Ffsys
 
 
 // 文件读写扩展类
-struct Ffio
+struct Ffio : private std::fstream
 {
-    Ffio(std::fstream &fs) 
-    { _fs = &fs; } 
+    using std::fstream::fstream;
+
+    operator bool() { return is_open(); }
+
+    // 判断文件打开
+    bool is_open() { return std::fstream::is_open(); } 
 
     // 读取所有字节
     std::string read_all(size_t chunk_size = 0) 
@@ -491,15 +495,15 @@ struct Ffio
         if(chunk_size == 0)
         {
             buf.resize(file_len_max());
-            _fs->read((char *)buf.c_str(),buf.size());
+            read((char *)buf.c_str(),buf.size());
         }
         else 
         {
             std::string cache;
             cache.resize(chunk_size);
-            while(_fs->eof() == false)
+            while(eof() == false)
             { 
-                _fs->read((char *)cache.c_str(),cache.size()); 
+                read((char *)cache.c_str(),cache.size()); 
                 buf += cache;
             }
         }
@@ -510,7 +514,7 @@ struct Ffio
     std::string read_line() 
     {
         std::string buf;
-        std::getline(*_fs, buf);
+        std::getline(*this, buf);
         return buf;
     }   
 
@@ -519,7 +523,7 @@ struct Ffio
     {
         std::vector<std::string> vec;
         std::string buf;
-        while (std::getline(*_fs, buf))
+        while (std::getline(*this, buf))
         { 
             if(filtrate)
             { 
@@ -534,10 +538,10 @@ struct Ffio
     // 写入缓冲字节
     size_t write(const std::string &buf) 
     {
-        size_t bnow = _fs->tellp();
-        _fs->write(buf.c_str(),buf.size());
+        size_t bnow = tellp();
+        std::fstream::write(buf.c_str(),buf.size());
 
-        size_t enow = _fs->tellp();
+        size_t enow = tellp();
         size_t len = enow - bnow;
         if(buf.size() == len)
         { return len; }
@@ -547,12 +551,12 @@ struct Ffio
     // 写入一行字符-返回带换行符长度
     size_t write_line(const std::string &buf) 
     {
-        size_t bnow = _fs->tellp();
+        size_t bnow = tellp();
         std::string sbreak = bhtools_platform::file_break();
         std::string str = buf + sbreak;
-        _fs->write(str.c_str(),str.size());
+        std::fstream::write(str.c_str(),str.size());
 
-        size_t enow = _fs->tellp();
+        size_t enow = tellp();
         size_t len = enow - bnow;
         if((buf.size() + sbreak.size()) == len)
         { return len; }
@@ -562,32 +566,33 @@ struct Ffio
     // 获取文件最大长度
     size_t file_len_max()
     {
-        size_t now = _fs->tellg();
-        _fs->seekg(0,std::ios::end);
+        size_t now = tellg();
+        seekg(0,std::ios::end);
 
-        size_t end = _fs->tellg();
-        _fs->seekg(now,std::ios::beg);
+        size_t end = tellg();
+        seekg(now,std::ios::beg);
         return end;
     }
 
     // 清除状态重新开始
     void reset_pos()
     {
-        _fs->clear();
-        _fs->seekg(0,std::ios::beg);
-        _fs->seekp(0,std::ios::beg);
+        clear();
+        seekg(0,std::ios::beg);
+        seekp(0,std::ios::beg);
     }
 
     // 从当前位置跳过指定长度
     void skip_pos(size_t len)
     {
-        size_t pnow = _fs->tellp();
-        size_t gnow = _fs->tellg();
-        _fs->seekp(pnow + len,std::ios::beg);
-        _fs->seekg(gnow + len,std::ios::beg);
+        size_t pnow = tellp();
+        size_t gnow = tellg();
+        seekp(pnow + len,std::ios::beg);
+        seekg(gnow + len,std::ios::beg);
     }
 
-    std::fstream *_fs = nullptr;    // 操作的文件指针
+    // 关闭文件
+    void close() { std::fstream::close(); }
 };
 
 

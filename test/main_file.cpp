@@ -178,18 +178,84 @@ void test_3()
 void test_4()
 {
     // 文件读写
+    {   
+        bhtools::Ffio io("/home/red/open/github/bhtools/main.cpp");
+        if(io)
+        {
+            std::string ss = io.read_all();
+            vlogd($(ss));
+            
+            io.reset_pos();
+            auto vec = io.read_line_all();
+            vlogd($C(vec));
+    
+            io.reset_pos();
+            std::string s1 = io.read_line();
+            s1 += io.read_line();
+            s1 += io.read_line();
+            vlogd($(s1));
+    
+            size_t len = io.file_len_max();
+            vlogd($(len));
+
+            io.close();
+        }
+    }
+
+    // 修改文件
+    {
+        bhtools::Ffsys::copy_file(
+            "/home/red/open/github/bhtools/main.cpp",
+            "/home/red/open/github/bhtools/main2.cpp"
+        );
+
+        bhtools::Ffio io("/home/red/open/github/bhtools/main2.cpp");
+        if(io)
+        {
+            std::string s1 = io.read_all();
+            vlogd($(s1));
+    
+            io.reset_pos();
+            io.skip_pos(20);
+            size_t t1 = io.write_line("123456789");
+    
+            io.skip_pos(50);
+            size_t t2 = io.write("s123456789s");
+            vlogd($(t1) $(t2));
+    
+            std::string s2 = io.read_all();
+            vlogd($(s2));
+            io.close();
+        }
+
+        bhtools::Ffio io2("/home/red/open/github/bhtools/main2.cpp");
+        if(io2)
+        {
+            std::string s3 = io2.read_all();
+            vlogd($(s3));
+            io2.close();
+        }
+
+        bhtools::Ffsys::remove_file(
+            "/home/red/open/github/bhtools/main2.cpp"
+        );
+    }
 }
 
-void test_4()
+void test_5()
 {
     // 路径拼接
+    std::string ss = bhtools::Fjoin()("123","abc","qwe","asd");
+    vlogd($(ss));
 }
 
 int main(int argc, char *argv[])
 {
-    test_1();   
+    // test_1();   
     // test_2();   
     // test_3();   
+    // test_4();   
+    test_5();   
 
     return 0;
 }
