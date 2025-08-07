@@ -5,6 +5,7 @@
 #include <vector>
 #include <cmath>
 #include <queue>
+#include <limits>
 
 namespace bhtools {
 
@@ -68,7 +69,7 @@ struct Theap
     // 析构时清空分配内存
     ~Theap()
     {
-        clear_heap();
+        clear();
         delete _root;
         delete _tail;
         _root = nullptr;
@@ -125,9 +126,9 @@ struct Theap
     }
 
     // 清空堆树并释放内存-广度优先-树根不释放内存
-    inline void clear_heap()
+    inline void clear()
     {
-        if(_size < 1) { return; }
+        if(_size == 0) { return; }
 
         std::queue<Theap_node<Tval>*> que_clear;
         que_clear.push(_root);
@@ -155,6 +156,7 @@ struct Theap
                 {
                     _root->_left = nullptr;
                     _root->_right = nullptr;
+                    _tail->_parent = _root;
                 }
             }
         }
@@ -197,13 +199,13 @@ struct Theap
     }
 
     // 返回节点数
-    inline size_t size_node() const { return _size; }
+    inline size_t size() const { return _size; }
 
     // 判断堆树是否为空
     inline bool is_empty() const { return _size == 0; }
 
     // 判断值是否存在堆数中
-    inline bool is_exist(Tval val) { return find_node() != nullptr; }
+    inline bool is_exist(Tval val) { return find_node(val) != nullptr; }
 
 
     // internal

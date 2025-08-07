@@ -526,6 +526,7 @@ struct Tsin_log_conf
 // 快捷打印操作
 #define $(value) "["#value": "<<value<<"] "
 #define $C(value) "["#value": "<<bhtools::Tlog_con::print(value)<<"] "
+#define $S(value) "["#value": "<<bhtools::Tstr::from_stringstream(value)<<"] "
 
 
 } // bhtools

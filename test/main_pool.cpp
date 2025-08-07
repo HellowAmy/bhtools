@@ -1,129 +1,105 @@
 
-
-// #define BHLOG_CLOSE_LOG
-// #define BHLOG_CLOSE_COL
-
-
 #include <iostream>
+#include <future>
+#include <vector>
 
-#include "Tpool.h"
-#include "Tlog.h"
-#include "Ftime.h"
-
-using namespace bhtools;
-
+#include "bhtools.h"
 
 void test_1()
 {
-    int count = 100000;
-    auto fn_task1 = [](int num){
+    // 多线程执行任务,当任务超出线程数时
+    bhtools::Tpool<3> loop1;
+    std::mutex _mux;
+    bhtools::Ftimel t1;
+
+    std::future<int> ret1 = loop1.push([&](){
+        _mux.lock();
+        vlogd("1");
+        vlogd($S(std::this_thread::get_id()));
+        t1.push_point("t1",true);
+        _mux.unlock();
         int sum = 0;
-        for(int i=0;i<100000;i++)
+        for(int i=0;i<100;i++)
         {
             sum += i;
         }
-    };
-
-    auto fn_task2 = [](int num){
-        int sum = 100;
-        sum += num;
+        bhtools::Ftimel::sleep(2000);
         return sum;
+    });
+
+    loop1.push([&](){
+        _mux.lock();
+        vlogd("2");
+        vlogd($S(std::this_thread::get_id()));
+        t1.push_point("t2",true);
+        _mux.unlock();
+        bhtools::Ftimel::sleep(2000);
+    });
+
+    loop1.push([&](){
+        _mux.lock();
+        vlogd("3");
+        vlogd($S(std::this_thread::get_id()));
+        t1.push_point("t3",true);
+        _mux.unlock();
+        bhtools::Ftimel::sleep(2000);
+    });
+
+    loop1.push([&](){
+        _mux.lock();
+        vlogd("4");
+        vlogd($S(std::this_thread::get_id()));
+        t1.push_point("t4",true);
+        _mux.unlock();
+        bhtools::Ftimel::sleep(2000);
+    });
+
+    bhtools::Ftimel::sleep(6 * 1000);
+    
+    vlogd($(ret1.get()));
+    vlogd($C(t1.check_vec()));
+}
+
+void test_2()
+{
+    // 获取多线程下返回值
+    bhtools::Tpool<> loop1;
+    bhtools::Tpool<> loop2;
+    std::vector<std::future<std::string>> vec;
+
+    auto fn1 = [](std::string tip) -> std::string {
+        std::string str = tip + ": ";
+        for(int i=0;i<10;i++)
+        {
+            str += std::to_string(i);
+        }
+        bhtools::Ftimel::sleep(500);
+        return str;
     };
 
+    for(int i=0;i<20;i++)
     {
-        Ftimel t;
-        std::vector<std::future<void>> vec1;
-        std::vector<std::future<int>> vec2;
-        for(int i=0;i<count;i++)
-        {
-            vec1.push_back(_sp_pool_->push(fn_task1,i));
-            vec2.push_back(_sp_pool_->push(fn_task2,i));
-        }
-
-        for(int i=0;i<vec2.size();i++)
-        {
-            auto val = vec2[i].get();
-        }
-        vlogd($(t.to_string()));
+        std::future<std::string> rp = loop1.push(fn1,"tips" + std::to_string(i));
+        vec.push_back(std::move(rp));
     }
-    {
-        Ftimel t;
-        std::vector<std::future<void>> vec1;
-        std::vector<std::future<int>> vec2;
-        Tpool<2> ths;
-        for(int i=0;i<count;i++)
-        {
-            vec1.push_back(ths.push(fn_task1,i));
-            vec2.push_back(ths.push(fn_task2,i));
-        }
+    vlogd("wait1");
 
-        for(int i=0;i<vec2.size();i++)
+    loop2.push([&](){
+        for(auto &a:vec)
         {
-            auto val = vec2[i].get();
+            std::string s = a.get();
+            vlogd($(s));
         }
-        vlogd($(t.to_string()));
-    }
-    {
-        Ftimel t;
-        std::vector<std::future<void>> vec1;
-        std::vector<std::future<int>> vec2;
-        Tpool<4> ths;
-        for(int i=0;i<count;i++)
-        {
-            vec1.push_back(ths.push(fn_task1,i));
-            vec2.push_back(ths.push(fn_task2,i));
-        }
+    });
 
-        for(int i=0;i<vec2.size();i++)
-        {
-            auto val = vec2[i].get();
-        }
-        vlogd($(t.to_string()));
-    }
-    {
-        Ftimel t;
-        std::vector<std::future<void>> vec1;
-        std::vector<std::future<int>> vec2;
-        Tpool<8> ths;
-        for(int i=0;i<count;i++)
-        {
-            vec1.push_back(ths.push(fn_task1,i));
-            vec2.push_back(ths.push(fn_task2,i));
-        }
-
-        for(int i=0;i<vec2.size();i++)
-        {
-            auto val = vec2[i].get();
-        }
-        vlogd($(t.to_string()));
-    }
-    {
-        Ftimel t;
-        std::vector<std::future<void>> vec1;
-        std::vector<std::future<int>> vec2;
-        Tpool<16> ths;
-        for(int i=0;i<count;i++)
-        {
-            vec1.push_back(ths.push(fn_task1,i));
-            vec2.push_back(ths.push(fn_task2,i));
-        }
-
-        for(int i=0;i<vec2.size();i++)
-        {
-            auto val = vec2[i].get();
-        }
-        vlogd($(t.to_string()));
-    }
+    vlogd("wait2");
+    bhtools::Ftimel::sleep(6 * 1000);
 }
 
 int main(int argc, char *argv[])
 {
     // test_1();   
-    // test_2();   
-    // test_3();   
-    // test_4();   
-    // test_5();
-    // test_6();
+    test_2();   
 
     return 0;
 }

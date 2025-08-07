@@ -451,6 +451,14 @@ void test_8()
     vlogw("sleep_for end");
 }
 
+void test_9()
+{
+    std::string ss = Fjoin()("123","223","41","q","asd");
+    std::string s1 = Fjoin()("/home/red/open/github/bhtools/","223","41","q","asd");
+    // std::string ss = Ffsys::join("123","223","41","q","asd");
+    vlogd($(ss));
+    vlogd($(s1));
+}
 
 int main(int argc, char *argv[])
 {
@@ -461,7 +469,8 @@ int main(int argc, char *argv[])
     // test_5();   
     // test_6();   
     // test_7();   
-    test_8();   
+    // test_8();   
+    test_9();   
 
     return 0;
 }

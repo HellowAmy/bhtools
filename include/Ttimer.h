@@ -89,7 +89,7 @@ struct Ttimer
     // 在事件循环中处理所有超时任务-线程池处理任务
     inline void process_timer_task(Tduration now)
     {
-        while(_heap.size_node() > 0)
+        while(_heap.size() > 0)
         {
             task rct = _heap.check_root();
             if(rct._start <= now)
@@ -126,7 +126,7 @@ struct Ttimer
     inline void clear_task_th()
     {
         std::unique_lock<std::mutex> lock(_mut);
-        _heap.clear_heap();
+        _heap.clear();
     }
 
     // 弹出超时的任务

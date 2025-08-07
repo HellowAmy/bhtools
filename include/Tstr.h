@@ -123,6 +123,11 @@ struct Tstr
 
 
     // internal
+    template<typename T> inline static 
+    std::string from_stringstream(const T &val)
+    { std::stringstream ss; ss<<val; return ss.str(); }
+
+    
     // 中途循环模板
     template<typename Tclass, size_t count,size_t now>
     struct Tstr_tup
