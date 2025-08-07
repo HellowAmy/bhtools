@@ -15,6 +15,13 @@ struct Fstm
 {
     Fstm(const std::string &str) : _str(str) {}
 
+    // 切割参数进入
+    template<typename ...Tarr>
+    inline std::string operator()(const Tarr &...arg)
+    {   return section(arg...); }
+
+    
+    // internal
     // 退出函数
     template<typename ...Tarr>  
     inline std::string section(){ return _str; }
@@ -66,13 +73,6 @@ struct Fstm
         return section(arg...);
     }
 
-    // 切割参数进入
-    template<typename ...Tarr>
-    inline std::string operator()(const Tarr &...arg)
-    {   return section(arg...); }
-
-
-    // internal
     // 修正传入负数参数所属的部分
     inline static int revise_reverse_index(int index)
     {
