@@ -187,10 +187,10 @@
 
 
         {
-            "name": "Run [main_base]",
+            "name": "Run [main_str]",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/main_base",
+            "program": "${workspaceFolder}/build/main_str",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build",
@@ -205,7 +205,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "Run main_base",
+            "preLaunchTask": "Run main_str",
             "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
         },
 

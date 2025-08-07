@@ -206,19 +206,19 @@
 
 
         {
-            "label": "CMake main_base",
+            "label": "CMake main_str",
             "type": "shell",
             "command": "cmake",
             "args": [
                 "..",
-                "-Dmain_base=1"
+                "-Dmain_str=1"
             ],
             "options": {
                 "cwd": "${workspaceFolder}/build/"
             },
         },
         {
-            "label": "Run main_base",
+            "label": "Run main_str",
             "type": "shell",
             "command": "cmake",
             "dependsOrder": "sequence",
@@ -227,7 +227,7 @@
                 "isDefault": true
             },
             "dependsOn": [
-                "CMake main_base",
+                "CMake main_str",
                 "CMake Build"
             ]
         },

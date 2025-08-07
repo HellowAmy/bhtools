@@ -38,7 +38,15 @@ struct Tstr
 
     template<typename T1,typename T2>
     inline static std::string to_string(const std::pair<T1,T2> &pair) 
-    { return "["+Tstr::to_string(pair.first)+" : " +Tstr::to_string(pair.second)+"]"; }
+    { return "["+Tstr::to_string(pair.first)+" : "+Tstr::to_string(pair.second)+"]"; }
+
+    template<typename ...T>
+    inline static std::string to_string(const std::tuple<T...> &tup) 
+    { 
+        std::string ret;
+        Tstr_tup<std::tuple<T...>,std::tuple_size<std::tuple<T...>>::value,0>::action(tup,ret); 
+        return ret;
+    }
 
 
     // 字符串转各类型-可查看是否成功
@@ -112,6 +120,53 @@ struct Tstr
         }
         return ret;
     }
+
+
+    // internal
+    // 中途循环模板
+    template<typename Tclass, size_t count,size_t now>
+    struct Tstr_tup
+    {
+        static void action(Tclass obj,std::string &str) 
+        {
+            if(now != (count - 1))
+            {
+                auto val = std::get<now>(obj);
+                str += Tstr::to_string(val) + " : ";
+            }
+            Tstr_tup<Tclass,count,now+1>::action(obj,str);
+        }
+    };
+
+    // 退出模板
+    template<typename Tclass,size_t count>
+    struct Tstr_tup<Tclass,count,count>
+    {
+        static void action(Tclass obj,std::string &str) 
+        {
+            if(count != 1)
+            {
+                auto val = std::get<count-1>(obj);
+                str += Tstr::to_string(val) + "] ";
+            }
+        }
+    };
+
+    // 首次进入模板
+    template<typename Tclass,size_t count>
+    struct Tstr_tup<Tclass,count,0>
+    {
+        static void action(Tclass obj,std::string &str) 
+        {
+            auto val = std::get<0>(obj);
+            if(count != 1)
+            { str += "[" + Tstr::to_string(val) + " : "; }
+            else 
+            { str += "[" + Tstr::to_string(val) + "] "; }
+
+            Tstr_tup<Tclass,count,1>::action(obj,str);
+        }
+    };
 };
 
 

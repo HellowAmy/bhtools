@@ -84,8 +84,8 @@ if(ALL OR main_pool)
     add_executable(main_pool test/main_pool.cpp)
 endif()
 
-if(ALL OR main_base)
-    add_executable(main_base test/main_base.cpp)
+if(ALL OR main_str)
+    add_executable(main_str test/main_str.cpp)
 endif()
 
 if(ALL OR main_fm)
