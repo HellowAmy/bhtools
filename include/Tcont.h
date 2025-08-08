@@ -66,6 +66,11 @@ public:
         _org.pop(); 
         return val; 
     }
+
+    // 锁下操作源数据
+    void safa(std::function<void(std::queue<T>&)> fn)
+    { Texit_lock<Tlock> e(&_lock); if(fn) { fn(_org); }; }
+
     
 protected:
     Tlock _lock;            // 上锁对象
@@ -95,6 +100,11 @@ public:
         _org.pop(); 
         return val; 
     }
+
+    // 锁下操作源数据
+    void safa(std::function<void(std::stack<T>&)> fn)
+    { Texit_lock<Tlock> e(&_lock); if(fn) { fn(_org); }; }
+
     
 protected:
     Tlock _lock;            // 上锁对象
@@ -106,7 +116,7 @@ protected:
 //
 //
 
-// 数组-线程安全
+// 数组-线程安全-迭代器不安全
 template<typename T,typename Tlock = Fspinlock>
 class Tvector
 {
@@ -131,6 +141,10 @@ public:
     T& operator[](size_t index)
     { Texit_lock<Tlock> e(&_lock); return _org[index]; }
 
+    // 锁下操作源数据
+    void safa(std::function<void(std::vector<T>&)> fn)
+    { Texit_lock<Tlock> e(&_lock); if(fn) { fn(_org); }; }
+
 protected:
     Tlock _lock;            // 上锁对象
     std::vector<T> _org;    // 原始数据
@@ -141,7 +155,7 @@ protected:
 //
 //
 
-// 索引-线程安全
+// 索引-线程安全-迭代器不安全
 template<typename Tkey,typename Tval,typename Tlock = Fspinlock>
 class Tmap
 {   
@@ -170,6 +184,10 @@ public:
 
     Tval& operator[](const Tkey &key)
     { Texit_lock<Tlock> e(&_lock); return _org[key]; }
+
+    // 锁下操作源数据
+    void safa(std::function<void(std::map<Tkey,Tval>&)> fn)
+    { Texit_lock<Tlock> e(&_lock); if(fn) { fn(_org); }; }
     
 protected:
     Tlock _lock;                // 上锁对象

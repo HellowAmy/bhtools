@@ -76,6 +76,7 @@ void test_1()
 
 void test_2()
 {
+    // 测试数据插入
     bhtools::Tqueue<int> cc1;
     bhtools::Tstack<int> cc2;
 
@@ -95,10 +96,115 @@ void test_2()
     vlogd($(cc1.size()) $(cc2.size()));
 }
 
+void test_3()
+{
+    {
+        bhtools::Tpool<> pool;
+    
+        bhtools::Tqueue<int> cc1;
+        bhtools::Tstack<int> cc2;
+        bhtools::Tvector<int> cc3;
+        bhtools::Tmap<int,std::string> cc4;
+    
+        int sum = 1000*10000;
+     
+        
+        pool.push([&](){
+            for(int i=0;i<sum/2;i++)
+            {
+                cc1.push(i);
+                cc2.push(i);
+                cc3.push_back(i);
+                cc4.emplace(i,"ss"+std::to_string(i));
+            }
+        });
+    
+        pool.push([&](){
+            for(int i=0;i<sum/2;i++)
+            {
+                cc1.push(i);
+                cc2.push(i);
+                cc3.push_back(i);
+                cc4.emplace(sum/2 + i,"ss"+std::to_string(sum/2 + i));
+            }
+        });
+    
+        while(true)
+        {
+            bhtools::Ftimel::sleep(1000);
+            if(cc1.size() == sum && cc2.size() == sum && cc3.size() == sum && cc4.size() == sum)
+            {
+                break;
+            }
+            vlogd($(cc1.size()) $(cc2.size()) $(cc3.size()) $(cc4.size()));
+        }
+        vlogd($(cc1.size()));
+    }
+    {
+        bhtools::Tpool<> pool;
+    
+        bhtools::Tqueue<int> cc1;
+        bhtools::Tstack<int> cc2;
+        bhtools::Tvector<int> cc3;
+        bhtools::Tmap<int,std::string> cc4;
+    
+        int sum = 1000*10000;
+     
+        
+        pool.push([&](){
+            for(int i=0;i<sum/2;i++)
+            {
+                cc1.safa([=](std::queue<int> &org){
+                    org.push(i);
+                });
+                cc2.safa([=](std::stack<int> &org){
+                    org.push(i);
+                });
+                cc3.safa([=](std::vector<int> &org){
+                    org.push_back(i);
+                });
+                cc4.safa([=](std::map<int,std::string> &org){
+                    org.emplace(i,"ss"+std::to_string(i));
+                });
+            }
+        });
+    
+        pool.push([&](){
+            for(int i=0;i<sum/2;i++)
+            {
+                cc1.safa([=](std::queue<int> &org){
+                    org.push(i);
+                });
+                cc2.safa([=](std::stack<int> &org){
+                    org.push(i);
+                });
+                cc3.safa([=](std::vector<int> &org){
+                    org.push_back(i);
+                });
+                cc4.safa([=](std::map<int,std::string> &org){
+                    org.emplace(sum/2 + i,"ss"+std::to_string(sum/2 + i));
+                });
+            }
+        });
+    
+        while(true)
+        {
+            bhtools::Ftimel::sleep(1000);
+            if(cc1.size() == sum && cc2.size() == sum && cc3.size() == sum && cc4.size() == sum)
+            {
+                break;
+            }
+            vlogd($(cc1.size()) $(cc2.size()) $(cc3.size()) $(cc4.size()));
+        }
+        vlogd($(cc1.size()));
+    }
+}
+
 int main(int argc, char *argv[])
 {
     // test_1();   
-    test_2();   
+    // test_2();   
+    test_3();   
 
     return 0;
 }
