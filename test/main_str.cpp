@@ -108,10 +108,21 @@ void test_2()
 
 }
 
+void test_3()
+{
+    char a1 = '0';
+    char a2 = 'a';
+    char a3 = 'A';
+    char a4 = '|';
+
+    vlogd($(a1) $(a2) $(a3) $(a4));
+}
+
 int main(int argc, char *argv[])
 {
     // test_1();   
-    test_2();   
+    // test_2();   
+    test_3();
 
     return 0;
 }

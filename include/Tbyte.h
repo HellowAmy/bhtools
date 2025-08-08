@@ -254,32 +254,6 @@ struct Tbyte
         return t;
     } 
 
-    // 字节转16进制位数标记
-    inline static std::vector<bool> char_hex(char c)
-    {
-        std::vector<bool> vec {false,false,false,false};
-        size_t num = hex_num(c);
-        for(int i=3;i>=0;i--)
-        {
-            size_t b = calc_exp(2,i);
-            if(num >= b) { num -= b; vec[i] = true; }
-        }
-        return vec;
-    }
-
-    // 字节转8进制位数标记
-    inline static std::vector<bool> char_oct(char c)
-    {
-        std::vector<bool> vec {false,false,false};
-        size_t num = oct_num(c);
-        for(int i=2;i>=0;i--)
-        {
-            size_t b = calc_exp(2,i);
-            if(num >= b) { num -= b; vec[i] = true; }
-        }
-        return vec;
-    }
-
     // 数字转16进制符号
     inline static char num_hex(size_t val)
     { 
@@ -390,6 +364,34 @@ struct Tbyte
         for(size_t i=0;i<exp-1;i++)
         { sum *= val; }
         return sum; 
+    }
+
+
+    // internal
+    // 字节转16进制位数标记
+    inline static std::vector<bool> char_hex(char c)
+    {
+        std::vector<bool> vec {false,false,false,false};
+        size_t num = hex_num(c);
+        for(int i=3;i>=0;i--)
+        {
+            size_t b = calc_exp(2,i);
+            if(num >= b) { num -= b; vec[i] = true; }
+        }
+        return vec;
+    }
+
+    // 字节转8进制位数标记
+    inline static std::vector<bool> char_oct(char c)
+    {
+        std::vector<bool> vec {false,false,false};
+        size_t num = oct_num(c);
+        for(int i=2;i>=0;i--)
+        {
+            size_t b = calc_exp(2,i);
+            if(num >= b) { num -= b; vec[i] = true; }
+        }
+        return vec;
     }
 };
 

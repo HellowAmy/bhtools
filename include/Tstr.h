@@ -19,6 +19,16 @@ struct Tstr
         return "false"; 
     }
 
+    inline static std::string to_string(char val) 
+    {
+        std::string ret = "['";
+        ret.push_back(val);
+        ret += "': ";
+        ret += Tstr::to_string((int)val);
+        ret += "]";
+        return ret;
+    }
+
     inline static std::string to_string(const char *val) 
     {
         if(val) { return val; } 
