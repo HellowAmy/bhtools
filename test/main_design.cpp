@@ -1,9 +1,4 @@
-
-
-// #define BHLOG_CLOSE_LOG
-// #define BHLOG_CLOSE_COL
-
-
+ 
 #include <iostream>
 #include <string.h>
 #include <vector>
@@ -11,332 +6,196 @@
 #include <list>
 #include <unistd.h>
 
-#include "Tdesign.h"
-#include "Tlog.h"
-#include "Ffm.h"
-// #include "Ftime.h"
-
-using namespace bhtools;
+#include "bhtools.h"
 
 
-namespace Test1 {
-
-// 模式1-使用父类继承-可减少每个处理类需要编写的代码量
-class TestBase
+// 通用处理模板-带返回值
+// 用于定义参数-计算分数等级
+struct test_base
 {
-public:
     template<typename ...Targ>
     std::pair<bool,std::string> accept(Targ ...arg) { return process(arg...); }
     std::pair<bool,std::string> process() { return {}; };
     virtual std::pair<bool,std::string> process(std::string name,int score) = 0;
 };
 
-class TestA : public TestBase
+struct test_a1 : public test_base
 {
-public:
     std::pair<bool,std::string> process(std::string name,int score) override
     {
-        if(score >= 90)
+        vlogd("test_a1");
+        std::string ret;
+        if(score > 90) 
         {
-            std::string ret = Fffm("{}同学的得分是{}--属于A级")(name,score);
-            return std::make_pair(true,ret);
+            ret = name+"同学大于90分,分数为"+std::to_string(score);
+            return {true,ret};
         }
-        return std::make_pair(false,"");
+        return {false,""};
     }
 };
 
-class TestB : public TestBase
+struct test_a2 : public test_base
 {
-public:
     std::pair<bool,std::string> process(std::string name,int score) override
     {
-        if(score >= 75)
+        vlogd("test_a2");
+        std::string ret;
+        if(score > 70) 
         {
-            std::string ret = Fffm("{}同学的得分是{}--属于B级")(name,score);
-            return std::make_pair(true,ret);
+            ret = name+"同学大于70分,分数为"+std::to_string(score);
+            return {true,ret};
         }
-        return std::make_pair(false,"");
+        return {false,""};
     }
 };
 
-class TestC : public TestBase
+struct test_a3 : public test_base
 {
-public:
-    std::pair<bool,std::string> process(std::string name,int score)
+    std::pair<bool,std::string> process(std::string name,int score) override
     {
-        if(score >= 60)
+        vlogd("test_a3");
+        std::string ret;
+        if(score > 60) 
         {
-            std::string ret = Fffm("{}同学的得分是{}--属于C级")(name,score);
-            return std::make_pair(true,ret);
+            ret = name+"同学大于60分,分数为"+std::to_string(score);
+            return {true,ret};
         }
-        return std::make_pair(false,"");
+        return {false,""};
     }
 };
 
-class TestD : public TestBase
+
+// 通用处理模板-无返回值
+// 用于定义参数-计算形状周长-传入结构体
+struct perimeter_calc_data
 {
-public:
-    std::pair<bool,std::string> process(std::string name,int score)
+    int ret;
+    std::string type;
+    std::vector<int> vec;
+};
+
+struct test_base_bool
+{
+    template<typename ...Targ>
+    bool accept(Targ ...arg) { return process(arg...); }
+    bool process() { return {}; };
+    virtual bool process(perimeter_calc_data *) = 0;
+};
+
+struct test_b1 : public test_base_bool
+{
+    bool process(perimeter_calc_data *d) override
     {
-        if(score < 60)
+        vlogd("test_b1");
+        if(d->type == "长方形")
         {
-            std::string ret = Fffm("{}同学的得分是{}--属于D级")(name,score);
-            return std::make_pair(true,ret);
+            int t1 = d->vec[0];
+            int t2 = d->vec[1];
+            d->ret = 2*(t1+t2);
+            return true;
         }
-        return std::make_pair(false,"");
+        return false;
     }
 };
 
+struct test_b2 : public test_base_bool
+{
+    bool process(perimeter_calc_data *d) override
+    {
+        vlogd("test_b2");
+        if(d->type == "圆形")
+        {
+            int t1 = d->vec[0];
+            d->ret = 2*3.14*t1;
+            return true;
+        }
+        return false;
+    }
+};
 
-} // Test1
-
+struct test_b3 : public test_base_bool
+{
+    bool process(perimeter_calc_data *d) override
+    {
+        vlogd("test_b3");
+        if(d->type == "三角形")
+        {
+            int t1 = d->vec[0];
+            int t2 = d->vec[1];
+            int t3 = d->vec[2];
+            d->ret = t1+t2+t3;
+            return true;
+        }
+        return false;
+    }
+};
 
 
 void test_1()
 {
-    using namespace Test1;
+    // 带返回值
     {
-        vlogi("== 1 ==");
-        Twork_chain<TestD,TestC,TestB,TestA> work;
-        {
-            auto ret = work.start<std::string>("黄一衣",98);
-            vlogd($(ret.first) $(ret.second));
-        }
-        {
-            auto ret = work.start<std::string>("周某星",76);
-            // vlogd($(ok));
-            vlogd($(ret.first) $(ret.second));
-        }
-        {
-            auto ret = work.start<std::string>("雷雷子",62);
-            vlogd($(ret.first) $(ret.second));
-        }
-        {
-            auto ret = work.start<std::string>("渣渣辉",53);
-            vlogd($(ret.first) $(ret.second));
-        }
+        bhtools::Twork_chain<test_a1,test_a2,test_a3> work;
+        std::pair<bool,std::string> p1 = work.start<std::string>("小明",79);
+        vlogd($(p1));
+    }
+    {
+        bhtools::Twork_chain<test_a1,test_a2,test_a3> work;
+        std::pair<bool,std::string> p1 = work.start<std::string>("小王",99);
+        vlogd($(p1));
+    }
+    {
+        bhtools::Twork_chain<test_a1,test_a2,test_a3> work;
+        std::pair<bool,std::string> p1 = work.start<std::string>("小熊",61);
+        vlogd($(p1));
+    }
+    {
+        bhtools::Twork_chain<test_a1,test_a2,test_a3> work;
+        std::pair<bool,std::string> p1 = work.start<std::string>("小花",55);
+        vlogd($(p1));
     }
 }
-
-
-namespace Test2 {
-
-
-class TestBase
-{
-public:
-    template<typename ...Targ>
-    bool accept(Targ ...arg) { return process(arg...); }
-    bool process() { return false; };
-    virtual bool process(std::string name,int score) = 0;
-};
-
-class TestA : public TestBase
-{
-public:
-    bool process(std::string name,int score) override
-    {
-        if(score >= 90)
-        {
-            std::string ret = Fffm("{}同学的得分是{}--属于A级")(name,score);
-            vlogd($(ret));
-            return true;
-        }
-        return false;
-    }
-};
-
-class TestB : public TestBase
-{
-public:
-    bool process(std::string name,int score) override
-    {
-        if(score >= 75)
-        {
-            std::string ret = Fffm("{}同学的得分是{}--属于B级")(name,score);
-            vlogd($(ret));
-            return true;
-        }
-        return false;
-    }
-};
-
-class TestC : public TestBase
-{
-public:
-    bool process(std::string name,int score)
-    {
-        if(score >= 60)
-        {
-            std::string ret = Fffm("{}同学的得分是{}--属于C级")(name,score);
-            vlogd($(ret));
-            return true;
-        }
-        return false;
-    }
-};
-
-class TestD : public TestBase
-{
-public:
-    bool process(std::string name,int score)
-    {
-        if(score > 0 && score < 60)
-        {
-            std::string ret = Fffm("{}同学的得分是{}--属于D级")(name,score);
-            vlogd($(ret));
-            return true;
-        }
-        return false;
-    }
-};
-
-} // Test2
-
-
 
 void test_2()
 {
-    using namespace Test2;
+    // 无返回值-通过参数返回
     {
-        vlogi("== 1 ==");
-        Twork_chain<TestD,TestC,TestB,TestA> work;
-        {
-            bool ok = work.start("黄一衣",98);
-            vlogd($(ok));
-        }
-        {
-            bool ok = work.start("周某星",76);
-            vlogd($(ok));
-        }
-        {
-            bool ok = work.start("雷雷子",62);
-            vlogd($(ok));
-        }
-        {
-            bool ok = work.start("渣渣辉",53);
-            vlogd($(ok));
-        }        
-        {
-            bool ok = work.start("猪猪侠",-13);
-            vlogd($(ok));
-        }
+        auto d = std::make_shared<perimeter_calc_data>();
+        d->type = "圆形";
+        d->vec = {5};
+        bhtools::Twork_chain<test_b1,test_b2,test_b3> work;
+        bool p1 = work.start(d.get());
+        vlogd($(p1) $(d->type) $(d->ret));
     }
     {
-        Twork_chain<TestA,TestB,TestC,TestD> work;
-        {
-            bool ok = work.start("黄一衣",98);
-            vlogd($(ok));
-        }
-        {
-            bool ok = work.start("周某星",76);
-            vlogd($(ok));
-        }
-        {
-            bool ok = work.start("雷雷子",62);
-            vlogd($(ok));
-        }
-        {
-            bool ok = work.start("渣渣辉",53);
-            vlogd($(ok));
-        }        
-        {
-            bool ok = work.start("猪猪侠",-13);
-            vlogd($(ok));
-        }
-    }
-}
-namespace Test3 {
-
-struct TestStringData
-{
-    int height;    
-    int width;
-    std::string info;     
-};
-
-// 模式2-处理类单独处理模板职责链需要的鸭子函数
-class TestStringA
-{
-public:
-    template<typename ...Targ>
-    std::pair<bool,int> accept(Targ ...arg) { return process(arg...); }
-
-    template<typename ...Targ>
-    std::pair<bool,int> process(TestStringData data)
-    {
-        if(data.info == "长方形")
-        {
-            int ret = data.height * data.width;
-            return std::make_pair(true,ret);
-        }
-        return std::make_pair(false,0);
-    }
-    std::pair<bool,int> process() { return {}; }
-};
-
-class TestStringB
-{
-public:
-    template<typename ...Targ>
-    std::pair<bool,int> accept(Targ ...arg) { return process(arg...); }
-
-    template<typename ...Targ>
-    std::pair<bool,int> process(TestStringData data)
-    {
-        if(data.info == "三角形")
-        {
-            int ret = data.height * data.width / 2;
-            return std::make_pair(true,ret);
-        }
-        return std::make_pair(false,0);
-    }
-    std::pair<bool,int> process() { return {}; }
-};
-
-
-} // Test3
-
-
-void test_3()
-{
-    vlogi("== test_3 ==");
-    using namespace Test3;
-    Twork_chain<TestStringB,TestStringA> work;
-    {
-        TestStringData a;
-        a.info = "长方形";
-        a.height = 10;
-        a.width = 5;
-        auto ret = work.start<int>(a);
-        vlogd($(ret.first) $(ret.second));
+        auto d = std::make_shared<perimeter_calc_data>();
+        d->type = "三角形";
+        d->vec = {5,10,15};
+        bhtools::Twork_chain<test_b1,test_b2,test_b3> work;
+        bool p1 = work.start(d.get());
+        vlogd($(p1) $(d->type) $(d->ret));
     }
     {
-        TestStringData a;
-        a.info = "三角形";
-        a.height = 10;
-        a.width = 5;
-        auto ret = work.start<int>(a);
-        vlogd($(ret.first) $(ret.second));
+        auto d = std::make_shared<perimeter_calc_data>();
+        d->type = "长方形";
+        d->vec = {5,20};
+        bhtools::Twork_chain<test_b1,test_b2,test_b3> work;
+        bool p1 = work.start(d.get());
+        vlogd($(p1) $(d->type) $(d->ret));
     }
     {
-        TestStringData a;
-        a.info = "圆形";
-        a.height = 10;
-        a.width = 5;
-        auto ret = work.start<int>(a);
-        vlogd($(ret.first) $(ret.second));
+        auto d = std::make_shared<perimeter_calc_data>();
+        d->type = "锥形";
+        d->vec = {5,2,6};
+        bhtools::Twork_chain<test_b1,test_b2,test_b3> work;
+        bool p1 = work.start(d.get());
+        vlogd($(p1) $(d->type) $(d->ret));
     }
 }
 
 int main(int argc, char *argv[])
 {
-    test_1();   
-    test_2();   
-    test_3();   
-    // test_4();   
-    // test_5();
-    // test_6();
-
+    test_1();
+    test_2();
     return 0;
 }
