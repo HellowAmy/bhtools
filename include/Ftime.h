@@ -149,23 +149,34 @@ struct Ftimes
 
     // 默认转为中国时区显示时间
     inline static std::string to_string(size_t UTC = 8)
-    { return to_string(time_now(),UTC); }
+    { 
+        data d = to_data(time_now());
+        d.hou += UTC;
+        return to_string(d); 
+    }
 
     // 转为默认UTC显示时间-传入时间点
-    inline static std::string to_string(const nanoseconds &point,size_t UTC)
+    inline static std::string to_string(const data &d)
     {
-        data d = to_data(point);
         std::string ret = "[ " + 
             std::to_string(d.yea) +"-"+
             std::to_string(d.mon) +"-"+
             std::to_string(d.day) +"."+
-            std::to_string(d.hou + UTC) +":"+
+            std::to_string(d.hou) +":"+
             std::to_string(d.min) +":"+
             std::to_string(d.sec) +"."+
             std::to_string(d.mil) +"."+
             std::to_string(d.mic) +"."+
             std::to_string(d.nan) +" ]";
         return ret;
+    }
+
+    // 返回默认中国时区时间
+    inline static data to_data(size_t UTC = 8)
+    {
+        data d = to_data(time_now());
+        d.hou += 8;
+        return d;
     }
 
     // 返回C++标准库的UTC时间-具体地区的时间偏移需要自行计算
