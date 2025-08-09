@@ -98,6 +98,7 @@ void test_2()
 
 void test_3()
 {
+    // 测试safa接口的线程安全,不推荐使用该接口
     {
         bhtools::Tpool<> pool;
     

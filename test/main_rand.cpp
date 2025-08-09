@@ -19,6 +19,7 @@ auto fprint = [](std::map<int,int> mp,std::string tips = ""){
 
 void test_1()
 {
+    // 均匀随机数
     bhtools::Trand_int rd1(-10,10);
     bhtools::Trand_double rd2(-0.2,0.2);
     bhtools::Trand_bool rd3;
@@ -51,6 +52,7 @@ void test_1()
 
 void test_2()
 {
+    // 其他类型随机数
     bhtools::Trand_ndis rd1(50.0,5.0);
     bhtools::Trand_ddis rd2{10,10,40,40,90,90};
     bhtools::Trand_pdis rd3(10);

@@ -1,289 +1,134 @@
 
 #include <iostream>
 
-#include "Tlog.h"
-#include "Tasync.h"
+#include "bhtools.h"
 
-using namespace bhtools;
-
-struct Tct1
+//
+struct tets_a1_err
 {
-    int a1;
-    std::string a2;
+    int step = 0;
+    std::string info;
+};
+
+struct tets_a1_suc
+{
+    std::string name;
+    std::string token;
+    std::vector<std::string> frends;
+};
+
+struct tets_a1_arg
+{
+    tets_a1_suc suc;
+    tets_a1_err err;
+    std::string account;
+    std::string password;
+    std::string path;
+    size_t sum;
 };
 
 void test_1()
 {
-    Tasync<std::string> task;
-    task.start<int>([](){
-        int ret = 100;
-        vlogd($(ret));
-        return ret;
-    }).next<std::string,int>([](int arg){
-        std::string ret;
-        ret += "ss" + std::to_string(arg);
-        vlogd($(ret));
-        return ret;
-    }).end<std::string>([](std::string arg){
-        arg += "end";
-        vlogd($(arg));
-        return arg;
-    });
-    task.run(false);
+    // 测试异步执行顺序
+    bhtools::Tasync<tets_a1_arg> asy;
 
-    std::string ret = task.get_value();
-    vlogd("=====" << $(ret));
-}
+    asy.next([](tets_a1_arg &arg) {
+        auto s1 = arg.account;
+        auto s2 = arg.password;
+        vlogd("登陆账号 "<<$(s1) $(s2));
 
-void test_2()
-{
-    Tasync<std::string> task;
-    task.start<int>([](){
-        int ret = 100;
-        vlogd($(ret));
-        Ftimel::sleep(1000);
-        return ret;
-    }).next<std::string,int>([](int arg){
-        std::string ret;
-        ret += "ss" + std::to_string(arg);
-        vlogd($(ret));
-        Ftimel::sleep(1000);
-        return ret;
-    }).end<std::string>([](std::string arg){
-        arg += "end";
-        vlogd($(arg));
-        Ftimel::sleep(1000);
-        return arg;
-    });
-    task.run(false);
-
-    std::string ret = task.get_value();
-    vlogd("=====" << $(ret));
-}
-
-void test_3()
-{
-    Tasync<std::string> task;
-    task.start<int>([](){
-        Ftimel::sleep(500);
-        int ret = 100;
-        vlogd($(ret));
-        Ftimel::sleep(500);
-        return ret;
-    }).next<std::string,int>([](int arg){
-        std::string ret;
-        ret += "ss" + std::to_string(arg);
-        vlogd($(ret));
-        Ftimel::sleep(1000);
-        return ret;
-    }).end<std::string>([](std::string arg){
-        arg += "end";
-        vlogd($(arg));
-        Ftimel::sleep(1000);
-        return arg;
-    });
-    task.run();
-
-    vlogd("== end ==");
-    Ftimel::sleep(5000);
-    std::string ret = task.get_value();
-    vlogd("=====" << $(ret));
-}
-
-void test_4()
-{
-    Tasync<std::string> task;
-    task.set_error_func([](std::string err){
-        vlogd(err);
-    });
-    task.start<int>([](){
-        Ftimel::sleep(500);
-        int ret = 100;
-        vlogd($(ret));
-        Ftimel::sleep(500);
-        return ret;
-    }).next<std::string,int>([&](int arg){
-        std::string ret;
-        ret += "ss" + std::to_string(arg);
-        vlogd($(ret));
-        if(ret != "100")
+        bhtools::Ftimel::sleep(500);
+        if(s1 == "123990" && s2 == "abcd")
         {
-            task.stop_run("err100");
+            arg.suc.name = "小明";
+            return true;
+        }   
+        tets_a1_err e;
+        e.step = 1;
+        e.info = "登陆失败";
+        arg.err = e;
+        return false;
+
+    }).next([](tets_a1_arg &arg){
+        auto s1 = arg.path;
+        auto s2 = arg.suc.name;
+        vlogd("下载图片 "<<$(s1) $(s2));
+        bhtools::Ftimel::sleep(500);
+        if(s1 == "/home/1" && s2 == "小明")
+        {
+            arg.suc.token = "xxx";
+            return true;
         }
-        Ftimel::sleep(1000);
-        return ret;
-    }).end<std::string>([](std::string arg){
-        arg += "end";
-        vlogd($(arg));
-        Ftimel::sleep(1000);
-        return arg;
+        tets_a1_err e;
+        e.step = 2;
+        e.info = "下载失败";
+        arg.err = e;
+        return false;
+    }).next([](tets_a1_arg &arg) {
+        auto s1 = arg.suc.token;
+        auto s2 = arg.sum;
+        vlogd("拉取好友 "<<$(s1));
+        bhtools::Ftimel::sleep(500);
+        if(s1 == "xxx" && s2 == 4)
+        {
+            arg.suc.frends = {"a1","a2","a3","a4"};
+            return true;
+        }
+        tets_a1_err e;
+        e.step = 3;
+        e.info = "拉取失败";
+        arg.err = e;
+        return false;
+    }).error([](tets_a1_arg arg) {
+        vlogd("失败 "<<$(arg.err.step) $(arg.err.info));
+    }).succee([](tets_a1_arg arg) {
+        vlogd("成功 "<<$(arg.suc.name) $(arg.suc.token) $C(arg.suc.frends));
     });
-    task.run();
 
-    vlogd("== end ==");
-    Ftimel::sleep(5000);
-    std::string ret = task.get_value();
-    vlogd("=====" << $(ret));
-}
-
-void test_5()
-{
-    Tasync<std::string> task;
-    task.set_error_func([](std::string err){
-        vlogd(err);
-    });
-    task.start<int>([](){
-        Ftimel::sleep(500);
-        int ret = 100;
-        vlogd($(ret));
-        Ftimel::sleep(500);
-        return ret;
-    }).next<std::string,int>([&](int arg){
-        std::string ret;
-        ret += "ss" + std::to_string(arg);
-        vlogd($(ret));
-        Ftimel::sleep(1000);
-        return ret;
-    }).end<std::string>([](std::string arg){
-        arg += "end";
-        vlogd($(arg));
-        Ftimel::sleep(1000);
-        return arg;
-    });
-    task.run();
-
-    for(int i=0;i<100;i++)
+    // 测试异步操作
     {
-        vlogd("main program loop : " << i);
-        if(task.is_run() == false)
-        {
-            if(task.is_suc())
-            {
-                auto ret = task.get_value();
-                vlogd("ret: " << $(ret));
-            }
-            else 
-            {
-                vlogd("failed calc");
-            }   
-            break;
-        }
-        Ftimel::sleep(500);
+        tets_a1_arg arg;
+        arg.account = "123990";
+        arg.password = "abcd";
+        arg.path = "/home/1";
+        arg.sum = 4;
+        asy.run(arg);
+        bhtools::Ftimel::sleep(2000);
     }
-    vlogd("== end ==");
-}
-
-void test_6()
-{
-    Tasync<> task;
-    task.next<int,nullptr_t>([](nullptr_t){
-        int i=100;
-        Ftimel::sleep(1000);
-        return i;
-    });
-    task.next<int,int>([](int arg){
-        arg += 1000;
-        Ftimel::sleep(1000);
-        return arg;
-    });
-    task.next<Tct1,int>([](int arg){
-        Tct1 ct;
-        ct.a1 = arg;
-        ct.a2 = "ss" + std::to_string(arg);
-        Ftimel::sleep(1000);
-        return ct;
-    });
-    task.next<nullptr_t,Tct1>([](Tct1 arg){
-        arg.a1 += 444;
-        arg.a2 += "444ss";
-        vlogd($(arg.a1) $(arg.a1));
-        Ftimel::sleep(1000);
-        return nullptr_t();
-    });
-
-    task.run();
-    vlogd("== run ==");
-    
-    for(int i=0;i<100;i++)
     {
-        if(task.is_run() == false)
-        {
-            break;
-        }
-        vlogd("main program loop : " << i);
-        Ftimel::sleep(500);
+        tets_a1_arg arg;
+        arg.account = "123990";
+        arg.password = "abcd";
+        arg.path = "/home/1";
+        arg.sum = 2;
+        asy.run(arg);
+        bhtools::Ftimel::sleep(2000);
     }
-    vlogd("== end ==");
-}
-
-
-void test_7()
-{
-    Tasync<> task;
-    task.next<std::string,std::string>([](std::string arg){
-        std::string path = "/root/path/";
-        path = path + arg;
-        vlogi("load picture: " << $(path));
-        Ftimel::sleep(300);
-        return path;
-    }).next<std::vector<size_t>,std::string>([](std::string arg){
-        vlogi("load finish and send to 1000 account: " << $(arg));
-        std::vector<size_t> vec;
-        vec.resize(1000);
-        Ftimel::sleep(300);
-        return vec;
-    }).next<bool,std::vector<size_t>>([](const std::vector<size_t> &arg){
-        int i=0;
-        for(auto &a:arg)
-        {
-            i++;
-        }
-        vlogi("send update notify:" << $(i));
-        Ftimel::sleep(300);
-        return true;
-    });
-
-    task.set_next_arg("logo.png");
-    task.run();
-
-    vlogd("== run ==");
-
-    std::vector<std::string> vec {
-        "logo.png",
-        "desktop.png",
-        "work.png",
-        "travel.png",
-    };
-    
-    int count = 0;
-    for(int i=0;i<100;i++)
     {
-        if(task.is_run() == false)
-        {
-            vlogd("in is_run");
-            count++;
-            if(count >= vec.size())
-            {
-                break;
-            }
-            task.set_next_arg(vec[count]);
-            task.run();
-        }
-        vlogd("main program loop : " << i);
-        Ftimel::sleep(500);
+        tets_a1_arg arg;
+        arg.account = "123990";
+        arg.password = "abcd";
+        arg.path = "/home/1111";
+        arg.sum = 2;
+        asy.run(arg);
+        bhtools::Ftimel::sleep(2000);
     }
-    vlogd("== end ==");
+    {
+        tets_a1_arg arg;
+        arg.account = "123990";
+        arg.password = "abcd22";
+        arg.path = "/home/1111";
+        arg.sum = 2;
+        asy.run(arg);
+        bhtools::Ftimel::sleep(2000);
+    }
+
+
 }
 
 int main(int argc, char *argv[])
 {
     test_1();   
-    test_2();   
-    test_3();   
-    test_4();   
-    test_5();   
-    test_6();   
-    test_7();   
 
     return 0;
 }
