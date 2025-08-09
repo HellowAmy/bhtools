@@ -247,6 +247,15 @@ void test_5()
     // 路径拼接
     std::string ss = bhtools::Fjoin()("123","abc","qwe","asd");
     vlogd($(ss));
+
+
+    // 获取环境变量
+    std::string s1 = bhtools::Ffsys::get_env("USER");
+    std::string s2 = bhtools::Ffsys::get_env("HTTP_PROXY");
+    std::string s3 = bhtools::Ffsys::get_env("DBUS_SESSION_BUS_ADDRESS");
+    std::string s4 = bhtools::Ffsys::get_env("Pos11s");
+
+    vlogd($(s1) $(s2) $(s3) $(s4));
 }
 
 int main(int argc, char *argv[])

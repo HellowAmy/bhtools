@@ -59,12 +59,30 @@ struct Fsfm : public Ffm_base
             if(std::get<0>(tsub))
             {
                 ret += Tstr::section_range(_str,offset,std::get<1>(tsub));
+
+                // 判断是否存在浮点格式
+                std::string sub3 = std::get<3>(tsub);
+                bool isdec = false;
+                int intdec = -1;
+                std::string dec;
+                for(auto &a:sub3)
+                {
+                    if(a == ':') { isdec = true; }
+                    else if(isdec) { dec.push_back(a); }
+                }
+                isdec = Tstr::from_string(dec,intdec);
+
+                // 获取标记内容
                 size_t index = 0;
-                bool ok = Tstr::from_string(std::get<3>(tsub),index);
+                std::string part;
+                bool ok = Tstr::from_string(sub3,index);
+                if(ok && index < _vec.size()) { part = _vec[index]; }
+                else { part = Tstr::section_range(_str,std::get<1>(tsub),std::get<2>(tsub) +1); }
 
-                if(ok && index < _vec.size()) { ret += _vec[index]; }
-                else { ret += Tstr::section_range(_str,std::get<1>(tsub),std::get<2>(tsub) +1); }
-
+                // 添加到结果-判断浮点数
+                if(isdec) { ret += Tstr::to_string(Tstr::from_string<double>(part),intdec); } 
+                else { ret += part; }
+                
                 offset = std::get<2>(tsub) +1;
             }
             else { break; }

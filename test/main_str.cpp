@@ -110,12 +110,23 @@ void test_2()
 
 void test_3()
 {
+    // 单字节打印
     char a1 = '0';
     char a2 = 'a';
     char a3 = 'A';
     char a4 = '|';
 
     vlogd($(a1) $(a2) $(a3) $(a4));
+
+    // 浮点数小数位数
+    double d1 = 3.141526;
+    double d2 = 0.0;
+    auto s1 = bhtools::Tstr::to_string(d1,2);
+    auto s2 = bhtools::Tstr::to_string(d1,10);
+    auto s3 = bhtools::Tstr::to_string(d1);
+    auto s4 = bhtools::Tstr::to_string(d2,2);
+
+    vlogd($(s1) $(s2) $(s3) $(s4));
 }
 
 int main(int argc, char *argv[])

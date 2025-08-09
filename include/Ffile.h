@@ -33,6 +33,14 @@ namespace bhtools {
         // 换行符
         inline static std::string file_break() { return "\n"; }
 
+        // 获取环境变量
+        inline static std::string get_env(const std::string &name) 
+        { 
+            char *val = std::getenv(name.c_str());
+            if(val) { return val; }
+            return "";
+        }
+
         // 合并路径
         inline static std::string path_merge(const std::string &prefix,const std::string &file) 
         {
@@ -347,6 +355,10 @@ namespace bhtools {
 // 文件处理类-提供跨平台处理文件与目录的功能
 struct Ffsys
 {
+    // 获取环境变量
+    inline static std::string get_env(const std::string &name) 
+    { return bhtools_platform::get_env(name.c_str()); }
+
     // 替换为当前平台路径
     inline static std::string platform_path(std::string path)
     {

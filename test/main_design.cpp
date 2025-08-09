@@ -130,6 +130,23 @@ struct test_b3 : public test_base_bool
     }
 };
 
+struct test_b4 : public test_base_bool
+{
+    bool process(perimeter_calc_data *d) override
+    {
+        vlogd("test_b4");
+        if(d->type == "多边形")
+        {
+            for(int i=0;i<d->vec.size();i++)
+            {
+                d->ret += d->vec[i];
+            }
+            return true;
+        }
+        return false;
+    }
+};
+
 
 void test_1()
 {
@@ -159,11 +176,12 @@ void test_1()
 void test_2()
 {
     // 无返回值-通过参数返回
+    bhtools::Twork_chain<test_b1,test_b2,test_b3> work;
+
     {
         auto d = std::make_shared<perimeter_calc_data>();
         d->type = "圆形";
         d->vec = {5};
-        bhtools::Twork_chain<test_b1,test_b2,test_b3> work;
         bool p1 = work.start(d.get());
         vlogd($(p1) $(d->type) $(d->ret));
     }
@@ -171,7 +189,6 @@ void test_2()
         auto d = std::make_shared<perimeter_calc_data>();
         d->type = "三角形";
         d->vec = {5,10,15};
-        bhtools::Twork_chain<test_b1,test_b2,test_b3> work;
         bool p1 = work.start(d.get());
         vlogd($(p1) $(d->type) $(d->ret));
     }
@@ -179,7 +196,6 @@ void test_2()
         auto d = std::make_shared<perimeter_calc_data>();
         d->type = "长方形";
         d->vec = {5,20};
-        bhtools::Twork_chain<test_b1,test_b2,test_b3> work;
         bool p1 = work.start(d.get());
         vlogd($(p1) $(d->type) $(d->ret));
     }
@@ -187,7 +203,6 @@ void test_2()
         auto d = std::make_shared<perimeter_calc_data>();
         d->type = "锥形";
         d->vec = {5,2,6};
-        bhtools::Twork_chain<test_b1,test_b2,test_b3> work;
         bool p1 = work.start(d.get());
         vlogd($(p1) $(d->type) $(d->ret));
     }

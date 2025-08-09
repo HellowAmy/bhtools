@@ -121,12 +121,22 @@ void test_3()
     */
 }
 
+void test_4()
+{
+    // 浮点数格式化,只有Fsfm支持
+    auto s1 = bhtools::Fsfm("#{0}={1}={2}#")(100,3.1415267777,"hellow");
+    auto s2 = bhtools::Fsfm("#{0}={1:2}={2}#")(100,3.1415267777,"hellow");
+    auto s3 = bhtools::Fsfm("#{0}={1:10}={2}#")(100,3.1415267777,"hellow");
+    vlogd($(s1) $(s2) $(s3));
+}
+
 
 int main(int argc, char *argv[])
 {
-    // test_1();   
-    // test_2();   
-    test_3();   
+    test_1();   
+    test_2();   
+    // test_3();   
+    test_4();   
 
     return 0;
 }

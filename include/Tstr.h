@@ -5,6 +5,7 @@
 #include <string>
 #include <tuple>
 #include <sstream>
+#include <iomanip>
 
 namespace bhtools {
 
@@ -56,6 +57,14 @@ struct Tstr
         std::string ret;
         Tstr_tup<std::tuple<T...>,std::tuple_size<std::tuple<T...>>::value,0>::action(tup,ret); 
         return ret;
+    }
+
+    // 多参数-浮点数
+    inline static std::string to_string(double val,int dec) 
+    {
+        std::stringstream ss;
+        ss << std::fixed << std::setprecision(dec) << val;
+        return ss.str();
     }
 
 
