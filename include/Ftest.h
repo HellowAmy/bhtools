@@ -24,6 +24,11 @@ namespace bhtools {
     if(!ptr)  { vloge("[NULL] [BHTEST_NULL] "<<$(ptr)); }       \
 
 
+// 失败提示
+#define BHTEST_FALSE(ok)                                        \
+    if(!ok)  { vloge("[FALSE] [BHTEST_ERR] "<<$(ok)); }         \
+
+
 } // bhtools
 
 #endif // FTEST_H

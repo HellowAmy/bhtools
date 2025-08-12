@@ -47,6 +47,14 @@ void test_1()
         BHTEST_NULL(p2);
     }
 
+    {
+        bool ok1 = false;
+        bool ok2 = true;
+
+        BHTEST_FALSE(ok1);
+        BHTEST_FALSE(ok2);
+        BHTEST_FALSE((12 == 11));
+    }
 }
 
 
