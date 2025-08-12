@@ -256,6 +256,16 @@ void test_5()
     std::string s4 = bhtools::Ffsys::get_env("Pos11s");
 
     vlogd($(s1) $(s2) $(s3) $(s4));
+
+    // 切换路径
+    auto p1 = bhtools::Ffsys::get_dir();
+    auto p2 = bhtools::Ffsys::set_dir("/home/red/open/github/bhtools");
+    auto p3 = bhtools::Ffsys::get_dir();
+    auto p4 = bhtools::Ffsys::set_dir(p1);
+    auto p5 = bhtools::Ffsys::get_dir();
+    
+    vlogd($(p1) $(p2) $(p3) $(p4) $(p5));
+
 }
 
 int main(int argc, char *argv[])

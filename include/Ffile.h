@@ -33,12 +33,20 @@ namespace bhtools {
         // 换行符
         inline static std::string file_break() { return "\n"; }
 
-        // 获取环境变量
-        inline static std::string get_env(const std::string &name) 
+        // 获取当前路径
+        inline static std::string get_dir() 
         { 
-            char *val = std::getenv(name.c_str());
-            if(val) { return val; }
+            char buff[FILENAME_MAX] = {0};
+            if(getcwd(buff,sizeof(buff)) != nullptr)
+            { return std::string(buff); }
             return "";
+        }
+
+        // 切换到目标路径
+        inline static bool set_dir(const std::string &path) 
+        { 
+            if(chdir(path.c_str()) == 0) { return true; }
+            return false;
         }
 
         // 合并路径
@@ -357,7 +365,19 @@ struct Ffsys
 {
     // 获取环境变量
     inline static std::string get_env(const std::string &name) 
-    { return bhtools_platform::get_env(name.c_str()); }
+    { 
+        char *val = std::getenv(name.c_str());
+        if(val) { return val; }
+        return "";
+    }
+
+    // 获取当前路径
+    inline static std::string get_dir() 
+    { return bhtools_platform::get_dir(); }
+
+    // 切换到目标路径
+    inline static bool set_dir(const std::string &path) 
+    { return bhtools_platform::set_dir(path); }
 
     // 替换为当前平台路径
     inline static std::string platform_path(std::string path)
