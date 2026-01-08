@@ -61,6 +61,7 @@ void test_3()
     vlogd($(a1) $(a2) $(a3) $(a4) $(a5) $(a6));
     vlogd($(a7) $(a8) $(a9) $(a10) $(a11));
 
+    // 大小写转化
     auto s1 = bhtools::Tbyte::to_upper('1');
     auto s2 = bhtools::Tbyte::to_upper('a');
     auto s3 = bhtools::Tbyte::to_lower('A');
@@ -68,20 +69,51 @@ void test_3()
     auto s5 = bhtools::Tbyte::to_upper("123asHU");
     vlogd($(s1) $(s2) $(s3) $(s4) $(s5));
 
-    int aa1;
-    short aa2;
-    size_t aa3;
-    auto h1 = bhtools::Tbyte::size_byte(aa1);
-    auto h2 = bhtools::Tbyte::size_byte(aa2);
-    auto h3 = bhtools::Tbyte::size_byte(aa3);
+    // 类型比特长度
+    int b1;
+    short b2;
+    size_t b3;
+    auto h1 = bhtools::Tbyte::size_byte(b1);
+    auto h2 = bhtools::Tbyte::size_byte(b2);
+    auto h3 = bhtools::Tbyte::size_byte(b3);
     vlogd($(h1) $(h2) $(h3));
 
+    // 指数计算
     auto c1 = bhtools::Tbyte::calc_exp(1,2);
     auto c2 = bhtools::Tbyte::calc_exp(1,2);
     auto c3 = bhtools::Tbyte::calc_exp(2,2);
     auto c4 = bhtools::Tbyte::calc_exp(2,3);
     auto c5 = bhtools::Tbyte::calc_exp(3,3);
     vlogd($(c1) $(c2) $(c3) $(c4) $(c5));
+
+    // 浮点类转整数
+    float f1 = 5.5;
+    double f2 = 3.1415926;
+    auto d1 = bhtools::Tbyte::to_integer(f1);
+    auto d2 = bhtools::Tbyte::to_integer(f2);
+    vlogd($(typeid(f1).name()) $(typeid(f2).name()) $(typeid(d1).name()) $(typeid(d2).name()));
+    vlogd($(f1) $(f2) $(d1) $(d2));
+}
+
+void test_4()
+{
+    // 负数二进制
+    int a1 = -14;
+    auto s1 = bhtools::Tbyte::b2_s2(a1);
+    auto s2 = bhtools::Tbyte::b2_s2_true(a1);
+    auto s3 = bhtools::Tbyte::b2_s8(a1);
+    auto s4 = bhtools::Tbyte::b2_s16(a1);
+    auto s5 = bhtools::Tbyte::b2_s10(a1);
+    vlogd($(a1) $(s1) $(s2) $(s3) $(s4) $(s5));
+
+    // 浮点数二进制
+    double b1 = 3.1415926;
+    auto f1 = bhtools::Tbyte::b2_s2(bhtools::Tbyte::to_integer(b1));
+    auto f2 = bhtools::Tbyte::b2_s2_true(bhtools::Tbyte::to_integer(b1));
+    auto f3 = bhtools::Tbyte::b2_s8(bhtools::Tbyte::to_integer(b1));
+    auto f4 = bhtools::Tbyte::b2_s16(bhtools::Tbyte::to_integer(b1));
+    auto f5 = bhtools::Tbyte::b2_s10(bhtools::Tbyte::to_integer(b1));
+    vlogd($(b1) $(f1) $(f2) $(f3) $(f4) $(f5));
 }
 
 
@@ -90,6 +122,7 @@ int main(int argc, char *argv[])
     test_1(); 
     test_2(); 
     test_3(); 
+    test_4(); 
 
     return 0;
 }

@@ -5,6 +5,7 @@
 #include <string>
 #include <algorithm>
 #include <tuple>
+#include <cstring>
 
 
 // 使用 Linux GCC 字节序处理
@@ -191,8 +192,7 @@ struct Tbyte
     {
         size_t sum = 0;
         size_t one = 0;
-        std::string mem(size_byte(val),'0');
-        for(size_t i=0;i<mem.size();i++)
+        for(size_t i=0;i<size_byte(val);i++)
         {
             if(val & _BH_ONE_LOW_) { one = 1; }
             else { one = 0; }
@@ -348,6 +348,28 @@ struct Tbyte
         for(int i=0;i<s.size();i++)
         { ret[i] = to_lower(s[i]); }
         return ret;
+    }
+
+    // 浮点转整数
+    template <typename T>
+    inline static auto to_integer(T val) ->
+            typename std::conditional<std::is_same<T,double>::value,int64_t,
+            typename std::conditional<std::is_same<T,float>::value,int32_t,
+        T>::type>::type
+    {
+        if (std::is_same<T, double>::value)
+        {
+            int64_t ret = 0;
+            std::memcpy(&ret, &val, sizeof(ret));
+            return ret;
+        }
+        else if (std::is_same<T, float>::value)
+        {
+            int32_t ret = 0;
+            std::memcpy(&ret, &val, sizeof(ret));
+            return ret;
+        }
+        return val;
     }
 
     // 返回内存的bit长度
