@@ -8,7 +8,7 @@ namespace bhtools {
 
 
 // 随机种子生成
-template<typename Tdev = std::random_device,typename Tgen = std::mt19937>
+template<typename Tdev = std::random_device,typename Tgen = std::mt19937_64>
 struct Trand_gen
 {
     Trand_gen() { _gen.seed(_rd()); }
