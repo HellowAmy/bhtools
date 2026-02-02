@@ -133,6 +133,11 @@ struct Tlog_out_file
 {   
     using pair_name = std::pair<std::string,std::string>;
 
+    ~Tlog_out_file()
+    {
+        if(_fs.is_open()) { _fs.flush(); }
+    }
+
     void out(const Tlog_buf &buf) 
     { 
         if(_fs.is_open() == false) { _fs.open(_file,_mode); }
@@ -158,9 +163,6 @@ struct Tlog_out_file
     // 设置单个文件最大长度-默认64M
     inline void set_length(size_t len) { _len_max = len; }  
 
-    // 设置每行写入时是否刷新文件
-    inline void set_flush(bool flush) { _flush = flush; }  
-
     // 判断文件是否存在
     static bool exist_file(const std::string &filename)
     { std::ifstream f(filename); return f.is_open(); }
@@ -170,7 +172,6 @@ struct Tlog_out_file
     // 超出最大文件限制后更新文件名
     bool update_file() 
     {
-        if(_flush) { _fs.flush(); }
         if(_len_max < _fs.tellg())
         {
             if(_limit_max == 0) { return write_unlimited(); }
@@ -227,7 +228,6 @@ struct Tlog_out_file
         return file;
     }
 
-    bool _flush = true;             // 刷入缓冲区
     size_t _limit_max = 0;          // 日志文件限制数量
     size_t _limit_now = 1;          // 当前写入日志
     size_t _len_max = (1 << 26);    // 最大长度--64M
@@ -324,7 +324,6 @@ struct Tlog_file : public Tlog_base <Tlog_buf,Tlog_end,Tlog_out_file>
     {
         set_level(bhenum::level::e_all);
         _out.reopen(file); 
-        _out.set_flush(true);
     }
 };
 
@@ -335,7 +334,6 @@ struct Tlog_afile : public Tlog_base <Tlog_buf,Tlog_end,Tlog_out_asyn<Tlog_buf,5
     {
         set_level(bhenum::level::e_all);
         _out.reopen(file); 
-        _out.set_flush(true);
     }
 };
 
