@@ -96,53 +96,32 @@ struct Fsfm : public Ffm_base
 
 
 // 快速格式化-不支持随机位置-单字符时速度提升一倍
-struct Fffm : public Ffm_base
+struct Fffm
 {
-    using Ffm_base::Ffm_base;
+    // 预分配字符
+    Fffm(const std::string &str) : _str(str)
+    {
+        _ret.reserve((1UL << 8));
+    }
 
     // 传入替换参数-不限类型
     template<typename ...Tarr>
     inline std::string operator()(const Tarr &...arg)
     { 
-        if(strb().size() == 1 && stre().size() == 1) 
-        { 
-            _cfb = strb()[0];
-            _cfe = stre()[0];
-            return cfms(arg...); 
-        }
-        else { return sfms(arg...); }
+        return cfms(arg...); 
     }
-
 
     // internal
     // 查找并格式化字符串-单字符
     template<typename T,typename ...Tarr>
     inline std::string cfms(T && val,const Tarr &...arg)
     {
-        if(proc(Tstr::to_string(val),_cfb,_cfe)) { return cfms(arg...); }
+        if(proc(Tstr::to_string(std::forward<T>(val)))) { return cfms(arg...); }
         return cfms();
     }
 
     // 终止函数
     inline std::string cfms() { return fms(); }
-
-    // 查找并格式化字符串-多字符
-    template<typename T,typename ...Tarr>
-    inline std::string sfms(T && val,const Tarr &...arg)
-    {
-        auto tsub = Tstr::find_range(_str,strb(),stre(),_offset);
-        if(std::get<0>(tsub))
-        {
-            _ret += Tstr::section_range(_str,_offset,std::get<1>(tsub));
-            _ret += Tstr::to_string(val);
-            _offset = std::get<2>(tsub) +1;
-            return sfms(arg...);
-        }
-        return sfms();
-    }
-
-    // 终止函数
-    inline std::string sfms() { return fms(); }
 
     // 退出时回收尾部字符
     inline std::string fms()
@@ -152,23 +131,25 @@ struct Fffm : public Ffm_base
     }
 
     // 单字符时优化-速度翻倍
-    inline bool proc(const std::string &val,char fb,char fe)
+    inline bool proc(const std::string &val)
     {
         bool has = false;
         for(int i=_offset;i<_str.size();i++)
         {
-            if(_str[i] == fb) { has = true; }
-            else if(has && _str[i] == fe) { _offset = i+1; _ret += val; return true; }
+            if(_str[i] == strb()) { has = true; }
+            else if(has && _str[i] == stre()) { _offset = i+1; _ret += val; return true; }
 
             if(has == false) { _ret.push_back(_str[i]); }
         }
         return false;
     }
 
-    char _cfb;              // 单字符优化-首部分割符
-    char _cfe;              // 单字符优化-尾部分割符 
+    inline static char strb() { return '{'; };
+    inline static char stre() { return '}'; };
+
     size_t _offset = 0;     // 当前查找偏移
     std::string _ret;       // 存储结果字符串
+    std::string _str;       // 原始字符串
 };
 
 
