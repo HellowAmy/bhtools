@@ -11,10 +11,12 @@
 void test_1()
 {
     // 颜色打印
+    vloga("vloga");
     vlogd("vlogd");
     vlogi("vlogi");
     vlogw("vlogw");
     vloge("vloge");
+    vlogf("vlogf");
 
     // 打印变量
     bool a1 = true;
@@ -58,6 +60,34 @@ void test_1()
     vlogd($((void*)&pnull));
     vlogd($(&a1));
     vlogd($((void*)&a2));
+
+    // 设置日志等级
+    auto log = bhtools::Tsin_log_conf::get();
+    log->set_level(log->_cmd,bhtools::bhenum::level::e_all);
+    vloga("vloga");
+    vlogd("vlogd");
+    vlogi("vlogi");
+    vlogw("vlogw");
+    vloge("vloge");
+    vlogf("vlogf");
+
+    vlogf("=");
+    log->set_level(log->_cmd,bhtools::bhenum::level::e_war);
+    vloga("vloga");
+    vlogd("vlogd");
+    vlogi("vlogi");
+    vlogw("vlogw");
+    vloge("vloge");
+    vlogf("vlogf");
+
+    vlogf("=");
+    log->set_level(log->_cmd,bhtools::bhenum::level::e_fat);
+    vloga("vloga");
+    vlogd("vlogd");
+    vlogi("vlogi");
+    vlogw("vlogw");
+    vloge("vloge");
+    vlogf("vlogf");
 }
 
 void test_2()
@@ -67,9 +97,6 @@ void test_2()
  
     // 无效打印
     nlogd("nlogd");
-    nlogi("nlogi");
-    nlogw("nlogw");
-    nloge("nloge");
 
     // 文件打印
     flogd("flogd");

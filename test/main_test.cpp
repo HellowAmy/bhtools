@@ -51,9 +51,9 @@ void test_1()
         bool ok1 = false;
         bool ok2 = true;
 
-        BHTEST_FALSE(ok1);
-        BHTEST_FALSE(ok2);
-        BHTEST_FALSE((12 == 11));
+        BHTEST_NULL(ok1);
+        BHTEST_NULL(ok2);
+        BHTEST_NULL((12 == 11));
     }
 }
 

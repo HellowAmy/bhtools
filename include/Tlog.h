@@ -27,7 +27,7 @@ namespace bhenum {
     
     enum class level
     {
-        e_tra,
+        e_all,
         e_deb,
         e_inf,
         e_war,
@@ -102,7 +102,7 @@ struct Tlog_base
     }
 
     bool _pass = false;         // 日志等级是否通过
-    level _el = level::e_tra;   // 日志等级划分枚举
+    level _el = level::e_all;   // 日志等级划分枚举
     Tbuf _buf;                  // 日志写入缓存内容
     Tout _out;                  // 日志输出类
 };
@@ -122,7 +122,7 @@ struct Tlog_out_null
 // 命令行打印
 struct Tlog_out_cmd 
 {
-    void out(const Tlog_buf &buf) { std::cout<<buf.value()<<std::endl; }    
+    void out(const Tlog_buf &buf) { std::cout<<buf.value()<<"\n"; }    
 };
 
 
@@ -306,14 +306,14 @@ struct Tlog_out_asyn : public Tlog_out_file
 // 空打印日志
 struct Tlog_null : public Tlog_base <Tlog_buf,Tlog_end,Tlog_out_null> 
 {
-    Tlog_null() { set_level(bhenum::level::e_tra); }
+    Tlog_null() { set_level(bhenum::level::e_all); }
 };
 
 
 // 命令行打印日志
 struct Tlog_cmd : public Tlog_base <Tlog_buf,Tlog_end,Tlog_out_cmd> 
 {
-    Tlog_cmd() { set_level(bhenum::level::e_tra); }
+    Tlog_cmd() { set_level(bhenum::level::e_all); }
 };
 
 
@@ -322,7 +322,7 @@ struct Tlog_file : public Tlog_base <Tlog_buf,Tlog_end,Tlog_out_file>
 {
     Tlog_file(const std::string &file = "Tflog.log") 
     {
-        set_level(bhenum::level::e_tra);
+        set_level(bhenum::level::e_all);
         _out.reopen(file); 
         _out.set_flush(true);
     }
@@ -333,7 +333,7 @@ struct Tlog_afile : public Tlog_base <Tlog_buf,Tlog_end,Tlog_out_asyn<Tlog_buf,5
 {
     Tlog_afile(const std::string &file = "Taflog.log") 
     {
-        set_level(bhenum::level::e_tra);
+        set_level(bhenum::level::e_all);
         _out.reopen(file); 
         _out.set_flush(true);
     }
@@ -401,40 +401,27 @@ struct Tlog_con
     out<<BHDF_FM(tips,el,__VA_ARGS__)<<end                  \
 
 
+// 显示打印
+#define BHLOG_MAKE(out,lab,end,el,...)                      \
+    BHLOG_PRINT(out,lab,end,BHLOG_FORMAT_VSC,               \
+    bhtools::bhenum::level::el,__VA_ARGS__)                 \
+
+
 // 生成快捷打印宏-带颜色
-#define BHLOG_MAKE_COLD(out,end,...)                                        \
-    BHLOG_PRINT(out,"\033[32m[Deb]","\033[0m"<<end,BHLOG_FORMAT_VSC,        \
-    bhtools::bhenum::level::e_deb,__VA_ARGS__)                              \
-
-#define BHLOG_MAKE_COLI(out,end,...)                                        \
-    BHLOG_PRINT(out,"\033[36m[Inf]","\033[0m"<<end,BHLOG_FORMAT_VSC,        \
-    bhtools::bhenum::level::e_inf,__VA_ARGS__)                              \
-
-#define BHLOG_MAKE_COLW(out,end,...)                                        \
-    BHLOG_PRINT(out,"\033[33m[War]","\033[0m"<<end,BHLOG_FORMAT_VSC,        \
-    bhtools::bhenum::level::e_war,__VA_ARGS__)                              \
-
-#define BHLOG_MAKE_COLE(out,end,...)                                        \
-    BHLOG_PRINT(out,"\033[31m[Err]","\033[0m"<<end,BHLOG_FORMAT_VSC,        \
-    bhtools::bhenum::level::e_err,__VA_ARGS__)                              \
-
+#define BHLOG_MAKE_COLA(out,end,...) BHLOG_MAKE(out,"\033[30m[All]","\033[0m"<<end,e_all,__VA_ARGS__)
+#define BHLOG_MAKE_COLD(out,end,...) BHLOG_MAKE(out,"\033[32m[Deb]","\033[0m"<<end,e_deb,__VA_ARGS__)
+#define BHLOG_MAKE_COLI(out,end,...) BHLOG_MAKE(out,"\033[36m[Inf]","\033[0m"<<end,e_inf,__VA_ARGS__)
+#define BHLOG_MAKE_COLW(out,end,...) BHLOG_MAKE(out,"\033[33m[War]","\033[0m"<<end,e_war,__VA_ARGS__)
+#define BHLOG_MAKE_COLE(out,end,...) BHLOG_MAKE(out,"\033[31m[Err]","\033[0m"<<end,e_err,__VA_ARGS__)
+#define BHLOG_MAKE_COLF(out,end,...) BHLOG_MAKE(out,"\033[35m[Fat]","\033[0m"<<end,e_fat,__VA_ARGS__)
 
 // 生成快捷打印宏
-#define BHLOG_MAKED(out,end,...)                                        \
-    BHLOG_PRINT(out,"[Deb]",end,BHLOG_FORMAT_VSC,                       \
-    bhtools::bhenum::level::e_deb,__VA_ARGS__)                          \
-        
-#define BHLOG_MAKEI(out,end,...)                                        \
-    BHLOG_PRINT(out,"[Inf]",end,BHLOG_FORMAT_VSC,                       \
-    bhtools::bhenum::level::e_inf,__VA_ARGS__)                          \
-        
-#define BHLOG_MAKEW(out,end,...)                                        \
-    BHLOG_PRINT(out,"[War]",end,BHLOG_FORMAT_VSC,                       \
-    bhtools::bhenum::level::e_war,__VA_ARGS__)                          \
-        
-#define BHLOG_MAKEE(out,end,...)                                        \
-    BHLOG_PRINT(out,"[Err]",end,BHLOG_FORMAT_VSC,                       \
-    bhtools::bhenum::level::e_err,__VA_ARGS__)                          \
+#define BHLOG_MAKET(out,end,...) BHLOG_MAKE(out,"[All]",end,e_all,__VA_ARGS__)
+#define BHLOG_MAKED(out,end,...) BHLOG_MAKE(out,"[Deb]",end,e_deb,__VA_ARGS__)
+#define BHLOG_MAKEI(out,end,...) BHLOG_MAKE(out,"[Inf]",end,e_inf,__VA_ARGS__)
+#define BHLOG_MAKEW(out,end,...) BHLOG_MAKE(out,"[War]",end,e_war,__VA_ARGS__)
+#define BHLOG_MAKEE(out,end,...) BHLOG_MAKE(out,"[Err]",end,e_err,__VA_ARGS__)
+#define BHLOG_MAKEF(out,end,...) BHLOG_MAKE(out,"[Fat]",end,e_fat,__VA_ARGS__)
 
 //
 //
@@ -449,10 +436,12 @@ struct Tlog_con
 
     // 快捷命令行打印
     #ifndef BHLOG_CLOSE_COL
+        #define vloga(...) BHLOG_MAKE_COLA(BHLOG_CONF_DEF(_cmd),BHLOG_CONF_DEF(_end),__VA_ARGS__)
         #define vlogd(...) BHLOG_MAKE_COLD(BHLOG_CONF_DEF(_cmd),BHLOG_CONF_DEF(_end),__VA_ARGS__)
         #define vlogi(...) BHLOG_MAKE_COLI(BHLOG_CONF_DEF(_cmd),BHLOG_CONF_DEF(_end),__VA_ARGS__)
         #define vlogw(...) BHLOG_MAKE_COLW(BHLOG_CONF_DEF(_cmd),BHLOG_CONF_DEF(_end),__VA_ARGS__)
         #define vloge(...) BHLOG_MAKE_COLE(BHLOG_CONF_DEF(_cmd),BHLOG_CONF_DEF(_end),__VA_ARGS__)
+        #define vlogf(...) BHLOG_MAKE_COLF(BHLOG_CONF_DEF(_cmd),BHLOG_CONF_DEF(_end),__VA_ARGS__)
     #else
         #define vlogd(...) BHLOG_MAKED(BHLOG_CONF_DEF(_cmd),BHLOG_CONF_DEF(_end),__VA_ARGS__)
         #define vlogi(...) BHLOG_MAKEI(BHLOG_CONF_DEF(_cmd),BHLOG_CONF_DEF(_end),__VA_ARGS__)
@@ -461,10 +450,12 @@ struct Tlog_con
     #endif
 
     // 快捷文件打印
+    #define floga(...) BHLOG_MAKEA(BHLOG_CONF_DEF(_file),BHLOG_CONF_DEF(_end),__VA_ARGS__)
     #define flogd(...) BHLOG_MAKED(BHLOG_CONF_DEF(_file),BHLOG_CONF_DEF(_end),__VA_ARGS__)
     #define flogi(...) BHLOG_MAKEI(BHLOG_CONF_DEF(_file),BHLOG_CONF_DEF(_end),__VA_ARGS__)
     #define flogw(...) BHLOG_MAKEW(BHLOG_CONF_DEF(_file),BHLOG_CONF_DEF(_end),__VA_ARGS__)
     #define floge(...) BHLOG_MAKEE(BHLOG_CONF_DEF(_file),BHLOG_CONF_DEF(_end),__VA_ARGS__)
+    #define flogf(...) BHLOG_MAKEF(BHLOG_CONF_DEF(_file),BHLOG_CONF_DEF(_end),__VA_ARGS__)
 
     // 快捷文件打印
     #define alogd(...) BHLOG_MAKED(BHLOG_CONF_DEF(_afile),BHLOG_CONF_DEF(_end),__VA_ARGS__)
@@ -474,20 +465,26 @@ struct Tlog_con
     
     // 快捷空值打印
     #define nlogd(...) BHLOG_MAKED(BHLOG_CONF_DEF(_null),BHLOG_CONF_DEF(_end),__VA_ARGS__)
-    #define nlogi(...) BHLOG_MAKEI(BHLOG_CONF_DEF(_null),BHLOG_CONF_DEF(_end),__VA_ARGS__)
-    #define nlogw(...) BHLOG_MAKEW(BHLOG_CONF_DEF(_null),BHLOG_CONF_DEF(_end),__VA_ARGS__)
-    #define nloge(...) BHLOG_MAKEE(BHLOG_CONF_DEF(_null),BHLOG_CONF_DEF(_end),__VA_ARGS__)
 
 #else
+    #define vloga(...)
     #define vlogd(...)
     #define vlogi(...)
     #define vlogw(...)
     #define vloge(...)
+    #define vlogf(...)
 
-    #define flogd(...) 
-    #define flogi(...) 
-    #define flogw(...) 
-    #define floge(...) 
+    #define flogd(...)
+    #define flogi(...)
+    #define flogw(...)
+    #define floge(...)
+
+    #define alogd(...)
+    #define alogi(...)
+    #define alogw(...)
+    #define aloge(...)
+
+    #define nlogd(...)
 #endif
 
 // 默认打印宏
