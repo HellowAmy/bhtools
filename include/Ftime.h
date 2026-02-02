@@ -110,6 +110,7 @@ struct Ftimes
     typedef typename std::chrono::time_point<std::chrono::system_clock,std::chrono::nanoseconds> time_point;
 
     // 日期相关预设值
+    
     static constexpr int64_t _tunix_epoch = 1970;
     static constexpr int64_t _tunix_year = 365;
     static constexpr int64_t _tnan_sec = 1000 * 1000 * 1000;
@@ -122,15 +123,15 @@ struct Ftimes
     // 自定义格式
     struct data
     {
-        size_t nan;
-        size_t mic;
-        size_t mil;
-        size_t sec;
-        size_t min;
-        size_t hou;
-        size_t day;
-        size_t mon;
-        size_t yea;
+        int64_t nan;
+        int64_t mic;
+        int64_t mil;
+        int64_t sec;
+        int64_t min;
+        int64_t hou;
+        int64_t day;
+        int64_t mon;
+        int64_t yea;
     };
 
     // 当前时间的C-tm格式时间
@@ -180,52 +181,82 @@ struct Ftimes
     }
 
     // 返回C++标准库的UTC时间-具体地区的时间偏移需要自行计算
-    inline static data to_data(const nanoseconds &point)
+    // 参考 Howard Hinnant 的时间算法-无需使用月份查表的推算日期方式
+    inline static data to_data(const std::chrono::nanoseconds& point) 
     {
-        // 计算秒到天的时间
+        // 获取自 1970-01-01 以来的总纳秒数
         data d;
-        int64_t len_sec = std::chrono::duration_cast<seconds>(point).count();
-        int64_t len_day = len_sec / _tsec_day;
-        int64_t res_hou = len_sec % _tsec_day;
-        int64_t res_min = res_hou % _tsec_hou;
-        d.hou = res_hou / _tsec_hou;
-        d.min = (res_hou % _tsec_hou) / _tsec_min;
-        d.sec = (res_hou % _tsec_hou) % _tsec_min;
+        int64_t count = point.count();
 
-        // 计算秒以下的时间
-        int64_t len_nan = len_sec * _tnan_sec; 
-        int64_t less_nan = point.count() - len_nan;
-        d.mil = less_nan / _tnan_mil;
-        d.mic = (less_nan % _tnan_mil) % _tnan_mic;
-        d.nan = (less_nan % _tnan_mil) / _tnan_mic;
+        // 从纳秒中获取秒和亚秒-亚秒指不足一秒的余数
+        int64_t total_sec = count / _tnan_sec;
+        int64_t sub_nan = count % _tnan_sec;
+        
+        // 处理负时间戳-1970年以前的日期-从秒中借位到亚秒
+        if (sub_nan < 0) { total_sec--; sub_nan += _tnan_sec; } 
 
-        // 先计算假设值一年为固定的365天-获取年份后计算纪元时间到当前时间
-        // 再加上两个时间点之间存在的润日-如果加上润日超过365天则将时间推进到下一年
-        // 计算出下一年所经过的天数-如果小时365天则时间被确定后退出计算
-        // [代码来源借鉴 GLIBC offtime 函数]
-        int64_t year_next = _tunix_epoch;
-        int64_t days_less = len_day;
-        while(days_less < 0 || days_less >= get_year_leap(year_next))
-        {
-            int64_t year_now = year_next + days_less / _tunix_year - (days_less % _tunix_year < 0);
-            days_less -= (year_now - year_next) * _tunix_year + count_leap(year_now -1) - count_leap(year_next -1);
-            year_next = year_now;
-        }
+        // 获取纳秒数-从亚秒中提取毫秒到纳秒的值
+        uint32_t rem_nan = uint32_t(sub_nan % _tnan_mil);
+        d.mil = sub_nan / _tnan_mil;
+        d.mic = rem_nan / _tnan_mic;
+        d.nan = rem_nan % _tnan_mic;
 
-        // 计算日期-传入当年经过的天数-计算天数所属的月份
-        const std::vector<size_t> &vec = get_month_leap(year_next);
-        for(int i=0;i<vec.size();i++)
-        {
-            if(days_less <= vec[i])
-            {
-                d.yea = year_next;
-                d.mon = i;
-                d.day = days_less - vec[i-1] + 1;
-                break;
-            }
-        }
+        // 从秒数中算出总天数 
+        int64_t days = total_sec / _tsec_day;
+        int32_t rem_sec = int32_t(total_sec % _tsec_day);
+
+        // 获取到亚天-不足时从天中借位到亚天
+        if (rem_sec < 0) { days--; rem_sec += _tsec_day; }
+
+        // 获取分钟数-提取小时到秒的值
+        uint32_t rem_m = rem_sec % _tsec_hou;
+        d.hou = rem_sec / _tsec_hou;
+        d.min = rem_m / _tsec_min;
+        d.sec = rem_m % _tsec_min;
+        
+        // Howard Hinnant 算法核心
+        // 从 1970-01-01 平移到 0000-03-01 的零点年份-可以避免2月闰日的天数计算
+        static constexpr int64_t tzeroyear = 719468;        // 1970-01-01 到 0000-03-01 的天数差
+        static constexpr int64_t t400ysum = 146097;         // 格里高利历每400年
+        static constexpr int64_t t100ysum = 36524;          // 格里高利历每100年
+        static constexpr int64_t t4ysum = 1460;             // 格里高利历每4年
+        static constexpr int64_t t3n7sum = 153;             // 3到7月总数
+        static constexpr int64_t t400ysub1 = t400ysum - 1;  // 负数修正
+        
+        // 计算现在是第几个400年
+        days += tzeroyear; 
+        int64_t era = (days >= 0 ? days : days - t400ysub1) / t400ysum;
+        
+        // 计算400年你的第几天
+        uint32_t doe = days - era * t400ysum; 
+        
+        // 计算这一天属于400年里的那一天
+        uint32_t yoe = (doe - doe/t4ysum + doe/t100ysum - doe/t400ysub1) / _tunix_year; 
+        
+        // 算出是当年的第几天-从三月起
+        uint32_t doy = doe - (_tunix_year * yoe + yoe/4 - yoe/100); 
+        
+        // 算出这一天在哪一个月份上-从三月起-这个值的范围是今年3月到明年2月
+        uint32_t mp = (5*doy + 2)/t3n7sum; 
+        
+        // 如果 mp < 10 说明是3月到12月-如果是 >10 说明是次年的1月或2月-需要修正月分
+        uint32_t month = mp < 10 ? mp + 3 : mp - 9;
+        
+        // 从400年天数上计算出当年位置
+        // 根据月份修正年份-月份范围是今年3月到明年二月
+        int32_t y = int32_t(yoe) + int32_t(era * 400);
+        uint32_t year = month <= 2 ? y + 1 : y;
+
+        // 计算当月第几天-使用当年天数减去总月份天数
+        uint32_t day = doy - (t3n7sum*mp+2)/5 + 1;
+
+        // 获取到具体年月日
+        d.yea = year;
+        d.mon = month;
+        d.day = day;
         return d;
     }
+
 
     // 格式化日期格式-格式的替换字符如下-[%XC][百分号加字符串长度加类型]
     // %4Y-%2M-%2D.%2H:%2T:%2S.%3L.%3C.%3N >>>> 2024-09-02.15:44:28.804.245.495
@@ -280,40 +311,6 @@ struct Ftimes
             s = sf + s;
         }
         return s;
-    }
-
-    // 得到传入年的每月累加分部天数-包括润年
-    inline static const std::vector<size_t>& get_month_leap(int64_t year)
-    { return (is_leap(year) ? month_leap() : month_normal()); }
-
-    // 得到传入年的时间-包括润年
-    inline static int64_t get_year_leap(int64_t year)
-    { return (is_leap(year) ? (_tunix_year +1) : _tunix_year); }
-
-    // 判断是否为闰年
-    inline static bool is_leap(int64_t year)
-    { return ((year) % 4 == 0 && ((year) % 100 != 0 || (year) % 400 == 0)); }
-
-    // 计算除数-小于零则加一
-    inline static int64_t calc_res(int64_t a,int64_t b)
-    { return ((a) / (b) - ((a) % (b) < 0)); }
-
-    // 计算传入时间包含的润日
-    inline static int64_t count_leap(int64_t year)
-    { return (calc_res(year, 4) - calc_res(year, 100) + calc_res(year, 400)); }
-
-    // 返回普通月份天数
-    inline static const std::vector<size_t>& month_normal()
-    {
-        static const std::vector<size_t> vec_normal { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
-        return vec_normal;
-    }
-
-    // 返回闰年月份天数
-    inline static const std::vector<size_t>& month_leap()
-    {
-        static const std::vector<size_t> vec_leap { 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366 };
-        return vec_leap;
     }
 };
 

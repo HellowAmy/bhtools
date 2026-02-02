@@ -110,11 +110,48 @@ void test_2()
     }
 }
 
+void test_3()
+{
+    int sum = 5000*10000;
+    bhtools::Ftimel tt;
+    
+    {
+        bhtools::Ftimes ft;
+        for(int i=0;i<100*10000;i++)
+        {
+            ft.to_ctime();
+        }
+        tt.push_point("to_ctime ",true);
+    }
+    {
+        bhtools::Ftimes ftrr;
+        auto p = ftrr.time_now();
+        bhtools::Ftimes ft;
+        for(int i=0;i<sum;i++)
+        {
+            ft.to_data(p);
+        }
+
+        tt.push_point("to_data ",true);
+        vlogd($C(tt.check_vec()));
+        vlogd(ft.to_string(ft.to_data(p)));
+    }
+
+
+    /*
+        [Deb]<<<< [tt.check_vec(): 
+        | size: 1
+        | to_data  [nan: 1681911597|mic: 1681911|mil: 1681|sec: 1] 
+        ]  >>>>[/home/red/open/github/bhtools/test/main_time.cpp:139][2026-02-02.19:32:26.295]
+    */
+}
+
 
 int main(int argc, char *argv[])
 {
     // test_1();
-    test_2();
+    // test_2();
+    test_3();
 
 
     return 0;
