@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <queue>
+#include <list>
 
 #include "bhtools.h"
 
@@ -144,12 +145,53 @@ void test_4()
     */
 }
 
+void test_5()
+{
+    // 遍历容器
+    bhtools::Theap_max<int> h1;
+    for(int i=0;i<10;i++)
+    {
+        h1.insert_node(i);
+    }
+    vlogd($C(h1));
+
+    // 拷贝
+    bhtools::Theap_max<int> h2;
+    for(int i=0;i<10;i++)
+    {
+        h2.insert_node(i);
+    }
+    {
+        bhtools::Theap_max<int> h21(h2);
+        bhtools::Theap_max<int> h22 = h2;
+        bhtools::Theap_max<int> h23;
+        for(int i=0;i<5;i++)
+        {
+            h23.insert_node(i + 100);
+        }
+
+        h21.insert_node(11);
+        h21.insert_node(22);
+        h22.insert_node(33);
+        h22.insert_node(44);
+
+        vlogd($(h21.size()) $(h22.size()) $(h23.size()));
+        vlogd($C(h21));
+        vlogd($C(h22));
+        vlogd($C(h23));
+
+        h2 = h23;
+    }
+    vlogd($C(h2));
+}
+
 int main(int argc, char *argv[])
 {
-    test_1();   
-    test_2();  
-    test_3();  
-    test_4();  
+    // test_1();   
+    // test_2();  
+    // test_3();  
+    // test_4();  
+    test_5();  
 
     return 0;
 }

@@ -68,7 +68,7 @@ public:
     }
 
     // 锁下操作源数据
-    void safa(std::function<void(std::queue<T>&)> fn)
+    void safe(std::function<void(std::queue<T>&)> fn)
     { Texit_lock<Tlock> e(&_lock); if(fn) { fn(_org); }; }
 
     
@@ -102,7 +102,7 @@ public:
     }
 
     // 锁下操作源数据
-    void safa(std::function<void(std::stack<T>&)> fn)
+    void safe(std::function<void(std::stack<T>&)> fn)
     { Texit_lock<Tlock> e(&_lock); if(fn) { fn(_org); }; }
 
     
@@ -142,7 +142,7 @@ public:
     { Texit_lock<Tlock> e(&_lock); return _org[index]; }
 
     // 锁下操作源数据
-    void safa(std::function<void(std::vector<T>&)> fn)
+    void safe(std::function<void(std::vector<T>&)> fn)
     { Texit_lock<Tlock> e(&_lock); if(fn) { fn(_org); }; }
 
 protected:
@@ -186,7 +186,7 @@ public:
     { Texit_lock<Tlock> e(&_lock); return _org[key]; }
 
     // 锁下操作源数据
-    void safa(std::function<void(std::map<Tkey,Tval>&)> fn)
+    void safe(std::function<void(std::map<Tkey,Tval>&)> fn)
     { Texit_lock<Tlock> e(&_lock); if(fn) { fn(_org); }; }
     
 protected:

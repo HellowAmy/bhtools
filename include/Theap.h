@@ -6,6 +6,7 @@
 #include <cmath>
 #include <queue>
 #include <limits>
+#include <utility>
 
 namespace bhtools {
 
@@ -58,12 +59,59 @@ struct Theap_node
 template<typename Tval,template<typename> class Tcomp>
 struct Theap
 {
+    // 迭代器-支持前后移动-非常慢-为了保持树结构不可改变迭代器指向数据
+    struct iterator 
+    {
+        const Theap* _heap;
+        size_t _idx;
+        iterator(const Theap* h, size_t i) : _heap(h), _idx(i) {}
+        const Tval& operator*() const { return _heap->find_index(_idx)->_value; }
+        const Tval* operator->() const { return &(_heap->find_index(_idx)->_value); }
+        iterator& operator++() { _idx++; return *this; }
+        iterator& operator--() { _idx--; return *this; }
+        bool operator==(const iterator& other) const { return _idx == other._idx; }
+        bool operator!=(const iterator& other) const { return _idx != other._idx; }
+    };
+
     // 初始化树根
     Theap() 
     {
         _root = new Theap_node<Tval>;
         _tail = new Theap_node<Tval>;
         _tail->_parent = _root;
+    }
+
+    // 拷贝构造-拷贝需要重排速度很慢
+    Theap(const Theap& other) : Theap()
+    {
+        std::queue<Theap_node<Tval>*> que_node;
+        que_node.push(other._root);
+        while (que_node.empty() == false)
+        {
+            size_t size = que_node.size();
+            for(size_t i=0;i<size;i++)
+            {
+                Theap_node<Tval> *node = que_node.front();
+                que_node.pop();
+
+                insert_node(node->_value);
+
+                Theap_node<Tval> *nl = node->_left;
+                if(nl) { que_node.push(nl); }
+
+                Theap_node<Tval> *nr = node->_right;
+                if(nr) { que_node.push(nr); }
+            }
+        }
+    }
+
+    // 赋值拷贝
+    Theap& operator=(Theap other)
+    {
+        std::swap(_size,other._size);
+        std::swap(_root,other._root);
+        std::swap(_tail,other._tail);
+        return *this;
     }
 
     // 析构时清空分配内存
@@ -207,6 +255,12 @@ struct Theap
     // 判断值是否存在堆数中
     inline bool is_exist(Tval val) { return find_node(val) != nullptr; }
 
+    // 迭代器接口
+    inline iterator begin() { return iterator(this, 0); }
+    inline iterator begin() const { return iterator(this, 0); }
+    inline iterator end() { return iterator(this, _size); }
+    inline iterator end() const { return iterator(this, _size); }
+
 
     // internal
     // 找到节点指向的指针-未找到返回NULL
@@ -227,6 +281,37 @@ struct Theap
                 if(node->_value == val)
                 { return node; }
 
+                Theap_node<Tval> *nl = node->_left;
+                if(nl) { que_node.push(nl); }
+
+                Theap_node<Tval> *nr = node->_right;
+                if(nr) { que_node.push(nr); }
+            }
+        }
+        return nullptr;
+    }
+
+    // 查找下标位置-每次都需要从头开始
+    inline Theap_node<Tval>* find_index(size_t index) const
+    {
+        if(_size == 0) { return nullptr; }
+        if(index == 0) { return _root; }
+        if(index >= _size) { return nullptr; }
+
+        std::queue<Theap_node<Tval>*> que_node;
+        que_node.push(_root);
+        size_t count = 0;
+        while (que_node.empty() == false && count <= index)
+        {
+            size_t size = que_node.size();
+            for(size_t i=0;i<size;i++)
+            {
+                Theap_node<Tval> *node = que_node.front();
+                que_node.pop();
+                if(count == index)
+                { return node; }
+                count++;
+                
                 Theap_node<Tval> *nl = node->_left;
                 if(nl) { que_node.push(nl); }
 
