@@ -1,0 +1,42 @@
+# =========================
+# 基础风格与缩进规则
+# =========================
+BasedOnStyle: Microsoft                         # 基于 Microsoft 风格作为默认格式
+IndentWidth: 4                                  # 缩进宽度为 4 个空格
+ColumnLimit: 100                                # 每行最大字符数限制为 100
+NamespaceIndentation: Inner                     # namespace 内部使用额外缩进
+PointerAlignment: Right                         # 指针符号 * 靠右对齐（如 int* p）
+SortIncludes: false                             # 不自动排序 include 头文件
+
+# =========================
+# 空格、括号与格式细节
+# =========================
+SpaceBeforeParens: Never                        # 函数名与括号之间不加空格
+AllowShortLambdasOnASingleLine: None            # 不允许短 lambda 写在同一行
+AllowShortFunctionsOnASingleLine: All           # 允许短函数写在一行
+AllowShortBlocksOnASingleLine: true             # 允许短代码块写在一行
+AllowShortIfStatementsOnASingleLine: false      # 不允许短 if 写在一行
+AllowShortLoopsOnASingleLine: false             # 不允许短循环写在一行
+
+# =========================
+# 参数、模板与换行策略
+# =========================
+BreakBeforeBinaryOperators: NonAssignment       # 非赋值运算符换行时放在前面
+AlignAfterOpenBracket: Align                    # 括号后的参数对齐
+AllowAllArgumentsOnNextLine: true               # 允许所有参数放在下一行
+BinPackArguments: true                          # 尽可能将参数放在同一行
+BreakTemplateDeclarations: Yes                  # 模板声明分行
+
+# =========================
+# 大括号换行规则
+# =========================
+BreakBeforeBraces: Custom                       # 使用自定义的大括号换行规则
+BraceWrapping:                                  # 大括号换行配置
+  AfterControlStatement: Never                  # 控制语句后不换行
+  AfterNamespace: false                         # namespace 后不换行
+  AfterClass: true                              # class 声明后换行
+  AfterEnum: true                               # enum 声明后换行
+  AfterFunction: true                           # 函数定义后换行
+  AfterStruct: true                             # struct 声明后换行
+  BeforeElse: true                              # else 前换行
+  BeforeCatch: true                             # catch 前换行
