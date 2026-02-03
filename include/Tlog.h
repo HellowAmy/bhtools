@@ -414,7 +414,7 @@ struct Tlog_con
 #define BHLOG_MAKE_COLF(out,end,...) BHLOG_MAKE(out,"\033[35m[Fat]","\033[0m"<<end,e_fat,__VA_ARGS__)
 
 // 生成快捷打印宏
-#define BHLOG_MAKET(out,end,...) BHLOG_MAKE(out,"[All]",end,e_all,__VA_ARGS__)
+#define BHLOG_MAKEA(out,end,...) BHLOG_MAKE(out,"[All]",end,e_all,__VA_ARGS__)
 #define BHLOG_MAKED(out,end,...) BHLOG_MAKE(out,"[Deb]",end,e_deb,__VA_ARGS__)
 #define BHLOG_MAKEI(out,end,...) BHLOG_MAKE(out,"[Inf]",end,e_inf,__VA_ARGS__)
 #define BHLOG_MAKEW(out,end,...) BHLOG_MAKE(out,"[War]",end,e_war,__VA_ARGS__)

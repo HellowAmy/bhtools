@@ -8,14 +8,37 @@
 {
     "version": "0.2.0",
     "configurations": [
+        // =====
+        // {
+        //     "name": "Run [##NAME##]",
+        //     "type": "cppdbg",
+        //     "request": "launch",
+        //     "program": "${workspaceFolder}/build/##NAME##/##NAME##",
+        //     "args": [],
+        //     "stopAtEntry": false,
+        //     "cwd": "${workspaceFolder}/build/##NAME##",
+        //     "environment": [],
+        //     "externalConsole": false,
+        //     "MIMode": "gdb",
+        //     "miDebuggerPath": "/usr/bin/gdb",
+        //     "setupCommands": [
+        //         {
+        //             "description": "Enable pretty-printing for gdb",
+        //             "text": "-enable-pretty-printing",
+        //             "ignoreFailures": true
+        //         }
+        //     ],
+        //     "preLaunchTask": "Run ##NAME##"
+        // }
+        // +++++
         {
-            "name": "Run Main [OneClick]",
+            "name": "Run [main_]",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/bhtools",
+            "program": "${workspaceFolder}/build/main_/main_",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
+            "cwd": "${workspaceFolder}/build/main_",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
@@ -27,485 +50,16 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "Run Main Group",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
+            "preLaunchTask": "Run main_"
         },
-        {
-            "name": "Run Main [Build]",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/bhtools",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "CMake Build",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
-        },
-
-
-
-
-        {
-            "name": "Run [ALL]",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/bhtools",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "Run ALL",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
-        },
-
-
-
-
-        {
-            "name": "Run [main_log]",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/main_log",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "Run main_log",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
-        },
-
-
-
-
-        {
-            "name": "Run [main_time]",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/main_time",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "Run main_time",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
-        },
-
-
-
-
-        {
-            "name": "Run [main_sin]",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/main_sin",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "Run main_sin",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
-        },
-
-
-
-
-        {
-            "name": "Run [main_pool]",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/main_pool",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "Run main_pool",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
-        },
-
-
-
-
-        {
-            "name": "Run [main_str]",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/main_str",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "Run main_str",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
-        },
-
-
-
-
-        {
-            "name": "Run [main_fm]",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/main_fm",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "Run main_fm",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
-        },
-
-
-
-
-        {
-            "name": "Run [main_heap]",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/main_heap",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "Run main_heap",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
-        },
-
-
-
-
-        {
-            "name": "Run [main_timer]",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/main_timer",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "Run main_timer",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
-        },
-
-
-
-
-        {
-            "name": "Run [main_stm]",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/main_stm",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "Run main_stm",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
-        },
-
-
-
-
-        {
-            "name": "Run [main_test]",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/main_test",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "Run main_test",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
-        },
-
-
-
-
-        {
-            "name": "Run [main_byte]",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/main_byte",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "Run main_byte",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
-        },
-
-
-
-
-        {
-            "name": "Run [main_design]",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/main_design",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "Run main_design",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
-        },
-
-
-        
-
-        {
-            "name": "Run [main_cont]",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/main_cont",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "Run main_cont",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
-        },
-
-
-
-
-        {
-            "name": "Run [main_publish]",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/main_publish",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "Run main_publish",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
-        },
-
-
-        
-
-        {
-            "name": "Run [main_unpack]",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/main_unpack",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "Run main_unpack",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
-        },
-
-
-
-
-        {
-            "name": "Run [main_opt]",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/main_opt",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "Run main_opt",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
-        },
-
-
-
-
         {
             "name": "Run [main_any]",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/main_any",
+            "program": "${workspaceFolder}/build/main_any/main_any",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
+            "cwd": "${workspaceFolder}/build/main_any",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
@@ -517,69 +71,16 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "Run main_any",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
+            "preLaunchTask": "Run main_any"
         },
-
-
-
-
-        {
-            "name": "Run [main_file]",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/main_file",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "Run main_file",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
-        },
-        {
-            "name": "Run [main_file W]",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/main_file.exe",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "e:/Strawberry/c/bin/gdb.exe",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "Run main_file",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
-        },
-
-
-
-
         {
             "name": "Run [main_argv]",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/main_argv",
+            "program": "${workspaceFolder}/build/main_argv/main_argv",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
+            "cwd": "${workspaceFolder}/build/main_argv",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
@@ -591,21 +92,16 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "Run main_argv",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
+            "preLaunchTask": "Run main_argv"
         },
-
-
-
-
         {
             "name": "Run [main_async]",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/main_async",
+            "program": "${workspaceFolder}/build/main_async/main_async",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
+            "cwd": "${workspaceFolder}/build/main_async",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
@@ -617,21 +113,226 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "Run main_async",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
+            "preLaunchTask": "Run main_async"
         },
-
-
-
-
+        {
+            "name": "Run [main_byte]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main_byte/main_byte",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/main_byte",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Run main_byte"
+        },
+        {
+            "name": "Run [main_cont]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main_cont/main_cont",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/main_cont",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Run main_cont"
+        },
+        {
+            "name": "Run [main_design]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main_design/main_design",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/main_design",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Run main_design"
+        },
+        {
+            "name": "Run [main_file]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main_file/main_file",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/main_file",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Run main_file"
+        },
+        {
+            "name": "Run [main_fm]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main_fm/main_fm",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/main_fm",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Run main_fm"
+        },
+        {
+            "name": "Run [main_heap]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main_heap/main_heap",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/main_heap",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Run main_heap"
+        },
+        {
+            "name": "Run [main_log]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main_log/main_log",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/main_log",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Run main_log"
+        },
+        {
+            "name": "Run [main_opt]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main_opt/main_opt",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/main_opt",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Run main_opt"
+        },
+        {
+            "name": "Run [main_pool]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main_pool/main_pool",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/main_pool",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Run main_pool"
+        },
+        {
+            "name": "Run [main_publish]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main_publish/main_publish",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/main_publish",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Run main_publish"
+        },
         {
             "name": "Run [main_rand]",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/main_rand",
+            "program": "${workspaceFolder}/build/main_rand/main_rand",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
+            "cwd": "${workspaceFolder}/build/main_rand",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
@@ -643,12 +344,176 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "Run main_rand",
-            "visualizerFile": "/home/red/.config/Code/User/workspaceStorage/4f7bdee9bb1f6c5812f0ca66c99b4374/tonka3000.qtvsctools/qt.natvis.xml"
+            "preLaunchTask": "Run main_rand"
+        },
+        {
+            "name": "Run [main_sin]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main_sin/main_sin",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/main_sin",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Run main_sin"
+        },
+        {
+            "name": "Run [main_stm]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main_stm/main_stm",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/main_stm",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Run main_stm"
+        },
+        {
+            "name": "Run [main_str]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main_str/main_str",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/main_str",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Run main_str"
+        },
+        {
+            "name": "Run [main_test]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main_test/main_test",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/main_test",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Run main_test"
+        },
+        {
+            "name": "Run [main_time]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main_time/main_time",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/main_time",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Run main_time"
+        },
+        {
+            "name": "Run [main_timer]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main_timer/main_timer",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/main_timer",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Run main_timer"
+        },
+        {
+            "name": "Run [main_type]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main_type/main_type",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/main_type",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Run main_type"
+        },
+        {
+            "name": "Run [main_unpack]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main_unpack/main_unpack",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/main_unpack",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Run main_unpack"
         }
-
-
-
-
+        // -----
     ]
 }

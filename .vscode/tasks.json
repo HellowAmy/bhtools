@@ -1,753 +1,225 @@
 {
     "version": "2.0.0",
     "tasks": [
+        // =====
+        // {
+        //     "label": "Run ##NAME##",
+        //     "type": "shell",
+        //     "command": "cmake -S . -B build/##NAME## -D##NAME##=1 && cmake --build build/##NAME##",
+        //     "args": [
+        //     ],
+        //     "options": {
+        //         "cwd": "${workspaceFolder}/"
+        //     }
+        // }
+        // +++++
         {
-            "label": "CMake Create",
+            "label": "Run main_",
             "type": "shell",
-            "command": "cmake",
-            "args": [
-                ".."
-            ],
+            "command": "cmake -S . -B build/main_ -Dmain_=1 && cmake --build build/main_",
+            "args": [],
             "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
-        },
-        {
-            "label": "CMake Build",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "--build",
-                "."
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
-        },
-        {
-            "label": "CMake Clean",
-            "type": "shell",
-            "command": "rm",
-            "args": [
-                "-rf",
-                "*"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
-        },
-        {
-            "label": "Run Main Group",
-            "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake Clean",
-                "CMake Create",
-                "CMake Build"
-            ]
-        },
-
-
-
-
-        {
-            "label": "CMake ALL",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "..",
-                "-DALL=1"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
-        },
-        {
-            "label": "Run ALL",
-            "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake ALL",
-                "CMake Build"
-            ]
-        },
-
-
-
-        
-        {
-            "label": "CMake main_log",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "..",
-                "-Dmain_log=1"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
-        },
-        {
-            "label": "Run main_log",
-            "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake main_log",
-                "CMake Build"
-            ]
-        },
-
-
-
-
-        {
-            "label": "CMake main_time",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "..",
-                "-Dmain_time=1"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
-        },
-        {
-            "label": "Run main_time",
-            "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake main_time",
-                "CMake Build"
-            ]
-        },
-
-
-
-
-        {
-            "label": "CMake main_sin",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "..",
-                "-Dmain_sin=1"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
-        },
-        {
-            "label": "Run main_sin",
-            "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake main_sin",
-                "CMake Build"
-            ]
-        },
-
-
-
-        
-        {
-            "label": "CMake main_pool",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "..",
-                "-Dmain_pool=1"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
-        },
-        {
-            "label": "Run main_pool",
-            "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake main_pool",
-                "CMake Build"
-            ]
-        },
-
-
-
-
-        {
-            "label": "CMake main_str",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "..",
-                "-Dmain_str=1"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
-        },
-        {
-            "label": "Run main_str",
-            "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake main_str",
-                "CMake Build"
-            ]
-        },
-
-
-
-
-        {
-            "label": "CMake main_fm",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "..",
-                "-Dmain_fm=1"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
-        },
-        {
-            "label": "Run main_fm",
-            "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake main_fm",
-                "CMake Build"
-            ]
-        },
-
-
-
-
-        {
-            "label": "CMake main_heap",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "..",
-                "-Dmain_heap=1"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
-        },
-        {
-            "label": "Run main_heap",
-            "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake main_heap",
-                "CMake Build"
-            ]
-        },
-
-
-
-
-        {
-            "label": "CMake main_timer",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "..",
-                "-Dmain_timer=1"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
-        },
-        {
-            "label": "Run main_timer",
-            "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake main_timer",
-                "CMake Build"
-            ]
-        },
-
-
-
-
-        {
-            "label": "CMake main_stm",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "..",
-                "-Dmain_stm=1"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
-        },
-        {
-            "label": "Run main_stm",
-            "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake main_stm",
-                "CMake Build"
-            ]
-        },
-
-
-
-        
-        {
-            "label": "CMake main_test",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "..",
-                "-Dmain_test=1"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
-        },
-        {
-            "label": "Run main_test",
-            "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake main_test",
-                "CMake Build"
-            ]
-        },
-
-
-
-
-        {
-            "label": "CMake main_byte",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "..",
-                "-Dmain_byte=1"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
-        },
-        {
-            "label": "Run main_byte",
-            "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake main_byte",
-                "CMake Build"
-            ]
-        },
-
-
-
-
-        {
-            "label": "CMake main_design",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "..",
-                "-Dmain_design=1"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
-        },
-        {
-            "label": "Run main_design",
-            "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake main_design",
-                "CMake Build"
-            ]
-        },
-
-
-
-
-        {
-            "label": "CMake main_cont",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "..",
-                "-Dmain_cont=1"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
-        },
-        {
-            "label": "Run main_cont",
-            "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake main_cont",
-                "CMake Build"
-            ]
-        },
-
-
-
-
-        {
-            "label": "CMake main_link",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "..",
-                "-Dmain_link=1"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
-        },
-        {
-            "label": "Run main_link",
-            "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake main_link",
-                "CMake Build"
-            ]
-        },
-
-
-
-
-        {
-            "label": "CMake main_publish",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "..",
-                "-Dmain_publish=1"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
-        },
-        {
-            "label": "Run main_publish",
-            "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake main_publish",
-                "CMake Build"
-            ]
-        },
-
-
-
-
-        {
-            "label": "CMake main_unpack",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "..",
-                "-Dmain_unpack=1"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
-        },
-        {
-            "label": "Run main_unpack",
-            "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake main_unpack",
-                "CMake Build"
-            ]
-        },
-
-
-
-
-        {
-            "label": "CMake main_opt",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "..",
-                "-Dmain_opt=1"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
-        },
-        {
-            "label": "Run main_opt",
-            "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake main_opt",
-                "CMake Build"
-            ]
-        },
-
-
-
-
-        {
-            "label": "CMake main_any",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "..",
-                "-Dmain_any=1"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
+                "cwd": "${workspaceFolder}/"
+            }
         },
         {
             "label": "Run main_any",
             "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake main_any",
-                "CMake Build"
-            ]
-        },
-
-        
-
-
-        {
-            "label": "CMake main_file",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "..",
-                "-Dmain_file=1"
-            ],
+            "command": "cmake -S . -B build/main_any -Dmain_any=1 && cmake --build build/main_any",
+            "args": [],
             "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
-        },
-        {
-            "label": "Run main_file",
-            "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake main_file",
-                "CMake Build"
-            ]
-        },
-
-
-
-
-        {
-            "label": "CMake main_argv",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "..",
-                "-Dmain_argv=1"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
+                "cwd": "${workspaceFolder}/"
+            }
         },
         {
             "label": "Run main_argv",
             "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake main_argv",
-                "CMake Build"
-            ]
-        },
-
-
-
-
-        {
-            "label": "CMake main_async",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "..",
-                "-Dmain_async=1"
-            ],
+            "command": "cmake -S . -B build/main_argv -Dmain_argv=1 && cmake --build build/main_argv",
+            "args": [],
             "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
+                "cwd": "${workspaceFolder}/"
+            }
         },
         {
             "label": "Run main_async",
             "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake main_async",
-                "CMake Build"
-            ]
-        },
-
-
-
-
-        {
-            "label": "CMake main_rand",
-            "type": "shell",
-            "command": "cmake",
-            "args": [
-                "..",
-                "-Dmain_rand=1"
-            ],
+            "command": "cmake -S . -B build/main_async -Dmain_async=1 && cmake --build build/main_async",
+            "args": [],
             "options": {
-                "cwd": "${workspaceFolder}/build/"
-            },
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
+            "label": "Run main_byte",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_byte -Dmain_byte=1 && cmake --build build/main_byte",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
+            "label": "Run main_cont",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_cont -Dmain_cont=1 && cmake --build build/main_cont",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
+            "label": "Run main_design",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_design -Dmain_design=1 && cmake --build build/main_design",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
+            "label": "Run main_file",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_file -Dmain_file=1 && cmake --build build/main_file",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
+            "label": "Run main_fm",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_fm -Dmain_fm=1 && cmake --build build/main_fm",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
+            "label": "Run main_heap",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_heap -Dmain_heap=1 && cmake --build build/main_heap",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
+            "label": "Run main_log",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_log -Dmain_log=1 && cmake --build build/main_log",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
+            "label": "Run main_opt",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_opt -Dmain_opt=1 && cmake --build build/main_opt",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
+            "label": "Run main_pool",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_pool -Dmain_pool=1 && cmake --build build/main_pool",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
+            "label": "Run main_publish",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_publish -Dmain_publish=1 && cmake --build build/main_publish",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
         },
         {
             "label": "Run main_rand",
             "type": "shell",
-            "command": "cmake",
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "CMake main_rand",
-                "CMake Build"
-            ]
+            "command": "cmake -S . -B build/main_rand -Dmain_rand=1 && cmake --build build/main_rand",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
+            "label": "Run main_sin",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_sin -Dmain_sin=1 && cmake --build build/main_sin",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
+            "label": "Run main_stm",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_stm -Dmain_stm=1 && cmake --build build/main_stm",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
+            "label": "Run main_str",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_str -Dmain_str=1 && cmake --build build/main_str",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
+            "label": "Run main_test",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_test -Dmain_test=1 && cmake --build build/main_test",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
+            "label": "Run main_time",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_time -Dmain_time=1 && cmake --build build/main_time",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
+            "label": "Run main_timer",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_timer -Dmain_timer=1 && cmake --build build/main_timer",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
+            "label": "Run main_type",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_type -Dmain_type=1 && cmake --build build/main_type",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
+            "label": "Run main_unpack",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_unpack -Dmain_unpack=1 && cmake --build build/main_unpack",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
         }
-
-
-
-
-
-
-
-
+        // -----
     ]
 }

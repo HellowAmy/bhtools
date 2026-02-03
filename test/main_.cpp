@@ -1,28 +1,13 @@
-
 #include <iostream>
 
-#include "bhtools.h"
+void test_1() {}
 
-void test_1()
-{
-
-}
-
-void test_2()
-{
-
-}
-
-void test_3()
-{
-
-}
+void test_2() {}
 
 int main(int argc, char *argv[])
 {
-    // test_1();   
-    // test_2();   
-    // test_3();   
+    // test_1();
+    // test_2();
 
     return 0;
 }
