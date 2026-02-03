@@ -26,6 +26,7 @@ AlignAfterOpenBracket: Align                    # 括号后的参数对齐
 AllowAllArgumentsOnNextLine: true               # 允许所有参数放在下一行
 BinPackArguments: true                          # 尽可能将参数放在同一行
 BreakTemplateDeclarations: Yes                  # 模板声明分行
+AccessModifierOffset: -4                        # 作用域顶格
 
 # =========================
 # 大括号换行规则
