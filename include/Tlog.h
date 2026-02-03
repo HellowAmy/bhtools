@@ -349,7 +349,7 @@ struct Tlog_time
     {
         Ftimes::data d = Ftimes::to_data(Ftimes::time_now());
         d.hou += 8;
-        return Ftimes::format_time(d,"%4Y-%2M-%2D.%2H:%2T:%2S.%3L");
+        return Ftimes::format_time(d,"YYYY-MM-DD.HH:TT:SS.LLL");
     };
 };
 

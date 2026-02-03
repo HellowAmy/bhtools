@@ -82,13 +82,13 @@ void test_2()
     // 系统时间
     bhtools::Ftimes t1;
 
-    {
-        // 注意UTC时区问题
-        auto s1 = t1.to_string(t1.to_data(t1.time_now()));
-        auto s2 = t1.to_string();
+    // {
+    //     // 注意UTC时区问题
+    //     auto s1 = t1.to_string(t1.to_data(t1.time_now()));
+    //     auto s2 = t1.to_string();
     
-        vlogd($(s1) $(s2));
-    }
+    //     vlogd($(s1) $(s2));
+    // }
     {
         auto s1 = t1.to_string();
         bhtools::Ftimel::sleep(1000);
@@ -134,7 +134,7 @@ void test_3()
 
         tt.push_point("to_data ",true);
         vlogd($C(tt.check_vec()));
-        vlogd(ft.to_string(ft.to_data(p)));
+        // vlogd(ft.to_string(ft.to_data(p)));
     }
 
 
@@ -146,12 +146,38 @@ void test_3()
     */
 }
 
+void test_4()
+{
+    bhtools::Ftimes t1;
+    {
+        bhtools::Ftimel tff;
+        int sum = 1000*10000;
+
+        auto d = t1.to_data(t1.time_now());
+        d.hou += 8;
+
+        // t1.format_time2(d);
+
+        tff.push_point("t1",true);
+
+        for(int i=0;i<sum;i++)
+        {
+            t1.format_time(d);
+        }
+        tff.push_point("t3",true);
+
+        vlogd($C(tff.check_vec()));
+        vlogd(t1.to_string());
+    }
+
+}
 
 int main(int argc, char *argv[])
 {
     // test_1();
     // test_2();
-    test_3();
+    // test_3();
+    test_4();
 
 
     return 0;

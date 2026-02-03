@@ -8,6 +8,7 @@
 #include <sstream>
 #include <ctime>
 #include <iomanip>
+#include <iostream>
 
 namespace bhtools {
 
@@ -107,11 +108,8 @@ struct Ftimes
     typedef std::chrono::minutes minutes;
     typedef std::chrono::hours hours;
     typedef std::chrono::system_clock system_clock;
-    typedef typename std::chrono::time_point<std::chrono::system_clock,std::chrono::nanoseconds> time_point;
 
     // 日期相关预设值
-    
-    static constexpr int64_t _tunix_epoch = 1970;
     static constexpr int64_t _tunix_year = 365;
     static constexpr int64_t _tnan_sec = 1000 * 1000 * 1000;
     static constexpr int64_t _tnan_mil = 1000 * 1000;
@@ -153,23 +151,7 @@ struct Ftimes
     { 
         data d = to_data(time_now());
         d.hou += UTC;
-        return to_string(d); 
-    }
-
-    // 转为默认UTC显示时间-传入时间点
-    inline static std::string to_string(const data &d)
-    {
-        std::string ret = "[ " + 
-            std::to_string(d.yea) +"-"+
-            std::to_string(d.mon) +"-"+
-            std::to_string(d.day) +"."+
-            std::to_string(d.hou) +":"+
-            std::to_string(d.min) +":"+
-            std::to_string(d.sec) +"."+
-            std::to_string(d.mil) +"."+
-            std::to_string(d.mic) +"."+
-            std::to_string(d.nan) +" ]";
-        return ret;
+        return format_time(d); 
     }
 
     // 返回默认中国时区时间
@@ -257,60 +239,58 @@ struct Ftimes
         return d;
     }
 
-
-    // 格式化日期格式-格式的替换字符如下-[%XC][百分号加字符串长度加类型]
-    // %4Y-%2M-%2D.%2H:%2T:%2S.%3L.%3C.%3N >>>> 2024-09-02.15:44:28.804.245.495
-    inline static std::string format_time(const data &d,const std::string &fm = "%4Y-%2M-%2D.%2H:%2T:%2S.%3L.%3C.%3N")
+    // 格式化日期格式-格式的替换字符如下-在原字符串从后向前替换-空位补零
+    // YYYY-MM-DD.HH:TT:SS.LLL.CCC.NNN >>>> 2024-09-02.15:44:28.804.245.495
+    inline static std::string format_time(const data &d,const std::string &fm = "YYYY-MM-DD.HH:TT:SS.LLL.CCC.NNN")
     {
-        std::string ret;
-        for(size_t i=0;i<fm.size();i++)
+        if(fm.size() <= 0) { return ""; }
+
+        // 从尾部替换
+        std::string ret = fm;
+        std::string time;
+        bool into = true;
+        int rindex = ret.size()-1;
+        while(rindex >= 0)
         {
-            char c = fm[i];
-            if(c == '%')
+            into = true;
+            char c = ret[rindex];
+            if(c == 'Y') { time = std::to_string(d.yea); }
+            else if(c == 'M') { time = std::to_string(d.mon); }
+            else if(c == 'D') { time = std::to_string(d.day); }
+            else if(c == 'H') { time = std::to_string(d.hou); }
+            else if(c == 'T') { time = std::to_string(d.min); }
+            else if(c == 'S') { time = std::to_string(d.sec); }
+            else if(c == 'L') { time = std::to_string(d.mil); }
+            else if(c == 'C') { time = std::to_string(d.mic); }
+            else if(c == 'N') { time = std::to_string(d.nan); }
+            else { 
+                into = false;
+                rindex--;
+            } 
+
+            // 进入替换
+            if(into)
             {
-                if(i+2 >= fm.size()) { return ""; } 
-                size_t n = fm[i+1] - '0';
-
-                if(n < 1 || n > 9) { return ""; } 
-                char t = fm[i+2];
-
-                if(t == 'Y') { ret += to_time_len(d.yea,n,true); }
-                else if(t == 'M') { ret += to_time_len(d.mon,n); }
-                else if(t == 'D') { ret += to_time_len(d.day,n); }
-                else if(t == 'H') { ret += to_time_len(d.hou,n); }
-                else if(t == 'T') { ret += to_time_len(d.min,n); }
-                else if(t == 'S') { ret += to_time_len(d.sec,n); }
-                else if(t == 'L') { ret += to_time_len(d.mil,n); }
-                else if(t == 'C') { ret += to_time_len(d.mic,n); }
-                else if(t == 'N') { ret += to_time_len(d.nan,n); }
-                else { return ""; } 
-
-                i += 2;
+                char pch = c;
+                int tidx = time.size() -1;
+                ret[rindex] = time[tidx];
+                rindex--;
+                tidx--;
+                while(rindex >= 0)
+                {
+                    c = ret[rindex];
+                    if(pch == c)
+                    {
+                        if(tidx >= 0) { ret[rindex] = time[tidx]; }
+                        else  { ret[rindex] = '0'; }
+                        rindex--;
+                        tidx--;
+                    }
+                    else { break; }
+                }
             }
-            else { ret.push_back(c); }
         }
         return ret;
-    }
-
-
-    // internal
-    // 格式化为指定长度的字符串
-    inline static std::string to_time_len(size_t time,size_t len,bool reverse = false)
-    {
-        std::string s = std::to_string(time);
-        if(s.size() > len) 
-        {
-            if(reverse) { s = s.erase(0,s.size()-len); } 
-            else { s.resize(len); }
-        }
-        else if(s.size() < len)
-        {
-            std::string sf;
-            sf.resize(len - s.size());
-            std::fill(sf.begin(),sf.end(),'0');
-            s = sf + s;
-        }
-        return s;
     }
 };
 
