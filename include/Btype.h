@@ -23,8 +23,14 @@ using ft32 = float;
 using ft64 = double;
 
 //
-using sstr = std::string;
+using dstr = std::string;
+using rstr = std::string &;
 using cstr = const std::string &;
+
+//
+using dchr = char;
+using dchp = char *;
+using cchp = const char *;
 
 } // namespace bh
 
