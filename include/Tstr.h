@@ -39,9 +39,17 @@ struct Tstr
     inline static std::string to_string(const std::string &val) 
     { return val; }
 
+    // template<typename T>
+    // inline static std::string to_string(const T &val) 
+    // { return std::to_string(val); }
+
     template<typename T>
-    inline static std::string to_string(const T &val) 
-    { return std::to_string(val); }
+    static typename std::enable_if<std::is_arithmetic<T>::value, std::string>::type 
+    to_string(const T &val) { return std::to_string(val); }
+
+    template<typename T>
+    static typename std::enable_if<!std::is_arithmetic<T>::value, std::string>::type 
+    to_string(const T &val) { return val; }
 
     template<typename T>
     inline static std::string to_string(T* val) 

@@ -23,6 +23,51 @@
             }
         },
         {
+            "label": "Run main_Bstr",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_Bstr -Dmain_Bstr=1 && cmake --build build/main_Bstr",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
+            "label": "Run main_Bstrbc",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_Bstrbc -Dmain_Bstrbc=1 && cmake --build build/main_Bstrbc",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
+            "label": "Run main_Bstrto",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_Bstrto -Dmain_Bstrto=1 && cmake --build build/main_Bstrto",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
+            "label": "Run main_Bstrvi",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_Bstrvi -Dmain_Bstrvi=1 && cmake --build build/main_Bstrvi",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
+            "label": "Run main_Btype",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_Btype -Dmain_Btype=1 && cmake --build build/main_Btype",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
             "label": "Run main_any",
             "type": "shell",
             "command": "cmake -S . -B build/main_any -Dmain_any=1 && cmake --build build/main_any",
@@ -197,15 +242,6 @@
             "label": "Run main_timer",
             "type": "shell",
             "command": "cmake -S . -B build/main_timer -Dmain_timer=1 && cmake --build build/main_timer",
-            "args": [],
-            "options": {
-                "cwd": "${workspaceFolder}/"
-            }
-        },
-        {
-            "label": "Run main_type",
-            "type": "shell",
-            "command": "cmake -S . -B build/main_type -Dmain_type=1 && cmake --build build/main_type",
             "args": [],
             "options": {
                 "cwd": "${workspaceFolder}/"

@@ -153,9 +153,22 @@ if(ALL OR main_rand)
     add_executable(main_rand test/main_rand.cpp)
 endif()
 
-if(ALL OR main_type)
-    add_executable(main_type test/main_type.cpp)
+if(ALL OR main_Btype)
+    add_executable(main_Btype test/main_Btype.cpp)
 endif()
+
+if(ALL OR main_Bstrbc)
+    add_executable(main_Bstrbc test/main_Bstrbc.cpp)
+endif()
+
+if(ALL OR main_Bstrvi)
+    add_executable(main_Bstrvi test/main_Bstrvi.cpp)
+endif()
+
+if(ALL OR main_Bstr)
+    add_executable(main_Bstr test/main_Bstr.cpp)
+endif()
+
 
 # 生成目标
 add_executable(${CMAKE_PROJECT_NAME} main.cpp)
