@@ -202,9 +202,9 @@ void test_4()
 
 int main(int argc, char *argv[])
 {
-    // test_1();
-    // test_2();
-    // test_3();
+    test_1();
+    test_2();
+    test_3();
     test_4();
 
     return 0;

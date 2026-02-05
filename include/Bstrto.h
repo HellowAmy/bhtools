@@ -9,6 +9,7 @@
 
 namespace bh {
 
+//
 class Bstrto
 {
 public:
