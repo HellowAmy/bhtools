@@ -23,18 +23,18 @@
             }
         },
         {
-            "label": "Run main_Bstr",
+            "label": "Run main_Bopt",
             "type": "shell",
-            "command": "cmake -S . -B build/main_Bstr -Dmain_Bstr=1 && cmake --build build/main_Bstr",
+            "command": "cmake -S . -B build/main_Bopt -Dmain_Bopt=1 && cmake --build build/main_Bopt",
             "args": [],
             "options": {
                 "cwd": "${workspaceFolder}/"
             }
         },
         {
-            "label": "Run main_Bstrbc",
+            "label": "Run main_Bstr",
             "type": "shell",
-            "command": "cmake -S . -B build/main_Bstrbc -Dmain_Bstrbc=1 && cmake --build build/main_Bstrbc",
+            "command": "cmake -S . -B build/main_Bstr -Dmain_Bstr=1 && cmake --build build/main_Bstr",
             "args": [],
             "options": {
                 "cwd": "${workspaceFolder}/"

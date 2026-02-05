@@ -169,6 +169,10 @@ if(ALL OR main_Bstr)
     add_executable(main_Bstr test/main_Bstr.cpp)
 endif()
 
+if(ALL OR main_Bopt)
+    add_executable(main_Bopt test/main_Bopt.cpp)
+endif()
+
 
 # 生成目标
 add_executable(${CMAKE_PROJECT_NAME} main.cpp)

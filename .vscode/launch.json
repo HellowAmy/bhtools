@@ -53,6 +53,27 @@
             "preLaunchTask": "Run main_"
         },
         {
+            "name": "Run [main_Bopt]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main_Bopt/main_Bopt",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/main_Bopt",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Run main_Bopt"
+        },
+        {
             "name": "Run [main_Bstr]",
             "type": "cppdbg",
             "request": "launch",
@@ -72,27 +93,6 @@
                 }
             ],
             "preLaunchTask": "Run main_Bstr"
-        },
-        {
-            "name": "Run [main_Bstrbc]",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/main_Bstrbc/main_Bstrbc",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build/main_Bstrbc",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "Run main_Bstrbc"
         },
         {
             "name": "Run [main_Bstrto]",

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <tuple>
+#include <cstdint>
 
 #include "Bstrto.h"
 
@@ -114,11 +115,12 @@ void test_3()
     bh::dchr cs1[] = "100";
     bh::cchp cs2 = "101";
     bh::dstr cs3 = "102";
-    bh::cstr cs4 = "103";
-    bh::Bstr cs5("xx100");
+    bh::cstr cs4 = "10399";
+    bh::Bstr cs5("xxxx");
     bh::Bstr cs6("00100");
     bh::Bstr cs7("3.1415");
     bh::Bstr cs8("3.1415926123123123");
+    bh::Bstr cs9("xxxxxxxxx.xxxxx");
 
     auto a1 = bh::Bstrto::from_str<bh::int32>(cs1);
     auto a2 = bh::Bstrto::from_str<bh::int32>(cs2);
@@ -128,6 +130,7 @@ void test_3()
     auto a6 = bh::Bstrto::from_str<bh::int32>(cs6);
     auto a7 = bh::Bstrto::from_str<bh::ft32>(cs7);
     auto a8 = bh::Bstrto::from_str<bh::ft64>(cs8);
+    auto a9 = bh::Bstrto::from_str<bh::ft64>(cs9);
 
     vloga("转数字");
     vlogd($(a1));
@@ -138,13 +141,71 @@ void test_3()
     vlogd($(a6));
     vlogd($(a7));
     vlogd($(a8));
+    vlogd($(a9));
+
+    auto b1 = bh::Bstrto::from_str_opt<bh::int32>(cs1);
+    auto b2 = bh::Bstrto::from_str_opt<bh::int32>(cs2);
+    auto b3 = bh::Bstrto::from_str_opt<bh::int32>(cs3);
+    auto b4 = bh::Bstrto::from_str_opt<bh::int32>(cs4);
+    auto b5 = bh::Bstrto::from_str_opt<bh::int32>(cs5);
+    auto b6 = bh::Bstrto::from_str_opt<bh::int32>(cs6);
+    auto b7 = bh::Bstrto::from_str_opt<bh::ft32>(cs7);
+    auto b8 = bh::Bstrto::from_str_opt<bh::ft64>(cs8);
+    auto b9 = bh::Bstrto::from_str_opt<bh::ft64>(cs9);
+
+    vloga("转数字可判断");
+    BHTEST_TRUE(b1.use());
+    BHTEST_TRUE(b2.use());
+    BHTEST_TRUE(b3.use());
+    BHTEST_TRUE(b4.use());
+    BHTEST_TRUE(b5.use());
+    BHTEST_TRUE(b6.use());
+    BHTEST_TRUE(b7.use());
+    BHTEST_TRUE(b8.use());
+    BHTEST_TRUE(b9.use());
+
+    vlogd($(*b1));
+    vlogd($(*b2));
+    vlogd($(*b3));
+    vlogd($(*b4));
+    vlogd($(*b5));
+    vlogd($(*b6));
+    vlogd($(*b7));
+    vlogd($(*b8));
+    vlogd($(*b9));
+}
+
+void test_4()
+{
+    bh::Bstr cs1(bh::Bstrto::to_str(INT32_MAX));
+    bh::Bstr cs2(bh::Bstrto::to_str(UINT32_MAX));
+    bh::Bstr cs3(bh::Bstrto::to_str(INT64_MAX));
+    bh::Bstr cs4(bh::Bstrto::to_str(UINT64_MAX));
+
+    auto b1 = bh::Bstrto::from_str_opt<bh::int32>(cs1);
+    auto b2 = bh::Bstrto::from_str_opt<bh::uint32>(cs2);
+    auto b3 = bh::Bstrto::from_str_opt<bh::int64>(cs3);
+    auto b4 = bh::Bstrto::from_str_opt<bh::uint64>(cs4);
+
+    vloga("范围判断");
+    vlogd($(cs1));
+    vlogd($(cs2));
+    vlogd($(cs3));
+    vlogd($(cs4));
+
+    vloga("转数字");
+    BHTEST_EQUAL(*b1, INT32_MAX)
+    BHTEST_EQUAL(*b2, UINT32_MAX)
+    BHTEST_EQUAL(*b3, INT64_MAX)
+    BHTEST_EQUAL(*b4, UINT64_MAX)
 }
 
 int main(int argc, char *argv[])
 {
     // test_1();
     // test_2();
-    test_3();
+    // test_3();
+    test_4();
 
     return 0;
 }

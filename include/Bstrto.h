@@ -4,9 +4,8 @@
 #include <sstream>
 #include <iomanip>
 
-#include "Topt.h"
-
 #include "Bstr.h"
+#include "Bopt.h"
 
 namespace bh {
 
@@ -60,6 +59,8 @@ public:
 
     inline static Bstr to_str(cstr val) { return val; }
 
+    inline static Bstr to_str(BCstr val) { return val; }
+
     template <typename T>
     inline static Bstr to_str(T *val)
     {
@@ -91,29 +92,32 @@ public:
         return ret;
     }
 
-    // //
-    // template <typename T>
-    // inline static bhtools::Topt<T> from_string(cstr str)
-    // {
-    //     bhtools::Topt<T> ret;
-    //     try {
-    //         if(std::is_same<T, ft64>::value) {
-    //             ret = std::stod(str);
-    //         }
-    //         else if(std::is_same<T, ft32>::value) {
-    //             ret = std::stof(str);
-    //         }
-    //         else if(std::is_same<T, int32>::value || std::is_same<T, uint32>::value) {
-    //             ret = std::stoi(str);
-    //         }
-    //         else if(std::is_same<T, int64>::value || std::is_same<T, uint64>::value) {
-    //             ret = std::stoll(str);
-    //         }
-    //     }
-    //     catch(...) {
-    //     }
-    //     return ret;
-    // }
+    //
+    template <typename T>
+    inline static Bopt<T> from_str_opt(BCstr str)
+    {
+        Bopt<T> ret;
+        try {
+            if(std::is_same<T, int32>::value) {
+                ret = std::stoi(str);
+            }
+            else if(std::is_same<T, int64>::value) {
+                ret = std::stoll(str);
+            }
+            else if(std::is_same<T, uint32>::value || std::is_same<T, uint64>::value) {
+                ret = std::stoull(str);
+            }
+            else if(std::is_same<T, ft64>::value) {
+                ret = std::stod(str);
+            }
+            else if(std::is_same<T, ft32>::value) {
+                ret = std::stof(str);
+            }
+        }
+        catch(...) {
+        }
+        return ret;
+    }
 
     template <typename T>
     inline static T from_str(BCstr str)
