@@ -1,8 +1,9 @@
 #ifndef BSTRVI_H
 #define BSTRVI_H
 
+#include <cstring>
+
 #include "Btype.h"
-#include "Bstrbc.h"
 
 namespace bh {
 
@@ -10,29 +11,15 @@ namespace bh {
 class Bstrvi
 {
 public:
-    explicit Bstrvi() {}
+    Bstrvi() {}
 
-    explicit Bstrvi(cchp d, uint64 size)
-    {
-        _data = d;
-        _size = size;
-    }
+    Bstrvi(const Bstrvi &d, uint64 pos, uint64 len = 0) : Bstrvi(d.data(), d.size(), pos, len) {}
 
-    explicit Bstrvi(cstr d) : Bstrvi(d.c_str(), d.size()) {}
+    Bstrvi(cstr d, uint64 pos = 0, uint64 len = 0) : Bstrvi(d.c_str(), d.size(), pos, len) {}
 
-    explicit Bstrvi(const Bstrbc &d) : Bstrvi(d.data(), d.size()) {}
+    Bstrvi(cchp d, uint64 pos = 0, uint64 len = 0) : Bstrvi(d, strlen(d), pos, len) {}
 
-    explicit Bstrvi(const Bstrbc &d, uint64 pos, uint64 len = 0)
-        : Bstrvi(d.data(), d.size(), pos, len)
-    {
-    }
-
-    explicit Bstrvi(const Bstrvi &d, uint64 pos, uint64 len = 0)
-        : Bstrvi(d.data(), d.size(), pos, len)
-    {
-    }
-
-    explicit Bstrvi(cchp d, uint64 size, uint64 pos, uint64 len = 0)
+    Bstrvi(cchp d, uint64 size, uint64 pos, uint64 len)
     {
         _data = d + pos;
         if(len == 0) {
@@ -56,20 +43,53 @@ public:
         return *this;
     }
 
+    bool operator==(const Bstrvi &d) const
+    {
+        if(_size != d._size) {
+            return false;
+        }
+        return std::equal(_data, _data + _size, d._data);
+    }
+
+    operator dstr() const { return dstr(_data, _size); }
+
     ~Bstrvi() {}
-
-    inline operator dstr() const { return to_str(); }
-
-    inline dstr to_str() const { return Bstrbc(_data, _size); }
 
     cchp data() const { return _data; }
 
     uint64 size() const { return _size; }
 
+    Bstrvi &move(int32 pos)
+    {
+        if(_data) {
+            _data += pos;
+        }
+        return *this;
+    }
+
+    Bstrvi &move_head(int32 pos)
+    {
+        if(_data) {
+            _data += pos;
+            _size -= pos;
+        }
+        return *this;
+    }
+
+    Bstrvi &move_tail(int32 pos)
+    {
+        if(_data) {
+            _size += pos;
+        }
+        return *this;
+    }
+
 protected:
     uint64 _size = 0;
     cchp _data = nullptr;
 };
+
+using BCstrvi = const Bstrvi &;
 
 } // namespace bh
 

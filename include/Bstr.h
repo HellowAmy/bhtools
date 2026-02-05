@@ -1,17 +1,12 @@
 #ifndef BSTR_H
 #define BSTR_H
 
-#include "Bstrbc.h"
 #include "Bstrvi.h"
 
 namespace bh {
 
 //
-static const uint32 _BH_STR_CAP_MIN_ = (1UL << 8);
-static const uint32 _BH_STR_CAP_INT_ = (1UL << 4);
-
-//
-class Bstr : public Bstrbc
+class Bstr : public dstr
 {
 public:
     struct range
@@ -22,95 +17,53 @@ public:
     };
 
 public:
-    using Bstrbc::Bstrbc;
+    using dstr::dstr;
 
-    Bstr(const Bstr &d) { _data = d._data; }
+    Bstr(cstr d) { this->assign(d); }
 
-    //
-    inline Bstr &operator=(cstr d)
+    Bstr(BCstrvi d) { this->assign(d.data(), d.size()); }
+
+    bool operator==(BCstrvi d) const { return compare_view(d); }
+
+    bool operator==(cstr d) const { return compare_view(d); }
+
+    bool operator==(cchp d) const { return compare_view(d); }
+
+    // 
+    Bstr &operator<<(BCstrvi d)
     {
-        _data = d;
-        return *this;
-    }
-
-    inline Bstr &operator=(const Bstr &d)
-    {
-        _data = d._data;
-        return *this;
-    }
-
-    inline Bstr &operator=(const Bstrvi &d)
-    {
-        _data = Bstr(d.data(), d.size());
+        this->append(d.data(), d.size());
         return *this;
     }
 
     //
-    inline Bstr &operator+=(dchr d)
+    inline bool compare_view(BCstrvi d) const
     {
-        _data.push_back(d);
-        return *this;
-    }
-
-    inline Bstr &operator+=(cstr d) { return append_data(d.c_str(), d.size()); }
-
-    inline Bstr &operator+=(const Bstr &d) { return append_data(d.data(), d.size()); }
-
-    inline Bstr &operator+=(const Bstrvi &d) { return append_data(d.data(), d.size()); }
-
-    //
-    inline bool operator==(cstr d) { return _data == d; }
-
-    inline bool operator==(const Bstr &d) { return compare(d._data); }
-
-    inline bool operator==(const Bstrvi &d) { return compare_view(d); }
-
-    //
-    inline bool compare_view(const Bstrvi &d)
-    {
-        if(d.size() != _data.size()) {
+        if(d.size() != size()) {
             return false;
         }
-        return std::equal(_data.c_str(), _data.c_str() + _data.size(), d.data());
+        return std::equal(c_str(), c_str() + size(), d.data());
     }
 
     //
-    inline bool is_contain(cstr sub)
+    inline bool is_contain(BCstrvi sub)
     {
-        uint64 index = find_index(sub);
+        uint64 index = find(sub.data(), 0, sub.size());
         return index != dstr::npos;
     }
 
     //
-    inline range find_range(cstr sub, uint64 pos = 0)
+    inline range find_range(BCstrvi sub, uint64 pos = 0)
     {
         range ret;
-        uint64 index = find_index(sub, pos);
+        uint64 index = find(sub.data(), pos, sub.size());
         ret.bpos = index;
         ret.epos = index + sub.size();
         return ret;
     }
-
-protected:
-    //
-    inline void try_reserve(uint64 cap)
-    {
-        if(cap < _BH_STR_CAP_MIN_ && cap >= _BH_STR_CAP_INT_) {
-            _data.reserve(_BH_STR_CAP_MIN_);
-        }
-        else {
-            _data.reserve(cap);
-        }
-    }
-
-    //
-    inline Bstr &append_data(cchp d, uint64 len)
-    {
-        try_reserve(_data.size() + len);
-        _data.append(d, len);
-        return *this;
-    }
 };
+
+using BCstr = const Bstr &;
 
 } // namespace bh
 

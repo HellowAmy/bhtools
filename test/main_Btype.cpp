@@ -50,12 +50,24 @@ void test_1()
     vlogd($(d1) $(d2) $(d3));
 }
 
-void test_2() {}
+void test_2()
+{
+    vloga("数据长度");
+    vlogd($(bh::_BH_INT_16_));
+    vlogd($(bh::_BH_INT_32_));
+    vlogd($(bh::_BH_INT_64_));
+    vlogd($(bh::_BH_INT_128_));
+    vlogd($(bh::_BH_INT_256_));
+    vlogd($(bh::_BH_INT_512_));
+    vlogd($(bh::_BH_INT_1024_));
+    vlogd($(bh::_BH_INT_2048_));
+    vlogd($(bh::_BH_INT_4096_));
+}
 
 int main(int argc, char *argv[])
 {
     test_1();
-    // test_2();
+    test_2();
 
     return 0;
 }

@@ -32,6 +32,17 @@ using dchr = char;
 using dchp = char *;
 using cchp = const char *;
 
+//
+uint32 _BH_INT_16_ = (1U << 4);
+uint32 _BH_INT_32_ = (1U << 5);
+uint32 _BH_INT_64_ = (1U << 6);
+uint32 _BH_INT_128_ = (1U << 7);
+uint32 _BH_INT_256_ = (1U << 8);
+uint32 _BH_INT_512_ = (1U << 9);
+uint32 _BH_INT_1024_ = (1U << 10);
+uint32 _BH_INT_2048_ = (1U << 11);
+uint32 _BH_INT_4096_ = (1U << 12);
+
 } // namespace bh
 
 #endif // BTYPE_H
