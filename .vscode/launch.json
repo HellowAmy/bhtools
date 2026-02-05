@@ -74,6 +74,27 @@
             "preLaunchTask": "Run main_Bopt"
         },
         {
+            "name": "Run [main_Bsin]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main_Bsin/main_Bsin",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/main_Bsin",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Run main_Bsin"
+        },
+        {
             "name": "Run [main_Bstr]",
             "type": "cppdbg",
             "request": "launch",

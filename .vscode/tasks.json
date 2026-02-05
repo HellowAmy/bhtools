@@ -32,6 +32,15 @@
             }
         },
         {
+            "label": "Run main_Bsin",
+            "type": "shell",
+            "command": "cmake -S . -B build/main_Bsin -Dmain_Bsin=1 && cmake --build build/main_Bsin",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            }
+        },
+        {
             "label": "Run main_Bstr",
             "type": "shell",
             "command": "cmake -S . -B build/main_Bstr -Dmain_Bstr=1 && cmake --build build/main_Bstr",

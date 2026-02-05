@@ -173,6 +173,10 @@ if(ALL OR main_Bopt)
     add_executable(main_Bopt test/main_Bopt.cpp)
 endif()
 
+if(ALL OR main_Bsin)
+    add_executable(main_Bsin test/main_Bsin.cpp)
+endif()
+
 
 # 生成目标
 add_executable(${CMAKE_PROJECT_NAME} main.cpp)
