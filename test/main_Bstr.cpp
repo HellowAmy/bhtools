@@ -95,6 +95,9 @@ void test_2()
     bh::Bstr s3;
     s3 << "[ " << "hello" << " ] ";
     s3 << s2;
+    s3 << ' ';
+    s3 << '0';
+    s3 << 'x';
 
     vloga("推入字符");
     vlogd($(s3));

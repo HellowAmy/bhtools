@@ -17,7 +17,6 @@ public:
     {
         float_dec(ft64 v, int32 d) : dec(d), val(v) {}
         int32 dec = 0;
-        ;
         ft64 val = 0.0;
     };
 
@@ -26,62 +25,54 @@ public:
     template <typename T>
     static typename std::enable_if<std::is_arithmetic<T>::value, Bstr>::type to_str(const T &val)
     {
-        return Bstr(std::move(std::to_string(val)));
+        return std::to_string(val);
     }
 
     template <typename T>
     static typename std::enable_if<!std::is_arithmetic<T>::value, Bstr>::type to_str(const T &val)
     {
-        return val;
+        return val.to_str();
     }
 
     //
     inline static Bstr to_str(bool val)
     {
         if(val) {
-            return Bstr("true");
+            return "true";
         }
-        return Bstr("false");
+        return "false";
     }
 
     inline static Bstr to_str(dchr val)
     {
         Bstr ret;
-        std::string ret = "['";
-        ret += val;
-        ret += "': ";
-        ret += to_str((int)val);
-        ret += "]";
+        ret << '[' << val << ": " << to_str((int)val) << ']';
         return ret;
     }
 
     inline static Bstr to_str(cchp val)
     {
         if(val) {
-            return Bstr(val);
+            return val;
         }
-        return Bstr("NULL");
+        return "NULL";
     }
 
-    inline static Bstr to_str(cstr val) { return Bstr(val); }
+    inline static Bstr to_str(cstr val) { return val; }
 
     template <typename T>
     inline static Bstr to_str(T *val)
     {
         std::stringstream ss;
         ss << val;
-        return Bstr(std::move(ss.str()));
+        return ss.str();
     }
 
     template <typename T1, typename T2>
     inline static Bstr to_str(const std::pair<T1, T2> &pair)
     {
         Bstr ret;
-        ret = "[";
-        ret += to_str(pair.first);
-        ret += " : ";
-        ret += to_str(pair.second);
-        ret += "]";
+        ret << '[' << to_str(pair.first) << " : " << to_str(pair.second) << ']';
         return ret;
     }
 
@@ -89,7 +80,7 @@ public:
     {
         std::stringstream ss;
         ss << std::fixed << std::setprecision(val.dec) << val.val;
-        return Bstr(std::move(ss.str()));
+        return ss.str();
     }
 
     template <typename... T>
@@ -100,32 +91,32 @@ public:
         return ret;
     }
 
-    //
-    template <typename T>
-    inline static bhtools::Topt<T> from_string(cstr str)
-    {
-        bhtools::Topt<T> ret;
-        try {
-            if(std::is_same<T, ft64>::value) {
-                ret = std::stod(str);
-            }
-            else if(std::is_same<T, ft32>::value) {
-                ret = std::stof(str);
-            }
-            else if(std::is_same<T, int32>::value || std::is_same<T, uint32>::value) {
-                ret = std::stoi(str);
-            }
-            else if(std::is_same<T, int64>::value || std::is_same<T, uint64>::value) {
-                ret = std::stoll(str);
-            }
-        }
-        catch(...) {
-        }
-        return ret;
-    }
+    // //
+    // template <typename T>
+    // inline static bhtools::Topt<T> from_string(cstr str)
+    // {
+    //     bhtools::Topt<T> ret;
+    //     try {
+    //         if(std::is_same<T, ft64>::value) {
+    //             ret = std::stod(str);
+    //         }
+    //         else if(std::is_same<T, ft32>::value) {
+    //             ret = std::stof(str);
+    //         }
+    //         else if(std::is_same<T, int32>::value || std::is_same<T, uint32>::value) {
+    //             ret = std::stoi(str);
+    //         }
+    //         else if(std::is_same<T, int64>::value || std::is_same<T, uint64>::value) {
+    //             ret = std::stoll(str);
+    //         }
+    //     }
+    //     catch(...) {
+    //     }
+    //     return ret;
+    // }
 
     template <typename T>
-    inline static T from_string(cstr str)
+    inline static T from_str(BCstr str)
     {
         T ret;
         std::istringstream ss(str);
@@ -141,8 +132,7 @@ public:
         {
             if(now != (count - 1)) {
                 auto val = std::get<now>(obj);
-                str += to_str(val);
-                str += " : ";
+                str << to_str(val) << " : ";
             }
             Bstrto_tup<Tclass, count, now + 1>::action(obj, str);
         }
@@ -156,8 +146,7 @@ public:
         {
             if(count != 1) {
                 auto val = std::get<count - 1>(obj);
-                str += to_str(val);
-                str += "] ";
+                str << to_str(val) << ']';
             }
         }
     };
@@ -170,14 +159,10 @@ public:
         {
             auto val = std::get<0>(obj);
             if(count != 1) {
-                str += "[";
-                str += to_str(val);
-                str += " : ";
+                str << '[' << to_str(val) << " : ";
             }
             else {
-                str += "[";
-                str += to_str(val);
-                str += "] ";
+                str << '[' << to_str(val) << ']';
             }
             Bstrto_tup<Tclass, count, 1>::action(obj, str);
         }

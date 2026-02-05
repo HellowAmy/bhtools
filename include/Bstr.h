@@ -29,10 +29,16 @@ public:
 
     bool operator==(cchp d) const { return compare_view(d); }
 
-    // 
+    //
     Bstr &operator<<(BCstrvi d)
     {
         this->append(d.data(), d.size());
+        return *this;
+    }
+
+    Bstr &operator<<(dchr d)
+    {
+        this->push_back(d);
         return *this;
     }
 

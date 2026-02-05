@@ -157,8 +157,8 @@ if(ALL OR main_Btype)
     add_executable(main_Btype test/main_Btype.cpp)
 endif()
 
-if(ALL OR main_Bstrbc)
-    add_executable(main_Bstrbc test/main_Bstrbc.cpp)
+if(ALL OR main_Bstrto)
+    add_executable(main_Bstrto test/main_Bstrto.cpp)
 endif()
 
 if(ALL OR main_Bstrvi)
