@@ -44,6 +44,8 @@ public:
         return *this;
     }
 
+    char operator[](uint64 index) const { return _data[index]; }
+
     bool operator==(const Bstrvi &d) const
     {
         if(_size != d._size) {

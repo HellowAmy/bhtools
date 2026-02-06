@@ -185,6 +185,11 @@ if(ALL OR main_Bdiv)
     add_executable(main_Bdiv test/main_Bdiv.cpp)
 endif()
 
+if(ALL OR main_Bfm)
+    add_executable(main_Bfm test/main_Bfm.cpp)
+endif()
+
+
 
 # 生成目标
 add_executable(${CMAKE_PROJECT_NAME} main.cpp)
