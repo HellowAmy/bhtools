@@ -23,9 +23,9 @@ void test_1()
 
     bh::dstr c1 = "hello1";
     bh::cstr c2 = "hello2";
-    bh::rstr c3 = c1;
+    bh::dstr &c3 = c1;
 
-    bh::dchr c4[] = "hello3";
+    char c4[] = "hello3";
     bh::dchp c5 = "hello4";
     bh::cchp c6 = "hello5";
 
@@ -112,7 +112,7 @@ void test_2()
 
 void test_3()
 {
-    bh::dchr cs1[] = "100";
+    char cs1[] = "100";
     bh::cchp cs2 = "101";
     bh::dstr cs3 = "102";
     bh::cstr cs4 = "10399";

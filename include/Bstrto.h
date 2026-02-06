@@ -43,7 +43,7 @@ public:
         return "false";
     }
 
-    inline static Bstr to_str(dchr val)
+    inline static Bstr to_str(char val)
     {
         Bstr ret;
         ret << '[' << val << ": " << to_str((int)val) << ']';

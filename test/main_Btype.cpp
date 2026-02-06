@@ -20,9 +20,9 @@ void test_1()
 
     bh::dstr c1 = "hello";
     bh::cstr c2 = "world";
-    bh::rstr c3 = c1;
+    bh::dstr &c3 = c1;
 
-    bh::dchr d1[100] = "hello";
+    char d1[100] = "hello";
     bh::dchp d2 = d1;
     bh::cchp d3 = "world";
 

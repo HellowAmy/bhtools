@@ -36,7 +36,7 @@ public:
         return *this;
     }
 
-    inline Bstr &operator<<(dchr d)
+    inline Bstr &operator<<(char d)
     {
         this->push_back(d);
         return *this;

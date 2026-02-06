@@ -24,11 +24,9 @@ using ft64 = double;
 
 //
 using dstr = std::string;
-using rstr = std::string &;
 using cstr = const std::string &;
 
 //
-using dchr = char;
 using dchp = char *;
 using cchp = const char *;
 

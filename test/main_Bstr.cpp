@@ -7,7 +7,7 @@
 
 void test_1()
 {
-    bh::dchr cs1[] = "hello world 1";
+    char cs1[] = "hello world 1";
     bh::cchp cs2 = "hello world 2";
     bh::dstr cs3 = "hello world 3";
     bh::cstr cs4 = "hello world 4";
@@ -67,7 +67,7 @@ void test_1()
 
 void test_2()
 {
-    bh::dchr cs1[] = "hello world 1";
+    char cs1[] = "hello world 1";
     bh::cchp cs2 = "hello world 2";
     bh::dstr cs3 = "hello world 3";
     bh::cstr cs4 = "hello world 4";
