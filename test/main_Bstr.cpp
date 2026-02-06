@@ -101,18 +101,6 @@ void test_2()
 
     vloga("推入字符");
     vlogd($(s3));
-
-    // bh::Bstr s1("12345678901234567890");
-
-    // vloga("循环查找");
-    // bh::Bstr::range r1;
-    // while(true) {
-    //     r1 = s1.find_range("456", r1.epos);
-    //     if(!r1) {
-    //         break;
-    //     }
-    //     vlogd($(r1.bpos) $(r1.epos));
-    // }
 }
 
 void test_3()
