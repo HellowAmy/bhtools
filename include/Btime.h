@@ -93,7 +93,6 @@ public:
     typedef std::chrono::system_clock system_clock;
 
     // 日期相关预设值
-    static constexpr int64 _tunix_year = 365;
     static constexpr int64 _tnan_sec = 1000 * 1000 * 1000;
     static constexpr int64 _tnan_mil = 1000 * 1000;
     static constexpr int64 _tnan_mic = 1000;
@@ -187,28 +186,27 @@ public:
 
         // Howard Hinnant 算法核心
         // 从 1970-01-01 平移到 0000-03-01 的零点年份-可以避免2月闰日的天数计算
-        static constexpr int64 tzeroyear = 719468;       // 1970-01-01 到 0000-03-01 的天数差
-        static constexpr int64 t400ysum = 146097;        // 格里高利历每400年
-        static constexpr int64 t100ysum = 36524;         // 格里高利历每100年
-        static constexpr int64 t4ysum = 1460;            // 格里高利历每4年
-        static constexpr int64 t3n7sum = 153;            // 3到7月总数
-        static constexpr int64 t400ysub1 = t400ysum - 1; // 负数修正
+        // 719468 是 1970-01-01 到 0000-03-01 的天数差
+        // 146097 是 格里高利历每400年
+        // 36524 是 格里高利历每100年
+        // 1460 是 格里高利历每4年
+        // 153 是 3到7月总数
 
         // 计算现在是第几个400年
-        days += tzeroyear;
-        int64 era = (days >= 0 ? days : days - t400ysub1) / t400ysum;
+        days += 719468;
+        int64 era = (days >= 0 ? days : days - 146096) / 146097;
 
         // 计算400年你的第几天
-        uint32 doe = days - era * t400ysum;
+        uint32 doe = days - era * 146097;
 
         // 计算这一天属于400年里的那一天
-        uint32 yoe = (doe - doe / t4ysum + doe / t100ysum - doe / t400ysub1) / _tunix_year;
+        uint32 yoe = (doe - doe / 1460 + doe / 36524 - doe / 146096) / 365;
 
         // 算出是当年的第几天-从三月起
-        uint32 doy = doe - (_tunix_year * yoe + yoe / 4 - yoe / 100);
+        uint32 doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
 
         // 算出这一天在哪一个月份上-从三月起-这个值的范围是今年3月到明年2月
-        uint32 mp = (5 * doy + 2) / t3n7sum;
+        uint32 mp = (5 * doy + 2) / 153;
 
         // 如果 mp < 10 说明是3月到12月-如果是 >10 说明是次年的1月或2月-需要修正月分
         uint32 month = mp < 10 ? mp + 3 : mp - 9;
@@ -219,7 +217,7 @@ public:
         uint32 year = month <= 2 ? y + 1 : y;
 
         // 计算当月第几天-使用当年天数减去总月份天数
-        uint32 day = doy - (t3n7sum * mp + 2) / 5 + 1;
+        uint32 day = doy - (153 * mp + 2) / 5 + 1;
 
         // 获取到具体年月日
         d.yea = year;
