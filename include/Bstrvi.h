@@ -51,9 +51,9 @@ public:
         return std::equal(_data, _data + _size, d._data);
     }
 
-    operator dstr() const { return dstr(_data, _size); }
-
     ~Bstrvi() {}
+
+    dstr to_str() const { return dstr(_data, _size); }
 
     cchp data() const { return _data; }
 
@@ -88,8 +88,6 @@ protected:
     uint64 _size = 0;
     cchp _data = nullptr;
 };
-
-using BCstrvi = const Bstrvi &;
 
 } // namespace bh
 

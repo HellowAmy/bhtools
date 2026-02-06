@@ -21,16 +21,17 @@ public:
 
     Bstr(cstr d) { this->assign(d); }
 
-    Bstr(BCstrvi d) { this->assign(d.data(), d.size()); }
+    Bstr(Bstrvi d) { this->assign(d.data(), d.size()); }
 
-    bool operator==(BCstrvi d) const { return compare_view(d); }
+    //
+    bool operator==(Bstrvi d) const { return compare_view(d); }
 
     bool operator==(cstr d) const { return compare_view(d); }
 
     bool operator==(cchp d) const { return compare_view(d); }
 
     //
-    inline Bstr &operator<<(BCstrvi d)
+    inline Bstr &operator<<(Bstrvi d)
     {
         this->append(d.data(), d.size());
         return *this;
@@ -42,8 +43,11 @@ public:
         return *this;
     }
 
+    // 临时添加===============
+    inline dstr to_str() const { return *this; }
+
     //
-    inline bool compare_view(BCstrvi d) const
+    inline bool compare_view(Bstrvi d) const
     {
         if(d.size() != size()) {
             return false;
@@ -52,14 +56,14 @@ public:
     }
 
     //
-    inline bool is_contain(BCstrvi sub)
+    inline bool is_contain(Bstrvi sub)
     {
         uint64 index = find(sub.data(), 0, sub.size());
         return index != dstr::npos;
     }
 
     //
-    inline range find_range(BCstrvi sub, uint64 pos = 0)
+    inline range find_range(Bstrvi sub, uint64 pos = 0)
     {
         range ret;
         uint64 index = find(sub.data(), pos, sub.size());

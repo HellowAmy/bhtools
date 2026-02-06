@@ -116,12 +116,12 @@ public:
 
 public:
     // 当前时间的C-tm格式时间
-    inline static Bstr to_ctime(BCstr format = "[ %Y-%m-%d.%H:%M:%S ]")
+    inline static Bstr to_ctime(Bstrvi format = "[ %Y-%m-%d.%H:%M:%S ]")
     {
         std::time_t t = system_clock::to_time_t(system_clock::now());
         std::tm *m = std::localtime(&t);
         std::stringstream ss;
-        ss << std::put_time(m, format.c_str());
+        ss << std::put_time(m, format.data());
         return ss.str();
     }
 
@@ -228,7 +228,7 @@ public:
 
     // 格式化日期格式-格式的替换字符如下-在原字符串从后向前替换-空位补零
     // YYYY-MM-DD.HH:TT:SS.LLL.CCC.NNN >>>> 2024-09-02.15:44:28.804.245.495
-    inline static Bstr format_time(const data &d, BCstr fm = "YYYY-MM-DD.HH:TT:SS.LLL.CCC.NNN")
+    inline static Bstr format_time(const data &d, Bstrvi fm = "YYYY-MM-DD.HH:TT:SS.LLL.CCC.NNN")
     {
         if(fm.size() <= 0) {
             return "";

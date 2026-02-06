@@ -60,8 +60,6 @@ public:
 
     inline static Bstr to_str(cstr val) { return val; }
 
-    inline static Bstr to_str(BCstr val) { return val; }
-
     template <typename T>
     inline static Bstr to_str(T *val)
     {
