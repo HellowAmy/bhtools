@@ -9,7 +9,7 @@
 
 namespace bh {
 
-//
+// 字符串转换工具类 提供类型与字符串之间的相互转换
 class Bstrto
 {
 public:
@@ -21,7 +21,7 @@ public:
     };
 
 public:
-    //
+    // 数字转字符
     template <typename T>
     static typename std::enable_if<std::is_arithmetic<T>::value, Bstr>::type to_str(const T &val)
     {
@@ -34,7 +34,7 @@ public:
         return val.to_str();
     }
 
-    //
+    // 特殊格式化处理
     inline static Bstr to_str(bool val)
     {
         if(val) {
@@ -91,7 +91,7 @@ public:
         return ret;
     }
 
-    //
+    // 从字符串安全解析为可选值类型
     template <typename T>
     inline static Bopt<T> from_str_opt(BCstr str)
     {

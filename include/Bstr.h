@@ -5,7 +5,7 @@
 
 namespace bh {
 
-//
+// 增强型字符串类 继承自标准字符串并扩展功能
 class Bstr : public dstr
 {
 public:
@@ -23,14 +23,14 @@ public:
 
     Bstr(Bstrvi d) { this->assign(d.data(), d.size()); }
 
-    //
+    // 重载等于操作符 支持视图比较
     bool operator==(Bstrvi d) const { return compare_view(d); }
 
     bool operator==(cstr d) const { return compare_view(d); }
 
     bool operator==(cchp d) const { return compare_view(d); }
 
-    //
+    // 重载流式操作符 方便字符串拼接
     inline Bstr &operator<<(Bstrvi d)
     {
         this->append(d.data(), d.size());
@@ -43,10 +43,10 @@ public:
         return *this;
     }
 
-    // 临时添加===============
+    // 转换回标准字符串格式
     inline dstr to_str() const { return *this; }
 
-    //
+    // 与视图进行内容比对
     inline bool compare_view(Bstrvi d) const
     {
         if(d.size() != size()) {
@@ -55,14 +55,14 @@ public:
         return std::equal(c_str(), c_str() + size(), d.data());
     }
 
-    //
+    // 判断是否包含指定子视图内容
     inline bool is_contain(Bstrvi sub)
     {
         uint64 index = find(sub.data(), 0, sub.size());
         return index != dstr::npos;
     }
 
-    //
+    // 查找子视图所在的范围区间
     inline range find_range(Bstrvi sub, uint64 pos = 0)
     {
         range ret;
