@@ -93,6 +93,17 @@ void test_2()
     vlogd($(buf1));
     vlogd($(buf2));
     vlogd($(buf3));
+
+
+// [Deb]<<<< [t1.to_str(p1): [nan: 1002138731|mic: 1002138|mil: 1002|sec: 1]]  
+// [Deb]<<<< [t1.to_str(p2): [nan: 930715427|mic: 930715|mil: 930|sec: 0]]  
+// [Deb]<<<< [t1.to_str(p3): [nan: 299834351|mic: 299834|mil: 299|sec: 0]] 
+
+// [Deb]<<<< [t1.to_str(p1): [nan: 951761148|mic: 951761|mil: 951|sec: 0]]  
+// [Deb]<<<< [t1.to_str(p2): [nan: 993385049|mic: 993385|mil: 993|sec: 0]]  
+// [Deb]<<<< [t1.to_str(p3): [nan: 363877041|mic: 363877|mil: 363|sec: 0]]
+
+
 }
 
 int main(int argc, char *argv[])

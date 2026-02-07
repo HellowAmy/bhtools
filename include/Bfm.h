@@ -31,24 +31,13 @@ public:
         if(_org.size() == 0) {
             return "";
         }
-        return cfms(std::forward<Targ>(arg)...);
-    }
 
-    // 终止函数
-    inline Bstr cfms()
-    {
+        // 初始化列表解包
+        bh::int32 dofor[]{0, (format(Bstrto::to_str(arg)), 0)...};
         if(_offset < _org.size() && _offset != dstr::npos) {
             _str << Bstrvi(_org, _offset, _org.size() - _offset);
         }
         return _str;
-    }
-
-    // 退出时回收尾部字符
-    template <typename T, typename... Targ>
-    inline Bstr cfms(T &&val, Targ &&...arg)
-    {
-        format(Bstrto::to_str(std::forward<T>(val)));
-        return cfms(arg...);
     }
 
     // 格式化字符串
