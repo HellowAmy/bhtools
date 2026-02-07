@@ -119,6 +119,10 @@ void test_2()
 
     // [Deb]<<<< [t1.to_str(p1): [nan: 3194180180|mic: 3194180|mil: 3194|sec: 3]]
     // [Deb]<<<< [t1.to_str(p2): [nan: 9831876176|mic: 9831876|mil: 9831|sec: 9]]
+
+    // [Deb]<<<< [t1.to_str(p1): [nan: 3061736285|mic: 3061736|mil: 3061|sec: 3]]  
+    // [Deb]<<<< [t1.to_str(p2): [nan: 8270601629|mic: 8270601|mil: 8270|sec: 8]]  
+
 }
 
 int main(int argc, char *argv[])

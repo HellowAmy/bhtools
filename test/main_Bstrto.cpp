@@ -1,8 +1,10 @@
 #include <iostream>
 #include <tuple>
 #include <cstdint>
+#include <charconv>
 
 #include "Bstrto.h"
+#include "Btime.h"
 
 #include "Ftest.h"
 
@@ -200,12 +202,74 @@ void test_4()
     BHTEST_EQUAL(*b4, UINT64_MAX)
 }
 
+void test_5()
+{
+    bh::Btimel t1;
+    bh::int32 sum = 1000 * 10000;
+
+    char buf[128];
+    for(bh::int32 i = 0; i < sum; i++) {
+        snprintf(buf, sizeof(buf), "%d%d%d%d%d%d%d%d%d", i, i, i, i, i, i, i, i, i);
+    }
+    auto p1 = t1.time_interval();
+    t1.update();
+
+    for(bh::int32 i = 0; i < sum; i++) {
+        std::string s1 = std::to_string(i);
+        std::string s2 = std::to_string(i);
+        std::string s3 = std::to_string(i);
+        std::string s4 = std::to_string(i);
+        std::string s5 = std::to_string(i);
+        std::string s6 = std::to_string(i);
+        std::string s7 = std::to_string(i);
+        std::string s8 = std::to_string(i);
+        std::string s9 = std::to_string(i);
+    }
+    auto p2 = t1.time_interval();
+    t1.update();
+
+    for(bh::int32 i = 0; i < sum; i++) {
+        bh::Bstr s1 = bh::Bstrto::to_str(i);
+        bh::Bstr s2 = bh::Bstrto::to_str(i);
+        bh::Bstr s3 = bh::Bstrto::to_str(i);
+        bh::Bstr s4 = bh::Bstrto::to_str(i);
+        bh::Bstr s5 = bh::Bstrto::to_str(i);
+        bh::Bstr s6 = bh::Bstrto::to_str(i);
+        bh::Bstr s7 = bh::Bstrto::to_str(i);
+        bh::Bstr s8 = bh::Bstrto::to_str(i);
+        bh::Bstr s9 = bh::Bstrto::to_str(i);
+    }
+    auto p3 = t1.time_interval();
+    t1.update();
+
+    for(bh::int32 i = 0; i < sum; i++) {
+        bh::Bstr s1 = std::move(std::to_string(i));
+        bh::Bstr s2 = std::move(std::to_string(i));
+        bh::Bstr s3 = std::move(std::to_string(i));
+        bh::Bstr s4 = std::move(std::to_string(i));
+        bh::Bstr s5 = std::move(std::to_string(i));
+        bh::Bstr s6 = std::move(std::to_string(i));
+        bh::Bstr s7 = std::move(std::to_string(i));
+        bh::Bstr s8 = std::move(std::to_string(i));
+        bh::Bstr s9 = std::move(std::to_string(i));
+    }
+    auto p4 = t1.time_interval();
+    t1.update();
+
+    vloga("性能测试");
+    vlogd($(t1.to_str(p1)));
+    vlogd($(t1.to_str(p2)));
+    vlogd($(t1.to_str(p3)));
+    vlogd($(t1.to_str(p4)));
+}
+
 int main(int argc, char *argv[])
 {
-    test_1();
-    test_2();
-    test_3();
-    test_4();
+    // test_1();
+    // test_2();
+    // test_3();
+    // test_4();
+    test_5();
 
     return 0;
 }
