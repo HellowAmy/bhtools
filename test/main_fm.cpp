@@ -6,8 +6,8 @@
 #include <list>
 #include <unistd.h>
 
-#include "bhtools.h"
-
+#include "Ffm.h"
+#include "Ftest.h"
 
 void test_1()
 {
@@ -86,7 +86,7 @@ void test_2()
 void test_3()
 {
     // 性能测试
-    int sum = 2000 * 10000;
+    int sum = 1000 * 10000;
     bhtools::Ftimel t1;
 
     for(int i=0;i<sum;i++)
@@ -97,7 +97,11 @@ void test_3()
     
     for(int i=0;i<sum;i++)
     {
-        auto s1 = bhtools::Fffm("#{}={}={}#")(100,3.145,"hellow");
+        auto str = bhtools::Fffm("#{}-{}#{}-{}#{}-{}#{}-{}#")(true, false, 100, 200, 3.1415, 9.99, "hello",
+                                                   "world");
+
+        // auto str = bhtools::Fffm("###{}---{}###{}---{}###{}---{}###{}---{}###")(true, false, 100, 200, 3.1415, 9.99, "hello",
+                                                //    "world");
     }
     t1.push_point("t2",true);
     
@@ -105,7 +109,8 @@ void test_3()
     for(int i=0;i<sum;i++)
     {
         memset(buffer,0,sizeof(buffer));
-        sprintf(buffer, "#%d=%f=%s#",100,3.145,"hellow");
+                snprintf(buffer, sizeof(buffer), "#%d-%d#%d-%d#%f-%f#%s-%s#", true, false, 100, 200, 3.1415,
+                 9.99, "hello", "world");
     }
     t1.push_point("t3",true);
 
@@ -125,6 +130,13 @@ void test_3()
         | t2 [nan: 6500595366|mic: 6500595|mil: 6500|sec: 6] 
         | t3 [nan: 2538978984|mic: 2538978|mil: 2538|sec: 2] 
         ]  >>>>[/home/red/open/github/bhtools/test/main_fm.cpp:112][2026-02-02.16:51:39.554] 
+
+        [Deb]<<<< [t1.check_vec(): 
+        | size: 3
+        | t1 [nan: 2576872|mic: 2576|mil: 2|sec: 0] 
+        | t2 [nan: 7671707095|mic: 7671707|mil: 7671|sec: 7] 
+        | t3 [nan: 3005069501|mic: 3005069|mil: 3005|sec: 3] 
+        ]  >>>>[/home/red/open/github/bhtools/test/main_fm.cpp:114][2026-02-07.13:52:23.564]
     */
 }
 
