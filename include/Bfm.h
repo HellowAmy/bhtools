@@ -6,13 +6,13 @@
 
 namespace bh {
 
-// 快速格式化字符串
+// 格式化字符串-从左到右替换参数
 class Bfm
 {
 public:
     Bfm(Bstrvi org) : _org(org)
     {
-        // 初始化字符串缓冲区
+        // 优化初始化字符串缓冲区
         if(org.size() < _BH_INT_256_) {
             _str.reserve(_BH_INT_256_);
         }
@@ -31,28 +31,32 @@ public:
         if(_org.size() == 0) {
             return "";
         }
-        cfms(std::forward<Targ>(arg)...);
+        return cfms(std::forward<Targ>(arg)...);
+    }
 
-        if(_offset < _org.size()) {
+    // 终止函数
+    inline Bstr cfms()
+    {
+        if(_offset < _org.size() && _offset != dstr::npos) {
             _str << Bstrvi(_org, _offset, _org.size() - _offset);
         }
         return _str;
     }
 
-    // 终止函数
-    inline void cfms() {}
-
     // 退出时回收尾部字符
     template <typename T, typename... Targ>
-    inline void cfms(T &&val, Targ &&...arg)
+    inline Bstr cfms(T &&val, Targ &&...arg)
     {
         format(Bstrto::to_str(std::forward<T>(val)));
-        cfms(arg...);
+        return cfms(arg...);
     }
 
     // 格式化字符串
     inline void format(Bstrvi val)
     {
+        if(_offset == dstr::npos) {
+            return;
+        }
         uint64 pos = _offset;
         for(uint64 i = _offset; i < _org.size() - 1; i++) {
             if(_org[i] == strb() && _org[i + 1] == stre()) {
@@ -66,6 +70,7 @@ public:
             _offset++;
         }
         _str << Bstrvi(_org, pos, _org.size() - pos);
+        _offset = dstr::npos;
     }
 
 protected:

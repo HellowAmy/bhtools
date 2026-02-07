@@ -31,15 +31,15 @@ using dchp = char *;
 using cchp = const char *;
 
 // 常用位偏移常量定义
-uint32 _BH_INT_16_ = (1U << 4);
-uint32 _BH_INT_32_ = (1U << 5);
-uint32 _BH_INT_64_ = (1U << 6);
-uint32 _BH_INT_128_ = (1U << 7);
-uint32 _BH_INT_256_ = (1U << 8);
-uint32 _BH_INT_512_ = (1U << 9);
-uint32 _BH_INT_1024_ = (1U << 10);
-uint32 _BH_INT_2048_ = (1U << 11);
-uint32 _BH_INT_4096_ = (1U << 12);
+static constexpr uint32 _BH_INT_16_ = (1U << 4);
+static constexpr uint32 _BH_INT_32_ = (1U << 5);
+static constexpr uint32 _BH_INT_64_ = (1U << 6);
+static constexpr uint32 _BH_INT_128_ = (1U << 7);
+static constexpr uint32 _BH_INT_256_ = (1U << 8);
+static constexpr uint32 _BH_INT_512_ = (1U << 9);
+static constexpr uint32 _BH_INT_1024_ = (1U << 10);
+static constexpr uint32 _BH_INT_2048_ = (1U << 11);
+static constexpr uint32 _BH_INT_4096_ = (1U << 12);
 
 } // namespace bh
 

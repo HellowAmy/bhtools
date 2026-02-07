@@ -162,6 +162,11 @@ void test_4()
 
     vloga("速度测试");
     vlogd($(sum) $(s1) $(t1.to_str()));
+
+    /*
+        [All]<<<< 速度测试 >>>>
+        [sum: 10000000] [nan: 2265625724|mic: 2265625|mil: 2265|sec: 2]
+    */
 }
 
 int main(int argc, char *argv[])
