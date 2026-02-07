@@ -59,51 +59,66 @@ void test_1()
 
 void test_2()
 {
-    bh::int32 sum = 100 * 10000;
+    bh::int32 sum = 1000 * 10000;
     bh::Btimel t1;
 
-    bh::Bstr buf1;
+    char buf1[100] = {0};
     for(bh::int32 i = 0; i < sum; i++) {
-        buf1 = bh::Bfm("###{}---{}###{}---{}###{}---{}###{}---{}###")(true, false, 100, 200, 3.1415,
-                                                                      9.99, "hello", "world");
+        memset(buf1, 0, sizeof(buf1));
+        snprintf(buf1, sizeof(buf1), "###%d---%d###%d---%d###%f---%f###%s---%s###", true, false,
+                 100, 200, 3.1415, 9.99, "hello", "world");
     }
     auto p1 = t1.time_interval();
     t1.update();
 
     bh::Bstr buf2;
     for(bh::int32 i = 0; i < sum; i++) {
-        buf2 = bh::Bfm("#{}-{}#{}-{}#{}-{}#{}-{}#")(true, false, 100, 200, 3.1415, 9.99, "hello",
-                                                    "world");
+        buf2 = bh::Bfm("###{}---{}###{}---{}###{}---{}###{}---{}###")(true, false, 100, 200, 3.1415,
+                                                                      9.99, "hello", "world");
     }
     auto p2 = t1.time_interval();
     t1.update();
 
-    char buf3[100] = {0};
-    for(bh::int32 i = 0; i < sum; i++) {
-        memset(buf3, 0, sizeof(buf3));
-        snprintf(buf3, sizeof(buf3), "###%d---%d###%d---%d###%f---%f###%s---%s###", true, false,
-                 100, 200, 3.1415, 9.99, "hello", "world");
-    }
-    auto p3 = t1.time_interval();
+    // bh::Bstr buf3;
+    // for(bh::int32 i = 0; i < sum; i++) {
+    //     buf3 = bh::Bfm("#{}-{}#{}-{}#{}-{}#{}-{}#")(true, false, 100, 200, 3.1415, 9.99, "hello",
+    //                                                 "world");
+    // }
+    // auto p3 = t1.time_interval();
+    // t1.update();
+
+    // bh::Bstr buf4;
+    // for(bh::int32 i = 0; i < sum; i++) {
+    //     buf4 = bh::Bfm("###{}---{}###{}---{}###{}---{}###{}---{}###")(
+    //         true, false, 100, 200, 3.1415, 9.99, "hello", "world", 123, 123, 123, 123, 123, 123,
+    //         123, 123);
+    // }
+    // auto p4 = t1.time_interval();
+    // t1.update();
+
+    // bh::Bstr buf5;
+    // for(bh::int32 i = 0; i < sum; i++) {
+    //     buf5 =
+    //         bh::Bfm("###{}---{}###{}---{}###{}---{}###{}---{}###")(true, false, 100,
+    //         200, 3.1415);
+    // }
+    // auto p5 = t1.time_interval();
+    // t1.update();
 
     vloga("性能测试");
     vlogd($(t1.to_str(p1)));
     vlogd($(t1.to_str(p2)));
-    vlogd($(t1.to_str(p3)));
+    // vlogd($(t1.to_str(p3)));
+    // vlogd($(t1.to_str(p4)));
+    // vlogd($(t1.to_str(p5)));
     vlogd($(buf1));
     vlogd($(buf2));
-    vlogd($(buf3));
+    // vlogd($(buf3));
+    // vlogd($(buf4));
+    // vlogd($(buf5));
 
-
-// [Deb]<<<< [t1.to_str(p1): [nan: 1002138731|mic: 1002138|mil: 1002|sec: 1]]  
-// [Deb]<<<< [t1.to_str(p2): [nan: 930715427|mic: 930715|mil: 930|sec: 0]]  
-// [Deb]<<<< [t1.to_str(p3): [nan: 299834351|mic: 299834|mil: 299|sec: 0]] 
-
-// [Deb]<<<< [t1.to_str(p1): [nan: 951761148|mic: 951761|mil: 951|sec: 0]]  
-// [Deb]<<<< [t1.to_str(p2): [nan: 993385049|mic: 993385|mil: 993|sec: 0]]  
-// [Deb]<<<< [t1.to_str(p3): [nan: 363877041|mic: 363877|mil: 363|sec: 0]]
-
-
+    // [Deb]<<<< [t1.to_str(p1): [nan: 3194180180|mic: 3194180|mil: 3194|sec: 3]]
+    // [Deb]<<<< [t1.to_str(p2): [nan: 9831876176|mic: 9831876|mil: 9831|sec: 9]]
 }
 
 int main(int argc, char *argv[])

@@ -7,6 +7,7 @@
 namespace bh {
 
 // 格式化字符串-从左到右替换参数
+// 速度比 snprintf 函数慢三倍
 class Bfm
 {
 public:
@@ -33,19 +34,17 @@ public:
         }
 
         // 初始化列表解包
-        bh::int32 dofor[]{0, (format(Bstrto::to_str(arg)), 0)...};
-        if(_offset < _org.size() && _offset != dstr::npos) {
+        bool next = true;
+        bh::int32 dofor[]{0, ((next = (next && format(Bstrto::to_str(arg)))), 0)...};
+        if(_offset < _org.size()) {
             _str << Bstrvi(_org, _offset, _org.size() - _offset);
         }
         return _str;
     }
 
     // 格式化字符串
-    inline void format(Bstrvi val)
+    inline bool format(Bstrvi val)
     {
-        if(_offset == dstr::npos) {
-            return;
-        }
         uint64 pos = _offset;
         for(uint64 i = _offset; i < _org.size() - 1; i++) {
             if(_org[i] == strb() && _org[i + 1] == stre()) {
@@ -54,12 +53,13 @@ public:
                 }
                 _str << val;
                 _offset += 2;
-                return;
+                return true;
             }
             _offset++;
         }
         _str << Bstrvi(_org, pos, _org.size() - pos);
-        _offset = dstr::npos;
+        _offset = _org.size();
+        return false;
     }
 
 protected:

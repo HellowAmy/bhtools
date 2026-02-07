@@ -40,7 +40,7 @@ public:
     // 转自定义格式
     inline static data to_data(const nanoseconds &loss)
     {
-        data ret;
+        data ret{0};
         ret.nan = loss.count();
         ret.mic = std::chrono::duration_cast<microseconds>(loss).count();
         ret.mil = std::chrono::duration_cast<milliseconds>(loss).count();
@@ -146,10 +146,10 @@ public:
 
     // 返回C++标准库的UTC时间-具体地区的时间偏移需要自行计算
     // 参考 Howard Hinnant 的时间算法-无需使用月份查表的推算日期方式
-    inline static data to_data(const std::chrono::nanoseconds &point)
+    inline static data to_data(const nanoseconds &point)
     {
         // 获取自 1970-01-01 以来的总纳秒数
-        data d;
+        data d{0};
         int64 count = point.count();
 
         // 从纳秒中获取秒和亚秒-亚秒指不足一秒的余数
@@ -163,14 +163,14 @@ public:
         }
 
         // 获取纳秒数-从亚秒中提取毫秒到纳秒的值
-        uint32 rem_nan = uint32(sub_nan % _tnan_mil);
+        int64 rem_nan = sub_nan % _tnan_mil;
         d.mil = sub_nan / _tnan_mil;
         d.mic = rem_nan / _tnan_mic;
         d.nan = rem_nan % _tnan_mic;
 
         // 从秒数中算出总天数
         int64 days = total_sec / _tsec_day;
-        int32 rem_sec = int32(total_sec % _tsec_day);
+        int64 rem_sec = total_sec % _tsec_day;
 
         // 获取到亚天-不足时从天中借位到亚天
         if(rem_sec < 0) {
@@ -179,7 +179,7 @@ public:
         }
 
         // 获取分钟数-提取小时到秒的值
-        uint32 rem_m = rem_sec % _tsec_hou;
+        int64 rem_m = rem_sec % _tsec_hou;
         d.hou = rem_sec / _tsec_hou;
         d.min = rem_m / _tsec_min;
         d.sec = rem_m % _tsec_min;
@@ -197,33 +197,60 @@ public:
         int64 era = (days >= 0 ? days : days - 146096) / 146097;
 
         // 计算400年你的第几天
-        uint32 doe = days - era * 146097;
+        int64 doe = days - era * 146097;
 
         // 计算这一天属于400年里的那一天
-        uint32 yoe = (doe - doe / 1460 + doe / 36524 - doe / 146096) / 365;
+        int64 yoe = (doe - doe / 1460 + doe / 36524 - doe / 146096) / 365;
 
         // 算出是当年的第几天-从三月起
-        uint32 doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
+        int64 doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
 
         // 算出这一天在哪一个月份上-从三月起-这个值的范围是今年3月到明年2月
-        uint32 mp = (5 * doy + 2) / 153;
+        int64 mp = (5 * doy + 2) / 153;
 
         // 如果 mp < 10 说明是3月到12月-如果是 >10 说明是次年的1月或2月-需要修正月分
-        uint32 month = mp < 10 ? mp + 3 : mp - 9;
+        int64 month = mp < 10 ? mp + 3 : mp - 9;
 
         // 从400年天数上计算出当年位置
         // 根据月份修正年份-月份范围是今年3月到明年二月
-        int32 y = int32(yoe) + int32(era * 400);
-        uint32 year = month <= 2 ? y + 1 : y;
+        int64 y = yoe + era * 400;
+        int64 year = month <= 2 ? y + 1 : y;
 
         // 计算当月第几天-使用当年天数减去总月份天数
-        uint32 day = doy - (153 * mp + 2) / 5 + 1;
+        int64 day = doy - (153 * mp + 2) / 5 + 1;
 
         // 获取到具体年月日
         d.yea = year;
         d.mon = month;
         d.day = day;
         return d;
+    }
+
+    // 逆向运算为纳秒
+    // 采用 Howard Hinnant 算法的逆推逻辑
+    inline static nanoseconds from_data(const data &d)
+    {
+        // 平移到0000年和3月份开始
+        int64 y = d.yea - (d.mon <= 2 ? 1 : 0);
+        int64 m = d.mon > 2 ? d.mon - 3 : d.mon + 9;
+        int64 day = d.day;
+
+        // 从0000到这天的关键时间点-获取天数
+        int64 era = (y >= 0 ? y : y - 399) / 400;
+        int64 yoe = y - era * 400;
+        int64 doy = (153 * m + 2) / 5 + day - 1;
+        int64 doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+        int64 total_days = era * 146097 + doe;
+
+        // 从0000年平移回1970
+        int64 unix_days = total_days - 719468;
+
+        // 转为总秒数
+        int64 total_sec = unix_days * _tsec_day + d.hou * _tsec_hou + d.min * _tsec_min + d.sec;
+
+        // 统计所有时间
+        int64 total_nan = total_sec * _tnan_sec + d.mil * _tnan_mil + d.mic * _tnan_mic + d.nan;
+        return nanoseconds(total_nan);
     }
 
     // 格式化日期格式-格式的替换字符如下-在原字符串从后向前替换-空位补零
