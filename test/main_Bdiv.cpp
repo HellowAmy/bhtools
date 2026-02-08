@@ -154,7 +154,7 @@ void test_4()
 {
     bh::int32 sum = 1000 * 10000;
     bh::Btimel t1;
-    bh::Bstr s1;
+    bh::dstr s1;
     for(bh::int32 i = 0; i < sum; i++) {
         s1 = bh::Bdiv("##100##<<abc-hellow world-1992/4/3 15:12:54>>")("##", 2, 2, " ", 1, 1, "-",
                                                                        1, 1);

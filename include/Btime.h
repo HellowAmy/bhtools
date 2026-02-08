@@ -6,7 +6,8 @@
 #include <iomanip>
 #include <thread>
 
-#include "Bstr.h"
+#include "Bstrvi.h"
+#include "Btype.h"
 #include "Bstrto.h"
 
 namespace bh {
@@ -49,18 +50,25 @@ public:
     }
 
     // 转字符显示
-    inline static Bstr to_str(const nanoseconds &loss)
+    inline static dstr to_str(const nanoseconds &loss)
     {
         // 顺序 [纳秒|微秒|毫秒|秒]
         data d = to_data(loss);
-        Bstr str;
-        str << "[nan: " << Bstrto::to_str(d.nan) << "|mic: " << Bstrto::to_str(d.mic)
-            << "|mil: " << Bstrto::to_str(d.mil) << "|sec: " << Bstrto::to_str(d.sec) << "]";
+        dstr str;
+        str += "[nan: ";
+        str += Bstrto::to_str(d.nan);
+        str += "|mic: ";
+        str += Bstrto::to_str(d.mic);
+        str += "|mil: ";
+        str += Bstrto::to_str(d.mil);
+        str += "|sec: ";
+        str += Bstrto::to_str(d.sec);
+        str += "]";
         return str;
     }
 
     // 获取当前时间显示
-    inline Bstr to_str() { return to_str(time_interval()); }
+    inline dstr to_str() { return to_str(time_interval()); }
 
     // 刷新开始时间
     inline void update() { _begin = steady_clock::now(); }
@@ -116,7 +124,7 @@ public:
 
 public:
     // 当前时间的C-tm格式时间
-    inline static Bstr to_ctime(Bstrvi format = "[ %Y-%m-%d.%H:%M:%S ]")
+    inline static dstr to_ctime(Bstrvi format = "[ %Y-%m-%d.%H:%M:%S ]")
     {
         std::time_t t = system_clock::to_time_t(system_clock::now());
         std::tm *m = std::localtime(&t);
@@ -129,7 +137,7 @@ public:
     inline static nanoseconds time_now() { return system_clock::now().time_since_epoch(); }
 
     // 默认转为中国时区显示时间
-    inline static Bstr to_str(int32 UTC = 8)
+    inline static dstr to_str(int32 UTC = 8)
     {
         data d = to_data(time_now());
         d.hou += UTC;
@@ -255,15 +263,15 @@ public:
 
     // 格式化日期格式-格式的替换字符如下-在原字符串从后向前替换-空位补零
     // YYYY-MM-DD.HH:TT:SS.LLL.CCC.NNN >>>> 2024-09-02.15:44:28.804.245.495
-    inline static Bstr format_time(const data &d, Bstrvi fm = "YYYY-MM-DD.HH:TT:SS.LLL.CCC.NNN")
+    inline static dstr format_time(const data &d, Bstrvi fm = "YYYY-MM-DD.HH:TT:SS.LLL.CCC.NNN")
     {
         if(fm.size() <= 0) {
             return "";
         }
 
         // 从尾部替换
-        Bstr ret = fm;
-        Bstr time;
+        dstr ret(fm.data(), fm.size());
+        dstr time;
         bool into = true;
         int32 rindex = ret.size() - 1;
         while(rindex >= 0) {

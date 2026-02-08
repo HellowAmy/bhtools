@@ -4,7 +4,8 @@
 #include <sstream>
 #include <iomanip>
 
-#include "Bstr.h"
+#include "Bstrvi.h"
+#include "Btype.h"
 #include "Bopt.h"
 
 namespace bh {
@@ -23,19 +24,19 @@ public:
 public:
     // 数字转字符
     template <typename T>
-    static typename std::enable_if<std::is_arithmetic<T>::value, Bstr>::type to_str(const T &val)
+    static typename std::enable_if<std::is_arithmetic<T>::value, dstr>::type to_str(const T &val)
     {
         return std::to_string(val);
     }
 
     template <typename T>
-    static typename std::enable_if<!std::is_arithmetic<T>::value, Bstr>::type to_str(const T &val)
+    static typename std::enable_if<!std::is_arithmetic<T>::value, dstr>::type to_str(const T &val)
     {
         return val.to_str();
     }
 
     // 特殊格式化处理
-    inline static Bstr to_str(bool val)
+    inline static dstr to_str(bool val)
     {
         if(val) {
             return "true";
@@ -43,14 +44,18 @@ public:
         return "false";
     }
 
-    inline static Bstr to_str(char val)
+    inline static dstr to_str(char val)
     {
-        Bstr ret;
-        ret << '[' << val << ": " << to_str((int)val) << ']';
+        dstr ret;
+        ret += '[';
+        ret += val;
+        ret += ": ";
+        ret += to_str((int)val);
+        ret += ']';
         return ret;
     }
 
-    inline static Bstr to_str(cchp val)
+    inline static dstr to_str(cchp val)
     {
         if(val) {
             return val;
@@ -58,10 +63,12 @@ public:
         return "NULL";
     }
 
-    inline static Bstr to_str(cstr val) { return val; }
+    inline static dstr to_str(Bstrvi val) { return dstr(val.data(), val.size()); }
+
+    inline static dstr to_str(cstr val) { return val; }
 
     template <typename T>
-    inline static Bstr to_str(T *val)
+    inline static dstr to_str(T *val)
     {
         std::stringstream ss;
         ss << val;
@@ -69,14 +76,18 @@ public:
     }
 
     template <typename T1, typename T2>
-    inline static Bstr to_str(const std::pair<T1, T2> &pair)
+    inline static dstr to_str(const std::pair<T1, T2> &pair)
     {
-        Bstr ret;
-        ret << '[' << to_str(pair.first) << " : " << to_str(pair.second) << ']';
+        dstr ret;
+        ret += '[';
+        ret += to_str(pair.first);
+        ret += " : ";
+        ret += to_str(pair.second);
+        ret += ']';
         return ret;
     }
 
-    inline static Bstr to_str(float_dec val)
+    inline static dstr to_str(float_dec val)
     {
         std::stringstream ss;
         ss << std::fixed << std::setprecision(val.dec) << val.val;
@@ -84,16 +95,16 @@ public:
     }
 
     template <typename... T>
-    inline static Bstr to_str(const std::tuple<T...> &tup)
+    inline static dstr to_str(const std::tuple<T...> &tup)
     {
-        Bstr ret;
+        dstr ret;
         Bstrto_tup<std::tuple<T...>, std::tuple_size<std::tuple<T...>>::value, 0>::action(tup, ret);
         return ret;
     }
 
     // 从字符串安全解析为可选值类型
     template <typename T>
-    inline static Bopt<T> from_str_opt(BCstr str)
+    inline static Bopt<T> from_str_opt(cstr str)
     {
         Bopt<T> ret;
         try {
@@ -119,7 +130,7 @@ public:
     }
 
     template <typename T>
-    inline static T from_str(BCstr str)
+    inline static T from_str(cstr str)
     {
         T ret;
         std::istringstream ss(str);
@@ -131,11 +142,12 @@ public:
     template <typename Tclass, size_t count, size_t now>
     struct Bstrto_tup
     {
-        static void action(Tclass obj, Bstr &str)
+        static void action(Tclass obj, dstr &str)
         {
             if(now != (count - 1)) {
                 auto val = std::get<now>(obj);
-                str << to_str(val) << " : ";
+                str += to_str(val);
+                str += " : ";
             }
             Bstrto_tup<Tclass, count, now + 1>::action(obj, str);
         }
@@ -145,11 +157,12 @@ public:
     template <typename Tclass, size_t count>
     struct Bstrto_tup<Tclass, count, count>
     {
-        static void action(Tclass obj, Bstr &str)
+        static void action(Tclass obj, dstr &str)
         {
             if(count != 1) {
                 auto val = std::get<count - 1>(obj);
-                str << to_str(val) << ']';
+                str += to_str(val);
+                str += ']';
             }
         }
     };
@@ -158,14 +171,18 @@ public:
     template <typename Tclass, size_t count>
     struct Bstrto_tup<Tclass, count, 0>
     {
-        static void action(Tclass obj, Bstr &str)
+        static void action(Tclass obj, dstr &str)
         {
             auto val = std::get<0>(obj);
             if(count != 1) {
-                str << '[' << to_str(val) << " : ";
+                str += '[';
+                str += to_str(val);
+                str += " : ";
             }
             else {
-                str << '[' << to_str(val) << ']';
+                str += '[';
+                str += to_str(val);
+                str += ']';
             }
             Bstrto_tup<Tclass, count, 1>::action(obj, str);
         }

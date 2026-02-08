@@ -1,7 +1,8 @@
 #ifndef BDIV_H
 #define BDIV_H
 
-#include "Bstr.h"
+#include "Btype.h"
+#include "Bstrvi.h"
 
 namespace bh {
 
@@ -14,13 +15,13 @@ public:
 
     // 切割参数进入
     template <typename... Tarr>
-    inline Bstr operator()(const Tarr &...arg)
+    inline dstr operator()(const Tarr &...arg)
     {
         if(_str.size() == 0 || sizeof...(arg) == 0) {
             return "";
         }
         if(section(arg...)) {
-            return _str;
+            return dstr(_str.data(), _str.size());
         }
         return "";
     }

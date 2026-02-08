@@ -1,7 +1,8 @@
 #ifndef BFM_H
 #define BFM_H
 
-#include "Bstr.h"
+#include "Btype.h"
+#include "Bstrvi.h"
 #include "Bstrto.h"
 
 namespace bh {
@@ -27,7 +28,7 @@ public:
 
     // 传入替换参数-不限类型
     template <typename... Targ>
-    inline Bstr operator()(Targ &&...arg)
+    inline dstr operator()(Targ &&...arg)
     {
         if(_org.size() == 0) {
             return "";
@@ -37,7 +38,8 @@ public:
         bool next = true;
         bh::int32 dofor[]{0, ((next = (next && format(Bstrto::to_str(arg)))), 0)...};
         if(_offset < _org.size()) {
-            _str << Bstrvi(_org, _offset, _org.size() - _offset);
+            // _str += Bstrvi(_org, _offset, _org.size() - _offset);
+            _str.append(_org.data() + _offset, _org.size() - _offset);
         }
         return _str;
     }
@@ -49,15 +51,15 @@ public:
         for(uint64 i = _offset; i < _org.size() - 1; i++) {
             if(_org[i] == strb() && _org[i + 1] == stre()) {
                 if(pos != i) {
-                    _str << Bstrvi(_org, pos, i - pos);
+                    _str.append(_org.data() + pos, i - pos);
                 }
-                _str << val;
+                _str.append(val.data(), val.size());
                 _offset += 2;
                 return true;
             }
             _offset++;
         }
-        _str << Bstrvi(_org, pos, _org.size() - pos);
+        _str.append(_org.data() + pos, _org.size() - pos);
         _offset = _org.size();
         return false;
     }
@@ -69,7 +71,7 @@ protected:
 protected:
     uint64 _offset = 0;
     Bstrvi _org;
-    Bstr _str;
+    dstr _str;
 };
 
 } // namespace bh

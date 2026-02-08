@@ -20,12 +20,12 @@ void test_1()
     bh::Bstrvi a6 = a5;
 
     vloga("全部长度");
-    vlogd($(a1));
-    vlogd($(a2));
-    vlogd($(a3));
-    vlogd($(a4));
-    vlogd($(a5));
-    vlogd($(a6));
+    vlogd($(a1.to_str()));
+    vlogd($(a2.to_str()));
+    vlogd($(a3.to_str()));
+    vlogd($(a4.to_str()));
+    vlogd($(a5.to_str()));
+    vlogd($(a6.to_str()));
 
     bh::Bstrvi b1(cs1);
     bh::Bstrvi b2(cs1, 0, 4);
@@ -36,13 +36,13 @@ void test_1()
     bh::Bstrvi b7(cs1, 6, 4);
 
     vloga("部分长度");
-    BHTEST_EQUAL(b1, "hello world 1");
-    BHTEST_EQUAL(b2, "hell");
-    BHTEST_EQUAL(b3, "hello");
-    BHTEST_EQUAL(b4, "llo world 1");
-    BHTEST_EQUAL(b5, "world 1");
-    BHTEST_EQUAL(b6, "world");
-    BHTEST_EQUAL(b7, "worl");
+    BHTEST_EQUAL(b1.to_str(), "hello world 1");
+    BHTEST_EQUAL(b2.to_str(), "hell");
+    BHTEST_EQUAL(b3.to_str(), "hello");
+    BHTEST_EQUAL(b4.to_str(), "llo world 1");
+    BHTEST_EQUAL(b5.to_str(), "world 1");
+    BHTEST_EQUAL(b6.to_str(), "world");
+    BHTEST_EQUAL(b7.to_str(), "worl");
 
     bh::Bstrvi c1(a1);
     bh::Bstrvi c2(a1, 0, 5);
@@ -54,10 +54,10 @@ void test_1()
     c4.move_tail(-3);
 
     vloga("移动数据");
-    BHTEST_EQUAL(c1, "hello world 1");
-    BHTEST_EQUAL(c2, "llo w");
-    BHTEST_EQUAL(c3, "llo");
-    BHTEST_EQUAL(c4, "hello worl");
+    BHTEST_EQUAL(c1.to_str(), "hello world 1");
+    BHTEST_EQUAL(c2.to_str(), "llo w");
+    BHTEST_EQUAL(c3.to_str(), "llo");
+    BHTEST_EQUAL(c4.to_str(), "hello worl");
 
     bh::Bstrvi d1(a1);
     bh::Bstrvi d2(a1);
@@ -120,7 +120,7 @@ void test_2()
     s1.rfind("world", 0, 5);
 
     vloga("查找字符串位置");
-    vlogd($(b1) $(b1.size()));
+    vlogd($(b1.to_str()) $(b1.size()));
     vlogd($(p1));
     vlogd($(p2));
     vlogd($(p3));
@@ -133,7 +133,7 @@ void test_2()
     vlogd($(p10));
 
     vloga("反向查找");
-    vlogd($(b1) $(b1.size()));
+    vlogd($(b1.to_str()) $(b1.size()));
     vlogd($(r1));
     vlogd($(r2));
     vlogd($(r3));

@@ -71,7 +71,7 @@ void test_2()
     auto p1 = t1.time_interval();
     t1.update();
 
-    bh::Bstr buf2;
+    bh::dstr buf2;
     for(bh::int32 i = 0; i < sum; i++) {
         buf2 = bh::Bfm("###{}---{}###{}---{}###{}---{}###{}---{}###")(true, false, 100, 200, 3.1415,
                                                                       9.99, "hello", "world");
@@ -120,9 +120,11 @@ void test_2()
     // [Deb]<<<< [t1.to_str(p1): [nan: 3194180180|mic: 3194180|mil: 3194|sec: 3]]
     // [Deb]<<<< [t1.to_str(p2): [nan: 9831876176|mic: 9831876|mil: 9831|sec: 9]]
 
-    // [Deb]<<<< [t1.to_str(p1): [nan: 3061736285|mic: 3061736|mil: 3061|sec: 3]]  
-    // [Deb]<<<< [t1.to_str(p2): [nan: 8270601629|mic: 8270601|mil: 8270|sec: 8]]  
+    // [Deb]<<<< [t1.to_str(p1): [nan: 3061736285|mic: 3061736|mil: 3061|sec: 3]]
+    // [Deb]<<<< [t1.to_str(p2): [nan: 8270601629|mic: 8270601|mil: 8270|sec: 8]]
 
+    // [Deb]<<<< [t1.to_str(p1): [nan: 3032489900|mic: 3032489|mil: 3032|sec: 3]]  
+    // [Deb]<<<< [t1.to_str(p2): [nan: 7790079147|mic: 7790079|mil: 7790|sec: 7]]
 }
 
 int main(int argc, char *argv[])

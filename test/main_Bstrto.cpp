@@ -31,22 +31,22 @@ void test_1()
     bh::dchp c5 = "hello4";
     bh::cchp c6 = "hello5";
 
-    bh::Bstr s1 = bh::Bstrto::to_str(a1);
-    bh::Bstr s2 = bh::Bstrto::to_str(a2);
-    bh::Bstr s3 = bh::Bstrto::to_str(a3);
-    bh::Bstr s4 = bh::Bstrto::to_str(a4);
-    bh::Bstr s5 = bh::Bstrto::to_str(a5);
-    bh::Bstr s6 = bh::Bstrto::to_str(a6);
-    bh::Bstr s7 = bh::Bstrto::to_str(a7);
-    bh::Bstr s8 = bh::Bstrto::to_str(a8);
-    bh::Bstr s9 = bh::Bstrto::to_str(b1);
-    bh::Bstr s10 = bh::Bstrto::to_str(b2);
-    bh::Bstr s11 = bh::Bstrto::to_str(c1);
-    bh::Bstr s12 = bh::Bstrto::to_str(c2);
-    bh::Bstr s13 = bh::Bstrto::to_str(c3);
-    bh::Bstr s14 = bh::Bstrto::to_str(c4);
-    bh::Bstr s15 = bh::Bstrto::to_str(c5);
-    bh::Bstr s16 = bh::Bstrto::to_str(c6);
+    bh::dstr s1 = bh::Bstrto::to_str(a1);
+    bh::dstr s2 = bh::Bstrto::to_str(a2);
+    bh::dstr s3 = bh::Bstrto::to_str(a3);
+    bh::dstr s4 = bh::Bstrto::to_str(a4);
+    bh::dstr s5 = bh::Bstrto::to_str(a5);
+    bh::dstr s6 = bh::Bstrto::to_str(a6);
+    bh::dstr s7 = bh::Bstrto::to_str(a7);
+    bh::dstr s8 = bh::Bstrto::to_str(a8);
+    bh::dstr s9 = bh::Bstrto::to_str(b1);
+    bh::dstr s10 = bh::Bstrto::to_str(b2);
+    bh::dstr s11 = bh::Bstrto::to_str(c1);
+    bh::dstr s12 = bh::Bstrto::to_str(c2);
+    bh::dstr s13 = bh::Bstrto::to_str(c3);
+    bh::dstr s14 = bh::Bstrto::to_str(c4);
+    bh::dstr s15 = bh::Bstrto::to_str(c5);
+    bh::dstr s16 = bh::Bstrto::to_str(c6);
 
     vloga("整数");
     vlogd($(a1));
