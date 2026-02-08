@@ -1,7 +1,6 @@
 #ifndef BFM_H
 #define BFM_H
 
-#include "Btype.h"
 #include "Bstrvi.h"
 #include "Bstrto.h"
 
@@ -9,10 +8,11 @@ namespace bh {
 
 // 格式化字符串-从左到右替换参数
 // 速度比 snprintf 函数慢三倍
-class Bfm
+template <typename Tfm>
+class Bfmt
 {
 public:
-    Bfm(Bstrvi org) : _org(org)
+    Bfmt(Bstrvi org) : _org(org)
     {
         // 优化初始化字符串缓冲区
         if(org.size() < _BH_INT_256_) {
@@ -36,9 +36,8 @@ public:
 
         // 初始化列表解包
         bool next = true;
-        bh::int32 dofor[]{0, ((next = (next && format(Bstrto::to_str(arg)))), 0)...};
+        bh::int32 dofor[]{0, ((next = (next && format(Tfm::to_str(arg)))), 0)...};
         if(_offset < _org.size()) {
-            // _str += Bstrvi(_org, _offset, _org.size() - _offset);
             _str.append(_org.data() + _offset, _org.size() - _offset);
         }
         return _str;
@@ -73,6 +72,8 @@ protected:
     Bstrvi _org;
     dstr _str;
 };
+
+using Bfm = Bfmt<Bstrto>;
 
 } // namespace bh
 
