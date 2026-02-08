@@ -2,7 +2,7 @@
 
 #include <mutex>
 
-#include "Bstr.h"
+#include "Btype.h"
 #include "Bopt.h"
 #include "Btype.h"
 
@@ -18,7 +18,7 @@ void test_1()
     auto a6 = bh::Bopt<bh::ft32>(3.1415);
     auto a7 = bh::Bopt<bh::dstr>();
     auto a8 = bh::Bopt<bh::dstr>("hello1");
-    auto a9 = bh::Bopt<bh::Bstr>("hello2");
+    auto a9 = bh::Bopt<bh::dstr>("hello2");
 
     vloga("测试有效");
     BHTEST_TRUE(a1.use());
@@ -64,7 +64,7 @@ void test_1()
 struct test_data
 {
     bh::int32 num;
-    bh::Bstr str;
+    bh::dstr str;
 };
 
 bh::Bopt<test_data> get_word(bh::int32 num)

@@ -79,7 +79,7 @@ void test_2()
     auto p2 = t1.time_interval();
     t1.update();
 
-    // bh::Bstr buf3;
+    // bh::dstr buf3;
     // for(bh::int32 i = 0; i < sum; i++) {
     //     buf3 = bh::Bfm("#{}-{}#{}-{}#{}-{}#{}-{}#")(true, false, 100, 200, 3.1415, 9.99, "hello",
     //                                                 "world");
@@ -87,7 +87,7 @@ void test_2()
     // auto p3 = t1.time_interval();
     // t1.update();
 
-    // bh::Bstr buf4;
+    // bh::dstr buf4;
     // for(bh::int32 i = 0; i < sum; i++) {
     //     buf4 = bh::Bfm("###{}---{}###{}---{}###{}---{}###{}---{}###")(
     //         true, false, 100, 200, 3.1415, 9.99, "hello", "world", 123, 123, 123, 123, 123, 123,
@@ -96,7 +96,7 @@ void test_2()
     // auto p4 = t1.time_interval();
     // t1.update();
 
-    // bh::Bstr buf5;
+    // bh::dstr buf5;
     // for(bh::int32 i = 0; i < sum; i++) {
     //     buf5 =
     //         bh::Bfm("###{}---{}###{}---{}###{}---{}###{}---{}###")(true, false, 100,

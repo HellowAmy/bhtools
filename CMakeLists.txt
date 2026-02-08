@@ -165,10 +165,6 @@ if(ALL OR main_Bstrvi)
     add_executable(main_Bstrvi test/main_Bstrvi.cpp)
 endif()
 
-if(ALL OR main_Bstr)
-    add_executable(main_Bstr test/main_Bstr.cpp)
-endif()
-
 if(ALL OR main_Bopt)
     add_executable(main_Bopt test/main_Bopt.cpp)
 endif()

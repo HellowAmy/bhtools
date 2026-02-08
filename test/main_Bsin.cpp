@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "Bsin.h"
-#include "Bstr.h"
+#include "Btype.h"
 
 #include "Ftest.h"
 

@@ -96,12 +96,12 @@ void test_2()
     bh::cchp d3 = "hello3";
     bh::ft64 d4 = 3.1415926123123123;
 
-    bh::Bstr s1 = bh::Bstrto::to_str(d1);
-    bh::Bstr s2 = bh::Bstrto::to_str(d2);
-    bh::Bstr s3 = bh::Bstrto::to_str(d3);
-    bh::Bstr s4 = bh::Bstrto::to_str((void *)d3);
-    bh::Bstr s5 = bh::Bstrto::to_str(d4);
-    bh::Bstr s6 = bh::Bstrto::to_str(bh::Bstrto::float_dec(d4, 10));
+    bh::dstr s1 = bh::Bstrto::to_str(d1);
+    bh::dstr s2 = bh::Bstrto::to_str(d2);
+    bh::dstr s3 = bh::Bstrto::to_str(d3);
+    bh::dstr s4 = bh::Bstrto::to_str((void *)d3);
+    bh::dstr s5 = bh::Bstrto::to_str(d4);
+    bh::dstr s6 = bh::Bstrto::to_str(bh::Bstrto::float_dec(d4, 10));
 
     vloga("特殊类型转换");
     vlogd($(s1));
@@ -118,11 +118,11 @@ void test_3()
     bh::cchp cs2 = "101";
     bh::dstr cs3 = "102";
     bh::cstr cs4 = "10399";
-    bh::Bstr cs5("xxxx");
-    bh::Bstr cs6("00100");
-    bh::Bstr cs7("3.1415");
-    bh::Bstr cs8("3.1415926123123123");
-    bh::Bstr cs9("xxxxxxxxx.xxxxx");
+    bh::dstr cs5("xxxx");
+    bh::dstr cs6("00100");
+    bh::dstr cs7("3.1415");
+    bh::dstr cs8("3.1415926123123123");
+    bh::dstr cs9("xxxxxxxxx.xxxxx");
 
     auto a1 = bh::Bstrto::from_str<bh::int32>(cs1);
     auto a2 = bh::Bstrto::from_str<bh::int32>(cs2);
@@ -179,10 +179,10 @@ void test_3()
 
 void test_4()
 {
-    bh::Bstr cs1(bh::Bstrto::to_str(INT32_MAX));
-    bh::Bstr cs2(bh::Bstrto::to_str(UINT32_MAX));
-    bh::Bstr cs3(bh::Bstrto::to_str(INT64_MAX));
-    bh::Bstr cs4(bh::Bstrto::to_str(UINT64_MAX));
+    bh::dstr cs1(bh::Bstrto::to_str(INT32_MAX));
+    bh::dstr cs2(bh::Bstrto::to_str(UINT32_MAX));
+    bh::dstr cs3(bh::Bstrto::to_str(INT64_MAX));
+    bh::dstr cs4(bh::Bstrto::to_str(UINT64_MAX));
 
     auto b1 = bh::Bstrto::from_str_opt<bh::int32>(cs1);
     auto b2 = bh::Bstrto::from_str_opt<bh::uint32>(cs2);
@@ -229,29 +229,29 @@ void test_5()
     t1.update();
 
     for(bh::int32 i = 0; i < sum; i++) {
-        bh::Bstr s1 = bh::Bstrto::to_str(i);
-        bh::Bstr s2 = bh::Bstrto::to_str(i);
-        bh::Bstr s3 = bh::Bstrto::to_str(i);
-        bh::Bstr s4 = bh::Bstrto::to_str(i);
-        bh::Bstr s5 = bh::Bstrto::to_str(i);
-        bh::Bstr s6 = bh::Bstrto::to_str(i);
-        bh::Bstr s7 = bh::Bstrto::to_str(i);
-        bh::Bstr s8 = bh::Bstrto::to_str(i);
-        bh::Bstr s9 = bh::Bstrto::to_str(i);
+        bh::dstr s1 = bh::Bstrto::to_str(i);
+        bh::dstr s2 = bh::Bstrto::to_str(i);
+        bh::dstr s3 = bh::Bstrto::to_str(i);
+        bh::dstr s4 = bh::Bstrto::to_str(i);
+        bh::dstr s5 = bh::Bstrto::to_str(i);
+        bh::dstr s6 = bh::Bstrto::to_str(i);
+        bh::dstr s7 = bh::Bstrto::to_str(i);
+        bh::dstr s8 = bh::Bstrto::to_str(i);
+        bh::dstr s9 = bh::Bstrto::to_str(i);
     }
     auto p3 = t1.time_interval();
     t1.update();
 
     for(bh::int32 i = 0; i < sum; i++) {
-        bh::Bstr s1 = std::move(std::to_string(i));
-        bh::Bstr s2 = std::move(std::to_string(i));
-        bh::Bstr s3 = std::move(std::to_string(i));
-        bh::Bstr s4 = std::move(std::to_string(i));
-        bh::Bstr s5 = std::move(std::to_string(i));
-        bh::Bstr s6 = std::move(std::to_string(i));
-        bh::Bstr s7 = std::move(std::to_string(i));
-        bh::Bstr s8 = std::move(std::to_string(i));
-        bh::Bstr s9 = std::move(std::to_string(i));
+        bh::dstr s1 = std::move(std::to_string(i));
+        bh::dstr s2 = std::move(std::to_string(i));
+        bh::dstr s3 = std::move(std::to_string(i));
+        bh::dstr s4 = std::move(std::to_string(i));
+        bh::dstr s5 = std::move(std::to_string(i));
+        bh::dstr s6 = std::move(std::to_string(i));
+        bh::dstr s7 = std::move(std::to_string(i));
+        bh::dstr s8 = std::move(std::to_string(i));
+        bh::dstr s9 = std::move(std::to_string(i));
     }
     auto p4 = t1.time_interval();
     t1.update();
@@ -265,10 +265,10 @@ void test_5()
 
 int main(int argc, char *argv[])
 {
-    // test_1();
-    // test_2();
-    // test_3();
-    // test_4();
+    test_1();
+    test_2();
+    test_3();
+    test_4();
     test_5();
 
     return 0;
