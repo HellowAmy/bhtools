@@ -77,6 +77,14 @@ public:
         bool operator!=(const iterator &other) const { return _idx != other._idx; }
     };
 
+    inline iterator begin() { return iterator(this, 0); }
+
+    inline iterator begin() const { return iterator(this, 0); }
+
+    inline iterator end() { return iterator(this, _size); }
+
+    inline iterator end() const { return iterator(this, _size); }
+
 public:
     // 初始化树根
     Bheap()
@@ -286,12 +294,6 @@ public:
 
     // 判断值是否存在堆数中
     inline bool is_exist(Tval val) { return find_node(val) != nullptr; }
-
-    // 迭代器接口
-    inline iterator begin() { return iterator(this, 0); }
-    inline iterator begin() const { return iterator(this, 0); }
-    inline iterator end() { return iterator(this, _size); }
-    inline iterator end() const { return iterator(this, _size); }
 
 protected:
     // internal
@@ -519,6 +521,7 @@ protected:
         return tnode;
     }
 
+protected:
     uint64 _size = 0;                  // 堆树大小
     Bheap_node<Tval> *_root = nullptr; // 根节点-总是存在
     Bheap_node<Tval> *_tail = nullptr; // 尾节点-总是指向下一个加入的位置
