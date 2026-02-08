@@ -185,6 +185,66 @@ if(ALL OR main_Bfm)
     add_executable(main_Bfm test/main_Bfm.cpp)
 endif()
 
+if(ALL OR main_Bany)
+    add_executable(main_Bany test/main_Bany.cpp)
+endif()
+
+if(ALL OR main_Bargv)
+    add_executable(main_Bargv test/main_Bargv.cpp)
+endif()
+
+if(ALL OR main_Basync)
+    add_executable(main_Basync test/main_Basync.cpp)
+endif()
+
+if(ALL OR main_Bcont)
+    add_executable(main_Bcont test/main_Bcont.cpp)
+endif()
+
+if(ALL OR main_Bdesign)
+    add_executable(main_Bdesign test/main_Bdesign.cpp)
+endif()
+
+if(ALL OR main_Bfile)
+    add_executable(main_Bfile test/main_Bfile.cpp)
+endif()
+
+if(ALL OR main_Bpool)
+    add_executable(main_Bpool test/main_Bpool.cpp)
+endif()
+
+if(ALL OR main_Bpublish)
+    add_executable(main_Bpublish test/main_Bpublish.cpp)
+endif()
+
+if(ALL OR main_Brand)
+    add_executable(main_Brand test/main_Brand.cpp)
+endif()
+
+if(ALL OR main_Btimer)
+    add_executable(main_Btimer test/main_Btimer.cpp)
+endif()
+
+if(ALL OR main_Bunpack)
+    add_executable(main_Bunpack test/main_Bunpack.cpp)
+endif()
+
+if(ALL OR main_Bbyte)
+    add_executable(main_Bbyte test/main_Bbyte.cpp)
+endif()
+
+if(ALL OR main_Bheap)
+    add_executable(main_Bheap test/main_Bheap.cpp)
+endif()
+
+if(ALL OR main_Blog)
+    add_executable(main_Blog test/main_Blog.cpp)
+endif()
+
+if(ALL OR main_Btest)
+    add_executable(main_Btest test/main_Btest.cpp)
+endif()
+
 
 
 # 生成目标
