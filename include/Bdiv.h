@@ -40,7 +40,6 @@ protected:
     {
         uint64 bpos = 0;
         uint64 epos = 0;
-
         if(ib >= 0 && ie >= 0) {
             // 正向
             // 开始下标
@@ -103,10 +102,8 @@ protected:
                     return false;
                 }
             }
-
             _str = Bview(_str, bpos, epos - bpos);
         }
-
         return section(arg...);
     }
 
