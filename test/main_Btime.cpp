@@ -15,6 +15,7 @@ void test_1()
     t1.update();
     auto p3 = t1.time_interval();
 
+    vloga("\n间隔显示测试");
     vloga("时间间隔");
     vlogd($(t1.to_str(p1)));
     vlogd($(t1.to_str(p2)));
@@ -32,12 +33,15 @@ void test_2()
     bh::Btimel::sleep(100);
     auto s3 = t1.to_str();
     auto s4 = t1.to_str(0);
+    auto s5 = t1.to_ctime();
 
+    vloga("\n格式测试");
     vloga("时间格式");
     vlogd($(s1));
     vlogd($(s2));
     vlogd($(s3));
     vlogd($(s4));
+    vlogd($(s5));
 }
 
 void test_3()
@@ -70,7 +74,8 @@ void test_3()
     auto p4 = t1.from_data(d4);
     auto d5 = t1.to_data(p4);
 
-    vloga("日期逆向运算");
+    vloga("\n日期逆向测试");
+    vloga("逆向计算");
     vlogd($(t1.format_time(d1)));
     BHTEST_EQUAL(p1.count(), p2.count());
 
@@ -87,6 +92,7 @@ void test_3()
 
 int main(int argc, char *argv[])
 {
+    //
     test_1();
     test_2();
     test_3();

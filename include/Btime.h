@@ -124,7 +124,7 @@ public:
 
 public:
     // 当前时间的C-tm格式时间
-    inline static dstr to_ctime(Bview format = "[ %Y-%m-%d.%H:%M:%S ]")
+    inline static dstr to_ctime(Bview format = "%Y-%m-%d.%H:%M:%S")
     {
         std::time_t t = system_clock::to_time_t(system_clock::now());
         std::tm *m = std::localtime(&t);
