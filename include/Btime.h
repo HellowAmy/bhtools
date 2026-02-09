@@ -6,9 +6,9 @@
 #include <iomanip>
 #include <thread>
 
-#include "Bstrvi.h"
+#include "Bview.h"
 #include "Btype.h"
-#include "Bstrto.h"
+#include "Bto.h"
 
 namespace bh {
 
@@ -56,13 +56,13 @@ public:
         data d = to_data(loss);
         dstr str;
         str += "[nan: ";
-        str += Bstrto::to_str(d.nan);
+        str += Bto::to_str(d.nan);
         str += "|mic: ";
-        str += Bstrto::to_str(d.mic);
+        str += Bto::to_str(d.mic);
         str += "|mil: ";
-        str += Bstrto::to_str(d.mil);
+        str += Bto::to_str(d.mil);
         str += "|sec: ";
-        str += Bstrto::to_str(d.sec);
+        str += Bto::to_str(d.sec);
         str += "]";
         return str;
     }
@@ -124,7 +124,7 @@ public:
 
 public:
     // 当前时间的C-tm格式时间
-    inline static dstr to_ctime(Bstrvi format = "[ %Y-%m-%d.%H:%M:%S ]")
+    inline static dstr to_ctime(Bview format = "[ %Y-%m-%d.%H:%M:%S ]")
     {
         std::time_t t = system_clock::to_time_t(system_clock::now());
         std::tm *m = std::localtime(&t);
@@ -263,7 +263,7 @@ public:
 
     // 格式化日期格式-格式的替换字符如下-在原字符串从后向前替换-空位补零
     // YYYY-MM-DD.HH:TT:SS.LLL.CCC.NNN >>>> 2024-09-02.15:44:28.804.245.495
-    inline static dstr format_time(const data &d, Bstrvi fm = "YYYY-MM-DD.HH:TT:SS.LLL.CCC.NNN")
+    inline static dstr format_time(const data &d, Bview fm = "YYYY-MM-DD.HH:TT:SS.LLL.CCC.NNN")
     {
         if(fm.size() <= 0) {
             return "";
@@ -278,31 +278,31 @@ public:
             into = true;
             char c = ret[rindex];
             if(c == 'Y') {
-                time = Bstrto::to_str(d.yea);
+                time = Bto::to_str(d.yea);
             }
             else if(c == 'M') {
-                time = Bstrto::to_str(d.mon);
+                time = Bto::to_str(d.mon);
             }
             else if(c == 'D') {
-                time = Bstrto::to_str(d.day);
+                time = Bto::to_str(d.day);
             }
             else if(c == 'H') {
-                time = Bstrto::to_str(d.hou);
+                time = Bto::to_str(d.hou);
             }
             else if(c == 'T') {
-                time = Bstrto::to_str(d.min);
+                time = Bto::to_str(d.min);
             }
             else if(c == 'S') {
-                time = Bstrto::to_str(d.sec);
+                time = Bto::to_str(d.sec);
             }
             else if(c == 'L') {
-                time = Bstrto::to_str(d.mil);
+                time = Bto::to_str(d.mil);
             }
             else if(c == 'C') {
-                time = Bstrto::to_str(d.mic);
+                time = Bto::to_str(d.mic);
             }
             else if(c == 'N') {
-                time = Bstrto::to_str(d.nan);
+                time = Bto::to_str(d.nan);
             }
             else {
                 into = false;

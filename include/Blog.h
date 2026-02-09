@@ -17,7 +17,7 @@
 #include "Btime.h"
 #include "Bsin.h"
 #include "Bdiv.h"
-#include "Bstrto.h"
+#include "Bto.h"
 
 namespace bh {
 
@@ -45,7 +45,7 @@ struct Blog_buf
     template <typename T>
     inline void push(const T &val)
     {
-        _str += Bstrto::to_str(val);
+        _str += Bto::to_str(val);
     }
 
     inline void clear() { _str.clear(); }
@@ -376,7 +376,7 @@ struct Blog_con
                 count = 0;
                 ret += "\n" + prev;
             }
-            ret += Bstrto::to_str(a) + flg;
+            ret += Bto::to_str(a) + flg;
             count++;
         }
         ret += "\n";

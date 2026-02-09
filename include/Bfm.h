@@ -1,8 +1,8 @@
 #ifndef BFM_H
 #define BFM_H
 
-#include "Bstrvi.h"
-#include "Bstrto.h"
+#include "Bview.h"
+#include "Bto.h"
 #include "Btype.h"
 
 namespace bh {
@@ -13,7 +13,7 @@ template <typename Tfm>
 class Bfmt
 {
 public:
-    Bfmt(Bstrvi org) : _org(org)
+    Bfmt(Bview org) : _org(org)
     {
         // 优化初始化字符串缓冲区
         if(org.size() < _BH_INT_256_) {
@@ -45,7 +45,7 @@ public:
     }
 
     // 格式化字符串
-    inline bool format(Bstrvi val)
+    inline bool format(Bview val)
     {
         uint64 pos = _offset;
         for(uint64 i = _offset; i < _org.size() - 1; i++) {
@@ -70,11 +70,11 @@ protected:
 
 protected:
     uint64 _offset = 0;
-    Bstrvi _org;
+    Bview _org;
     dstr _str;
 };
 
-using Bfm = Bfmt<Bstrto>;
+using Bfm = Bfmt<Bto>;
 
 } // namespace bh
 

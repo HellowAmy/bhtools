@@ -2,7 +2,7 @@
 #define BDIV_H
 
 #include "Btype.h"
-#include "Bstrvi.h"
+#include "Bview.h"
 
 namespace bh {
 
@@ -11,7 +11,7 @@ class Bdiv
 {
 
 public:
-    Bdiv(Bstrvi str) : _str(str) {}
+    Bdiv(Bview str) : _str(str) {}
 
     // 切割参数进入
     template <typename... Tarr>
@@ -36,7 +36,7 @@ protected:
 
     // 根据分隔符和获取部分标记切割字符串-可以对同一字符进行多次切割
     template <typename... Tarr>
-    inline bool section(Bstrvi flag, int32 ib, int32 ie, const Tarr &...arg)
+    inline bool section(Bview flag, int32 ib, int32 ie, const Tarr &...arg)
     {
         uint64 bpos = 0;
         uint64 epos = 0;
@@ -55,7 +55,7 @@ protected:
             if(epos == dstr::npos || epos <= bpos) {
                 return false;
             }
-            _str = Bstrvi(_str, bpos, epos - bpos);
+            _str = Bview(_str, bpos, epos - bpos);
         }
         else if(ib < 0 && ie < 0) {
             // 反向
@@ -72,7 +72,7 @@ protected:
             if(bpos >= _str.size() || epos <= bpos) {
                 return false;
             }
-            _str = Bstrvi(_str, bpos, epos - bpos);
+            _str = Bview(_str, bpos, epos - bpos);
         }
         else {
             // 混合模式
@@ -104,14 +104,14 @@ protected:
                 }
             }
 
-            _str = Bstrvi(_str, bpos, epos - bpos);
+            _str = Bview(_str, bpos, epos - bpos);
         }
 
         return section(arg...);
     }
 
     // 查找字符串
-    inline uint64 find(Bstrvi flag, int32 count, uint64 pos, bool offset) const
+    inline uint64 find(Bview flag, int32 count, uint64 pos, bool offset) const
     {
         if(count <= 0) {
             return dstr::npos;
@@ -135,7 +135,7 @@ protected:
     }
 
     // 反向查找字符串
-    inline uint64 rfind(Bstrvi flag, int32 count, uint64 pos, bool offset) const
+    inline uint64 rfind(Bview flag, int32 count, uint64 pos, bool offset) const
     {
         if(count <= 0) {
             return dstr::npos;
@@ -159,7 +159,7 @@ protected:
     }
 
 protected:
-    Bstrvi _str;
+    Bview _str;
 };
 
 } // namespace bh

@@ -4,7 +4,7 @@
 #include <sstream>
 #include <iomanip>
 
-#include "Bstrvi.h"
+#include "Bview.h"
 #include "Btype.h"
 #include "Bopt.h"
 
@@ -63,7 +63,7 @@ public:
         return "NULL";
     }
 
-    inline static dstr to_str(Bstrvi val) { return dstr(val.data(), val.size()); }
+    inline static dstr to_str(Bview val) { return dstr(val.data(), val.size()); }
 
     inline static dstr to_str(cstr val) { return val; }
 
