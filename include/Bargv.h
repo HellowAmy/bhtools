@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 
+#include "Btype.h"
 #include "Bdiv.h"
 
 // #include "Bstm.h"
@@ -18,19 +19,19 @@ public:
     ~Bargv() {}
 
     // 初始化参数列表-常规参数
-    void init(int argc, char **argv)
+    void init(int32 argc, char **argv)
     {
-        for(int i = 0; i < argc; i++) {
+        for(int32 i = 0; i < argc; i++) {
             _vec.push_back(argv[i]);
         }
     }
 
     // 初始化参数列表-分析字符串
-    void init(const std::string &args)
+    void init(cstr args)
     {
         bool split = true;
         char csplit = ' ';
-        std::string val;
+        dstr val;
         for(const char a : args) {
             if(split && a == ' ') {
                 if(val.size() != 0) {
@@ -62,7 +63,7 @@ public:
     }
 
     // 判断参数存在
-    bool is_exist(const std::string &arg)
+    bool is_exist(cstr arg)
     {
         for(auto &a : _vec) {
             if(a == arg) {
@@ -73,10 +74,10 @@ public:
     }
 
     // 存在参数时返回对应值
-    std::string is_exist_arg(const std::string &arg, const std::string &end = "-")
+    dstr is_exist_arg(cstr arg, cstr end = "-")
     {
         bool find = false;
-        for(int i = 0; i < _vec.size(); i++) {
+        for(int32 i = 0; i < _vec.size(); i++) {
             if(find) {
                 if(is_exist_sub(_vec[i], end) == false) {
                     return _vec[i];
@@ -92,11 +93,11 @@ public:
     }
 
     // 存在参数时返回对应参数列表
-    std::vector<std::string> is_exist_args(const std::string &arg, const std::string &end = "-")
+    std::vector<dstr> is_exist_args(cstr arg, cstr end = "-")
     {
         bool find = false;
-        std::vector<std::string> vec_args;
-        for(int i = 0; i < _vec.size(); i++) {
+        std::vector<dstr> vec_args;
+        for(int32 i = 0; i < _vec.size(); i++) {
             if(find) {
                 if(is_exist_sub(_vec[i], end)) {
                     return vec_args;
@@ -114,9 +115,9 @@ public:
     }
 
     // 存在参数时返回参数赋值的路径
-    std::string is_exist_path(const std::string &arg, const std::string &end = "=")
+    dstr is_exist_path(cstr arg, cstr end = "=")
     {
-        for(int i = 0; i < _vec.size(); i++) {
+        for(int32 i = 0; i < _vec.size(); i++) {
             if(is_exist_sub(_vec[i], arg)) {
                 return bh::Bdiv(_vec[i])(end, 1, 1);
             }
@@ -125,18 +126,18 @@ public:
     }
 
     // 获取所有参数
-    const std::vector<std::string> &get_args() { return _vec; }
+    const std::vector<dstr> &get_args() { return _vec; }
 
 protected:
     // 判断字符串是否存在子串
-    inline static bool is_exist_sub(const std::string &str, const std::string &sub)
+    inline static bool is_exist_sub(cstr str, cstr sub)
     {
         auto index = str.find(sub);
         return index != dstr::npos;
     }
 
 protected:
-    std::vector<std::string> _vec; // 存储所有传入的参数
+    std::vector<dstr> _vec; // 存储所有传入的参数
 };
 
 } // namespace bh

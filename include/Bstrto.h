@@ -50,7 +50,7 @@ public:
         ret += '[';
         ret += val;
         ret += ": ";
-        ret += to_str((int)val);
+        ret += to_str((int32)val);
         ret += ']';
         return ret;
     }
@@ -139,7 +139,7 @@ public:
     }
 
     // 元组字符串解析-中途运行
-    template <typename Tclass, size_t count, size_t now>
+    template <typename Tclass, uint64 count, uint64 now>
     struct Bstrto_tup
     {
         static void action(Tclass obj, dstr &str)
@@ -154,7 +154,7 @@ public:
     };
 
     // 元组字符串解析-退出模板
-    template <typename Tclass, size_t count>
+    template <typename Tclass, uint64 count>
     struct Bstrto_tup<Tclass, count, count>
     {
         static void action(Tclass obj, dstr &str)
@@ -168,7 +168,7 @@ public:
     };
 
     // 元组字符串解析-首次进入
-    template <typename Tclass, size_t count>
+    template <typename Tclass, uint64 count>
     struct Bstrto_tup<Tclass, count, 0>
     {
         static void action(Tclass obj, dstr &str)

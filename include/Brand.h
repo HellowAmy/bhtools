@@ -29,13 +29,13 @@ struct Brand_value : public Tdis, Brand_gen<>
 //
 
 // 快捷使用方式
-using Brand_int = Brand_value<std::uniform_int_distribution<>, int>;        // 均匀-整数分布
-using Brand_double = Brand_value<std::uniform_real_distribution<>, double>; // 均匀-浮点分布
+using Brand_int = Brand_value<std::uniform_int_distribution<>, int32>;        // 均匀-整数分布
+using Brand_double = Brand_value<std::uniform_real_distribution<>, ft64>; // 均匀-浮点分布
 using Brand_bool = Brand_value<std::bernoulli_distribution, bool>;          // 均匀-布尔分布
-using Brand_ndis = Brand_value<std::normal_distribution<>, double>; // 正态-距离中间点扩散概率
-using Brand_ddis = Brand_value<std::discrete_distribution<>, int>;  // 离散-列表中下标出现概率
-using Brand_pdis = Brand_value<std::poisson_distribution<>, int>;   // 泊松-模拟一小时内发生次数分布
-using Brand_gdis = Brand_value<std::gamma_distribution<>, double>;  // 泊松-模拟所有事件发生总长分布
+using Brand_ndis = Brand_value<std::normal_distribution<>, ft64>; // 正态-距离中间点扩散概率
+using Brand_ddis = Brand_value<std::discrete_distribution<>, int32>;  // 离散-列表中下标出现概率
+using Brand_pdis = Brand_value<std::poisson_distribution<>, int32>;   // 泊松-模拟一小时内发生次数分布
+using Brand_gdis = Brand_value<std::gamma_distribution<>, ft64>;  // 泊松-模拟所有事件发生总长分布
 
 } // namespace bh
 

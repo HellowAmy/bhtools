@@ -9,6 +9,8 @@
 #include <mutex>
 #include <functional>
 
+#include "Btype.h"
+
 namespace bh {
 
 // 自旋锁
@@ -69,12 +71,12 @@ template <typename T, typename Tlock = Bspinlock>
 class Bqueue
 {
 public:
-    size_t size()
+    uint64 size()
     {
         Bexit_lock<Tlock> e(&_lock);
         return _org.size();
     }
-    size_t empty()
+    uint64 empty()
     {
         Bexit_lock<Tlock> e(&_lock);
         return _org.empty();
@@ -132,12 +134,12 @@ template <typename T, typename Tlock = Bspinlock>
 class Bstack
 {
 public:
-    size_t size()
+    uint64 size()
     {
         Bexit_lock<Tlock> e(&_lock);
         return _org.size();
     }
-    size_t empty()
+    uint64 empty()
     {
         Bexit_lock<Tlock> e(&_lock);
         return _org.empty();
@@ -198,12 +200,12 @@ public:
         Bexit_lock<Tlock> e(&_lock);
         _org.clear();
     }
-    size_t size()
+    uint64 size()
     {
         Bexit_lock<Tlock> e(&_lock);
         return _org.size();
     }
-    size_t empty()
+    uint64 empty()
     {
         Bexit_lock<Tlock> e(&_lock);
         return _org.empty();
@@ -241,7 +243,7 @@ public:
         return _org.erase(pos);
     }
 
-    T &operator[](size_t index)
+    T &operator[](uint64 index)
     {
         Bexit_lock<Tlock> e(&_lock);
         return _org[index];
@@ -279,12 +281,12 @@ public:
         Bexit_lock<Tlock> e(&_lock);
         _org.clear();
     }
-    size_t size()
+    uint64 size()
     {
         Bexit_lock<Tlock> e(&_lock);
         return _org.size();
     }
-    size_t empty()
+    uint64 empty()
     {
         Bexit_lock<Tlock> e(&_lock);
         return _org.empty();

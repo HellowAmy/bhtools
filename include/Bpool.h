@@ -15,7 +15,7 @@
 namespace bh {
 
 // 线程池-可获取任务函数的返回值
-template <size_t Tnum = 4>
+template <uint64 Tnum = 4>
 class Bpool
 {
 public:
@@ -23,7 +23,7 @@ public:
     Bpool()
     {
         _run = true;
-        for(size_t i = 0; i < Tnum; i++) {
+        for(uint64 i = 0; i < Tnum; i++) {
             _workers.emplace_back([=]() {
                 while(true) {
                     std::function<void()> task = nullptr;

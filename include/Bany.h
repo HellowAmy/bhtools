@@ -5,6 +5,8 @@
 #include <typeindex>
 #include <memory>
 
+#include "Btype.h"
+
 namespace bh {
 
 // 存储任何值-使用无类型指针存储数据

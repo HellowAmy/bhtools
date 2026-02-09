@@ -3,6 +3,7 @@
 
 #include "Bstrvi.h"
 #include "Bstrto.h"
+#include "Btype.h"
 
 namespace bh {
 
@@ -36,7 +37,7 @@ public:
 
         // 初始化列表解包
         bool next = true;
-        bh::int32 dofor[]{0, ((next = (next && format(Tfm::to_str(arg)))), 0)...};
+        int32 dofor[]{0, ((next = (next && format(Tfm::to_str(arg)))), 0)...};
         if(_offset < _org.size()) {
             _str.append(_org.data() + _offset, _org.size() - _offset);
         }

@@ -12,7 +12,7 @@ namespace bh {
 // 多线程定时器-在子线程开启事件循环监控时间-其他子线程处理任务-至少存在2个子线程才能导致定时延时
 // 可自定义定时器的精度-事件循环间隔-任务线程池数量
 // 定时精度不高-精度通常在20毫秒内
-template <typename Tduration = std::chrono::milliseconds, size_t Tinterval = 20, size_t Tths = 2>
+template <typename Tduration = std::chrono::milliseconds, uint64 Tinterval = 20, uint32 Tths = 2>
 class Btimer
 {
 public:
@@ -23,14 +23,14 @@ public:
     struct task
     {
         task() {}
-        task(size_t id) : _id(id) {}
+        task(uint64 id) : _id(id) {}
 
         bool _never;                       // 永不停止
-        size_t _id;                        // 定时器任务ID
-        size_t _active;                    // 活动数规定执行次数
+        uint64 _id;                        // 定时器任务ID
+        uint64 _active;                    // 活动数规定执行次数
         Tduration _start;                  // 任务开始时间
         Tduration _delay;                  // 任务延时时间-加入多久后会被执行
-        std::function<void(size_t)> _task; // 回调函数
+        std::function<void(uint64)> _task; // 回调函数
 
         // 最大堆需实现
         bool operator>(const task &ct) const { return _start > ct._start; }
@@ -50,7 +50,7 @@ public:
     ~Btimer() { close_timer(); }
 
     // 加入定时任务到执行队列
-    inline size_t push(Tduration delay, std::function<void(size_t)> fn, size_t active = 1)
+    inline uint64 push(Tduration delay, std::function<void(uint64)> fn, uint64 active = 1)
     {
         task ct;
         ct._id = _count++;
@@ -70,13 +70,13 @@ public:
     }
 
     // 加入定时任务到执行队列-重载
-    inline size_t push(size_t delay, std::function<void(size_t)> fn, size_t active = 1)
+    inline uint64 push(uint64 delay, std::function<void(uint64)> fn, uint64 active = 1)
     {
         return push(std::chrono::duration_cast<Tduration>(Tduration(delay)), fn, active);
     }
 
     // 移除指定ID定时任务
-    inline bool remove(size_t id) { return remove_task_th(id); }
+    inline bool remove(uint64 id) { return remove_task_th(id); }
 
     // 查看是否运行-关闭后会自行销毁不可重启
     inline bool is_run() { return _run; }
@@ -129,7 +129,7 @@ protected:
     }
 
     // 移除指定ID定时任务
-    inline bool remove_task_th(size_t id)
+    inline bool remove_task_th(uint64 id)
     {
         std::unique_lock<std::mutex> lock(_mut);
         return _heap.remove_node(task(id));
@@ -158,7 +158,7 @@ protected:
 
 protected:
     bool _run = true;      // 事件循环运行标记
-    size_t _count = 0;     // 任务数量累计-并作为新的任务ID发布
+    uint64 _count = 0;     // 任务数量累计-并作为新的任务ID发布
     std::mutex _mut;       // 定时器任务锁
     Bpool<Tths> _works;    // 定时任务线程池
     Bheap_min<task> _heap; // 最小堆定时排队

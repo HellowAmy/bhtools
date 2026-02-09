@@ -13,6 +13,7 @@
 #include <mutex>
 #include <memory>
 
+#include "Btype.h"
 #include "Btime.h"
 #include "Bsin.h"
 #include "Bdiv.h"
@@ -49,9 +50,9 @@ struct Blog_buf
 
     inline void clear() { _str.clear(); }
 
-    inline std::string value() const { return _str; }
+    inline dstr value() const { return _str; }
 
-    std::string _str; // 缓存内容
+    dstr _str; // 缓存内容
 };
 
 // 日志结束类标记
@@ -128,7 +129,7 @@ struct Blog_out_cmd
 // 文件打印
 struct Blog_out_file
 {
-    using pair_name = std::pair<std::string, std::string>;
+    using pair_name = std::pair<dstr, dstr>;
 
     ~Blog_out_file()
     {
@@ -149,7 +150,7 @@ struct Blog_out_file
     }
 
     // 初始化日志
-    inline void reopen(const std::string &file, bool app = true)
+    inline void reopen(cstr file, bool app = true)
     {
         _pname = get_pname(file);
         _file = file;
@@ -168,13 +169,13 @@ struct Blog_out_file
     }
 
     // 设置循环最大文件数-默认无限
-    inline void set_limit(size_t max) { _limit_max = max; }
+    inline void set_limit(uint64 max) { _limit_max = max; }
 
     // 设置单个文件最大长度-默认64M
-    inline void set_length(size_t len) { _len_max = len; }
+    inline void set_length(uint64 len) { _len_max = len; }
 
     // 判断文件是否存在
-    static bool exist_file(const std::string &filename)
+    static bool exist_file(cstr filename)
     {
         std::ifstream f(filename);
         return f.is_open();
@@ -184,7 +185,7 @@ struct Blog_out_file
     // 超出最大文件限制后更新文件名
     bool update_file()
     {
-        if(_len_max < (size_t)_fs.tellg()) {
+        if(_len_max < (uint64)_fs.tellg()) {
             if(_limit_max == 0) {
                 return write_unlimited();
             }
@@ -199,8 +200,8 @@ struct Blog_out_file
     bool write_unlimited()
     {
         _fs.close();
-        for(int i = _limit_now;; i++) {
-            std::string file = newfile(i);
+        for(int32 i = _limit_now;; i++) {
+            dstr file = newfile(i);
             if(exist_file(file) == false) {
                 rename(_file.c_str(), file.c_str());
                 _limit_now++;
@@ -226,34 +227,34 @@ struct Blog_out_file
     }
 
     // 得到文件与后缀信息
-    pair_name get_pname(const std::string &file)
+    pair_name get_pname(cstr file)
     {
-        std::string name = Bdiv(file)(".", 0, 0);
-        std::string suffix = Bdiv(file)(".", 1, 1);
+        dstr name = Bdiv(file)(".", 0, 0);
+        dstr suffix = Bdiv(file)(".", 1, 1);
         return std::make_pair(name, suffix);
     }
 
     // 根据数量生成文件名
-    std::string newfile(size_t num)
+    dstr newfile(uint64 num)
     {
-        std::string file;
+        dstr file;
         file += _pname.first;
         file += "_" + std::to_string(num) + ".";
         file += _pname.second;
         return file;
     }
 
-    size_t _limit_max = 0;         // 日志文件限制数量
-    size_t _limit_now = 1;         // 当前写入日志
-    size_t _len_max = (1 << 26);   // 最大长度--64M
+    uint64 _limit_max = 0;         // 日志文件限制数量
+    uint64 _limit_now = 1;         // 当前写入日志
+    uint64 _len_max = (1 << 26);   // 最大长度--64M
     pair_name _pname;              // 文件名与后缀
-    std::string _file;             // 文件名
+    dstr _file;             // 文件名
     std::fstream _fs;              // 文件对象
     std::ios_base::openmode _mode; // 文件打开模式
 };
 
 // 异步文件日志
-template <typename Tbuf, size_t Ttime = 1000>
+template <typename Tbuf, uint64 Ttime = 1000>
 struct Blog_out_asyn : public Blog_out_file
 {
     Blog_out_asyn() {}
@@ -326,7 +327,7 @@ struct Blog_cmd : public Blog_base<Blog_buf, Blog_end, Blog_out_cmd>
 // 文件打印日志
 struct Blog_file : public Blog_base<Blog_buf, Blog_end, Blog_out_file>
 {
-    Blog_file(const std::string &file = "Bflog.log")
+    Blog_file(cstr file = "Bflog.log")
     {
         set_level(bhenum::level::e_all);
         _out.reopen(file);
@@ -336,7 +337,7 @@ struct Blog_file : public Blog_base<Blog_buf, Blog_end, Blog_out_file>
 // 文件打印日志-异步
 struct Blog_afile : public Blog_base<Blog_buf, Blog_end, Blog_out_asyn<Blog_buf, 500>>
 {
-    Blog_afile(const std::string &file = "Baflog.log")
+    Blog_afile(cstr file = "Baflog.log")
     {
         set_level(bhenum::level::e_all);
         _out.reopen(file);
@@ -351,7 +352,7 @@ struct Blog_afile : public Blog_base<Blog_buf, Blog_end, Blog_out_asyn<Blog_buf,
 // 打印固定格式的时间
 struct Blog_time
 {
-    inline static std::string print()
+    inline static dstr print()
     {
         Btimes::data d = Btimes::to_data(Btimes::time_now());
         d.hou += 8;
@@ -363,13 +364,13 @@ struct Blog_time
 struct Blog_con
 {
     template <typename T>
-    inline static std::string print(const T &con, size_t len = 1, const std::string &flg = " ",
-                                    const std::string &prev = "| ")
+    inline static dstr print(const T &con, uint64 len = 1, cstr flg = " ",
+                                    cstr prev = "| ")
     {
-        std::string ret = "\n";
+        dstr ret = "\n";
         ret += prev + "size: " + std::to_string(con.size());
         ret += "\n" + prev;
-        size_t count = 0;
+        uint64 count = 0;
         for(const auto &a : con) {
             if(len != 0 && count >= len) {
                 count = 0;
@@ -495,7 +496,7 @@ struct Bsin_log_conf
 
     // 简化日志类函数调用
     template <typename T>
-    void reopen(T &ptr, const std::string &file, bool app = true)
+    void reopen(T &ptr, cstr file, bool app = true)
     {
         ptr._out.reopen(file, app);
     }
@@ -507,13 +508,13 @@ struct Bsin_log_conf
     }
 
     template <typename T>
-    void set_length(T &ptr, size_t len)
+    void set_length(T &ptr, uint64 len)
     {
         ptr._out.set_length(len);
     }
 
     template <typename T>
-    void set_limit(T &ptr, size_t max)
+    void set_limit(T &ptr, uint64 max)
     {
         ptr._out.set_limit(max);
     }

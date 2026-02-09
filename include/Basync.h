@@ -8,6 +8,8 @@
 #include <thread>
 #include <memory>
 
+#include "Btype.h"
+
 namespace bh {
 
 // 异步回调函数顺序执行-优化地狱回调问题-需要将所有参数聚合传入
