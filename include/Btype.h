@@ -31,28 +31,28 @@ using dchp = char *;
 using cchp = const char *;
 
 // 常用位偏移常量定义
-static constexpr uint32 _BH_INT_16_ = (1U << 4);
-static constexpr uint32 _BH_INT_32_ = (1U << 5);
-static constexpr uint32 _BH_INT_64_ = (1U << 6);
-static constexpr uint32 _BH_INT_128_ = (1U << 7);
-static constexpr uint32 _BH_INT_256_ = (1U << 8);
-static constexpr uint32 _BH_INT_512_ = (1U << 9);
-static constexpr uint32 _BH_INT_1024_ = (1U << 10);
-static constexpr uint32 _BH_INT_2048_ = (1U << 11);
-static constexpr uint32 _BH_INT_4096_ = (1U << 12);
+static constexpr uint32 _BH_INT_16_ = (1ULL << 4);
+static constexpr uint32 _BH_INT_32_ = (1ULL << 5);
+static constexpr uint32 _BH_INT_64_ = (1ULL << 6);
+static constexpr uint32 _BH_INT_128_ = (1ULL << 7);
+static constexpr uint32 _BH_INT_256_ = (1ULL << 8);
+static constexpr uint32 _BH_INT_512_ = (1ULL << 9);
+static constexpr uint32 _BH_INT_1024_ = (1ULL << 10);
+static constexpr uint32 _BH_INT_2048_ = (1ULL << 11);
+static constexpr uint32 _BH_INT_4096_ = (1ULL << 12);
 
 // 最高位为1的值
-static constexpr uint08 _BH_ONE_LOW_ = (1UL << 0);
-static constexpr uint08 _BH_ONE_HIGH_INT08_ = (1UL << 7);
-static constexpr uint16 _BH_ONE_HIGH_INT16_ = (1UL << 15);
-static constexpr uint32 _BH_ONE_HIGH_INT32_ = (1UL << 31);
-static constexpr uint64 _BH_ONE_HIGH_INT64_ = (1UL << 63);
+static constexpr uint08 _BH_ONE_LOW_ = (1ULL << 0);
+static constexpr uint08 _BH_ONE_HIGH_INT08_ = (1ULL << 7);
+static constexpr uint16 _BH_ONE_HIGH_INT16_ = (1ULL << 15);
+static constexpr uint32 _BH_ONE_HIGH_INT32_ = (1ULL << 31);
+static constexpr uint64 _BH_ONE_HIGH_INT64_ = (1ULL << 63);
 
 // 16进制1248位为1的值bit位置
-static constexpr uint08 _BH_ONE_HEX_1_ = (1UL << 0);
-static constexpr uint08 _BH_ONE_HEX_2_ = (1UL << 1);
-static constexpr uint08 _BH_ONE_HEX_4_ = (1UL << 2);
-static constexpr uint08 _BH_ONE_HEX_8_ = (1UL << 3);
+static constexpr uint08 _BH_ONE_HEX_1_ = (1ULL << 0);
+static constexpr uint08 _BH_ONE_HEX_2_ = (1ULL << 1);
+static constexpr uint08 _BH_ONE_HEX_4_ = (1ULL << 2);
+static constexpr uint08 _BH_ONE_HEX_8_ = (1ULL << 3);
 
 } // namespace bh
 

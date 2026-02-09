@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "Btype.h"
-#include "Ftest.h"
+#include "Btest.h"
 
 void test_1()
 {
@@ -26,7 +26,8 @@ void test_1()
     bh::dchp d2 = d1;
     bh::cchp d3 = "world";
 
-    vloga("长度测试");
+    vloga("\n长度测试");
+    vloga("整数长度");
     BHTEST_EQUAL(sizeof(a1), 1)
     BHTEST_EQUAL(sizeof(a2), 2)
     BHTEST_EQUAL(sizeof(a3), 4)
@@ -52,20 +53,34 @@ void test_1()
 
 void test_2()
 {
+    vloga("\n常量测试");
     vloga("数据长度");
-    vlogd($(bh::_BH_INT_16_));
-    vlogd($(bh::_BH_INT_32_));
-    vlogd($(bh::_BH_INT_64_));
-    vlogd($(bh::_BH_INT_128_));
-    vlogd($(bh::_BH_INT_256_));
-    vlogd($(bh::_BH_INT_512_));
-    vlogd($(bh::_BH_INT_1024_));
-    vlogd($(bh::_BH_INT_2048_));
-    vlogd($(bh::_BH_INT_4096_));
+    BHTEST_EQUAL(bh::_BH_INT_16_, 16);
+    BHTEST_EQUAL(bh::_BH_INT_32_, 32);
+    BHTEST_EQUAL(bh::_BH_INT_64_, 64);
+    BHTEST_EQUAL(bh::_BH_INT_128_, 128);
+    BHTEST_EQUAL(bh::_BH_INT_256_, 256);
+    BHTEST_EQUAL(bh::_BH_INT_512_, 512);
+    BHTEST_EQUAL(bh::_BH_INT_1024_, 1024);
+    BHTEST_EQUAL(bh::_BH_INT_2048_, 2048);
+    BHTEST_EQUAL(bh::_BH_INT_4096_, 4096);
+
+    vloga("数值打印");
+    BHTEST_EQUAL(bh::_BH_ONE_LOW_, 1);
+    BHTEST_EQUAL(bh::_BH_ONE_HIGH_INT08_, 128);
+    BHTEST_EQUAL(bh::_BH_ONE_HIGH_INT16_, 32768);
+    BHTEST_EQUAL(bh::_BH_ONE_HIGH_INT32_, 2147483648);
+    BHTEST_EQUAL(bh::_BH_ONE_HIGH_INT64_, 9223372036854775808ULL);
+
+    BHTEST_EQUAL(bh::_BH_ONE_HEX_1_, 1);
+    BHTEST_EQUAL(bh::_BH_ONE_HEX_2_, 2);
+    BHTEST_EQUAL(bh::_BH_ONE_HEX_4_, 4);
+    BHTEST_EQUAL(bh::_BH_ONE_HEX_8_, 8);
 }
 
 int main(int argc, char *argv[])
 {
+    //
     test_1();
     test_2();
 

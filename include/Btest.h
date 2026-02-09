@@ -1,7 +1,7 @@
 #ifndef BTEST_H
 #define BTEST_H
 
-#include "Tlog.h"
+#include "Blog.h"
 
 namespace bh {
 
@@ -18,20 +18,20 @@ namespace bh {
 
 // 值是否相等
 #define BHTEST_EQUAL(a, b)                                                                         \
-    if(a == b) {                                                                                   \
-        BHLOG_YES("[BHTEST_EQUAL] " << $(a) "== " << $(b));                                        \
+    if((a) == (b)) {                                                                               \
+        BHLOG_YES("[BHTEST_EQUAL] " << $((a)) "== " << $((b)));                                    \
     }                                                                                              \
     else {                                                                                         \
-        BHLOG_BAD("[BHTEST_EQUAL] " << $(a) "!= " << $(b));                                        \
+        BHLOG_BAD("[BHTEST_EQUAL] " << $((a)) "!= " << $((b)));                                    \
     }
 
 // 值是否为真
 #define BHTEST_TRUE(ok)                                                                            \
-    if(ok) {                                                                                       \
-        BHLOG_YES("[BHTEST_TRUE] " << $(ok));                                                      \
+    if((ok)) {                                                                                     \
+        BHLOG_YES("[BHTEST_TRUE] " << $((ok)));                                                    \
     }                                                                                              \
     else {                                                                                         \
-        BHLOG_BAD("[BHTEST_TRUE] " << $(ok));                                                      \
+        BHLOG_BAD("[BHTEST_TRUE] " << $((ok)));                                                    \
     }
 
 // 空提示
