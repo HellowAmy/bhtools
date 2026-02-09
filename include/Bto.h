@@ -47,9 +47,9 @@ public:
     inline static dstr to_str(char val)
     {
         dstr ret;
-        ret += '[';
+        ret += "['";
         ret += val;
-        ret += ": ";
+        ret += "': ";
         ret += to_str((int32)val);
         ret += ']';
         return ret;
@@ -81,7 +81,7 @@ public:
         dstr ret;
         ret += '[';
         ret += to_str(pair.first);
-        ret += " : ";
+        ret += ": ";
         ret += to_str(pair.second);
         ret += ']';
         return ret;
@@ -159,11 +159,9 @@ public:
     {
         static void action(Tclass obj, dstr &str)
         {
-            if(count != 1) {
-                auto val = std::get<count - 1>(obj);
-                str += to_str(val);
-                str += ']';
-            }
+            auto val = std::get<count - 1>(obj);
+            str += to_str(val);
+            str += ']';
         }
     };
 
@@ -174,15 +172,10 @@ public:
         static void action(Tclass obj, dstr &str)
         {
             auto val = std::get<0>(obj);
+            str += '[';
             if(count != 1) {
-                str += '[';
                 str += to_str(val);
                 str += " : ";
-            }
-            else {
-                str += '[';
-                str += to_str(val);
-                str += ']';
             }
             Bto_tup<Tclass, count, 1>::action(obj, str);
         }

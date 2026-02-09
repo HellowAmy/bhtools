@@ -5,8 +5,7 @@
 
 #include "Bto.h"
 #include "Btime.h"
-
-#include "Ftest.h"
+#include "Btest.h"
 
 void test_1()
 {
@@ -48,6 +47,7 @@ void test_1()
     bh::dstr s15 = bh::Bto::to_str(c5);
     bh::dstr s16 = bh::Bto::to_str(c6);
 
+    vloga("\n各类型字符转换");
     vloga("整数");
     vlogd($(a1));
     vlogd($(a2));
@@ -95,6 +95,9 @@ void test_2()
     std::tuple<bh::int32, bh::int32, bh::dstr> d2 = std::make_tuple(1, 2, "hello2");
     bh::cchp d3 = "hello3";
     bh::ft64 d4 = 3.1415926123123123;
+    std::tuple<bh::dstr> d5 = std::make_tuple("hello3");
+    char d6 = 'a';
+    bh::int08 d7 = 'b';
 
     bh::dstr s1 = bh::Bto::to_str(d1);
     bh::dstr s2 = bh::Bto::to_str(d2);
@@ -102,14 +105,20 @@ void test_2()
     bh::dstr s4 = bh::Bto::to_str((void *)d3);
     bh::dstr s5 = bh::Bto::to_str(d4);
     bh::dstr s6 = bh::Bto::to_str(bh::Bto::float_dec(d4, 10));
+    bh::dstr s7 = bh::Bto::to_str(d5);
+    bh::dstr s8 = bh::Bto::to_str(d6);
+    bh::dstr s9 = bh::Bto::to_str(d7);
 
-    vloga("特殊类型转换");
+    vloga("\n特殊类型转换");
     vlogd($(s1));
     vlogd($(s2));
     vlogd($(s3));
     vlogd($(s4));
     vlogd($(s5));
     vlogd($(s6));
+    vlogd($(s7));
+    vlogd($(s8));
+    vlogd($(s9));
 }
 
 void test_3()
@@ -134,6 +143,7 @@ void test_3()
     auto a8 = bh::Bto::from_str<bh::ft64>(cs8);
     auto a9 = bh::Bto::from_str<bh::ft64>(cs9);
 
+    vloga("\n从字符转到数字");
     vloga("转数字");
     vlogd($(a1));
     vlogd($(a2));
@@ -160,11 +170,11 @@ void test_3()
     BHTEST_TRUE(b2.use());
     BHTEST_TRUE(b3.use());
     BHTEST_TRUE(b4.use());
-    BHTEST_TRUE(b5.use());
+    BHTEST_TRUE(!b5.use());
     BHTEST_TRUE(b6.use());
     BHTEST_TRUE(b7.use());
     BHTEST_TRUE(b8.use());
-    BHTEST_TRUE(b9.use());
+    BHTEST_TRUE(!b9.use());
 
     vlogd($(*b1));
     vlogd($(*b2));
@@ -189,6 +199,7 @@ void test_4()
     auto b3 = bh::Bto::from_str_opt<bh::int64>(cs3);
     auto b4 = bh::Bto::from_str_opt<bh::uint64>(cs4);
 
+    vloga("\n边界测试");
     vloga("范围判断");
     vlogd($(cs1));
     vlogd($(cs2));
@@ -214,57 +225,29 @@ void test_5()
     auto p1 = t1.time_interval();
     t1.update();
 
+    std::string str;
     for(bh::int32 i = 0; i < sum; i++) {
-        std::string s1 = std::to_string(i);
-        std::string s2 = std::to_string(i);
-        std::string s3 = std::to_string(i);
-        std::string s4 = std::to_string(i);
-        std::string s5 = std::to_string(i);
-        std::string s6 = std::to_string(i);
-        std::string s7 = std::to_string(i);
-        std::string s8 = std::to_string(i);
-        std::string s9 = std::to_string(i);
+        str += std::to_string(i);
+        str += std::to_string(i);
+        str += std::to_string(i);
+        str += std::to_string(i);
+        str += std::to_string(i);
+        str += std::to_string(i);
+        str += std::to_string(i);
+        str += std::to_string(i);
+        str.clear();
     }
     auto p2 = t1.time_interval();
     t1.update();
 
-    for(bh::int32 i = 0; i < sum; i++) {
-        bh::dstr s1 = bh::Bto::to_str(i);
-        bh::dstr s2 = bh::Bto::to_str(i);
-        bh::dstr s3 = bh::Bto::to_str(i);
-        bh::dstr s4 = bh::Bto::to_str(i);
-        bh::dstr s5 = bh::Bto::to_str(i);
-        bh::dstr s6 = bh::Bto::to_str(i);
-        bh::dstr s7 = bh::Bto::to_str(i);
-        bh::dstr s8 = bh::Bto::to_str(i);
-        bh::dstr s9 = bh::Bto::to_str(i);
-    }
-    auto p3 = t1.time_interval();
-    t1.update();
-
-    for(bh::int32 i = 0; i < sum; i++) {
-        bh::dstr s1 = std::move(std::to_string(i));
-        bh::dstr s2 = std::move(std::to_string(i));
-        bh::dstr s3 = std::move(std::to_string(i));
-        bh::dstr s4 = std::move(std::to_string(i));
-        bh::dstr s5 = std::move(std::to_string(i));
-        bh::dstr s6 = std::move(std::to_string(i));
-        bh::dstr s7 = std::move(std::to_string(i));
-        bh::dstr s8 = std::move(std::to_string(i));
-        bh::dstr s9 = std::move(std::to_string(i));
-    }
-    auto p4 = t1.time_interval();
-    t1.update();
-
-    vloga("性能测试");
+    vloga("\n性能测试");
     vlogd($(t1.to_str(p1)));
     vlogd($(t1.to_str(p2)));
-    vlogd($(t1.to_str(p3)));
-    vlogd($(t1.to_str(p4)));
 }
 
 int main(int argc, char *argv[])
 {
+    //
     test_1();
     test_2();
     test_3();

@@ -113,7 +113,6 @@ public:
         // 循环匹配首字符并校验全文
         while(len >= n) {
             first = std::char_traits<char>::find(first, len - n + 1, c1);
-
             if(!first) {
                 return dstr::npos;
             }
