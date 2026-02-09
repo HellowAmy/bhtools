@@ -161,8 +161,16 @@ if(ALL OR main_Bstrto)
     add_executable(main_Bstrto test/main_Bstrto.cpp)
 endif()
 
+if(ALL OR main_Bto)
+    add_executable(main_Bto test/main_Bto.cpp)
+endif()
+
 if(ALL OR main_Bstrvi)
     add_executable(main_Bstrvi test/main_Bstrvi.cpp)
+endif()
+
+if(ALL OR main_Bview)
+    add_executable(main_Bview test/main_Bview.cpp)
 endif()
 
 if(ALL OR main_Bopt)

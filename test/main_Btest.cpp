@@ -2,8 +2,7 @@
 
 #include "Btype.h"
 #include "Btest.h"
-
-#include "Tlog.h"
+#include "Blog.h"
 
 void test_1()
 {
