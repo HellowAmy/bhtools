@@ -2,15 +2,14 @@
 #include <cstring>
 
 #include "Bview.h"
-
-#include "Ftest.h"
+#include "Btest.h"
 
 void test_1()
 {
-    char cs1[] = "hello world 1";
-    bh::cchp cs2 = "hello world 2";
-    bh::dstr cs3 = "hello world 3";
-    bh::cstr cs4 = "hello world 4";
+    char cs1[] = "A1234567890";
+    bh::cchp cs2 = "B1234567890";
+    bh::dstr cs3 = "C1234567890";
+    bh::cstr cs4 = "D1234567890";
 
     bh::Bview a1(cs1);
     bh::Bview a2(cs2);
@@ -19,137 +18,137 @@ void test_1()
     bh::Bview a5(a4);
     bh::Bview a6 = a5;
 
-    vloga("全部长度");
-    vlogd($(a1.to_str()));
-    vlogd($(a2.to_str()));
-    vlogd($(a3.to_str()));
-    vlogd($(a4.to_str()));
-    vlogd($(a5.to_str()));
-    vlogd($(a6.to_str()));
+    vloga("\n测试视图");
+    vloga("测试构造函数");
+    vlogd($(a1.to_str()) $(a1.size()));
+    vlogd($(a2.to_str()) $(a2.size()));
+    vlogd($(a3.to_str()) $(a3.size()));
+    vlogd($(a4.to_str()) $(a4.size()));
+    vlogd($(a5.to_str()) $(a5.size()));
+    vlogd($(a6.to_str()) $(a6.size()));
 
-    bh::Bview b1(cs1);
-    bh::Bview b2(cs1, 0, 4);
-    bh::Bview b3(cs1, 0, 5);
-    bh::Bview b4(cs1, 2);
-    bh::Bview b5(cs1, 6);
-    bh::Bview b6(cs1, 6, 5);
-    bh::Bview b7(cs1, 6, 4);
+    vloga("测试 move 函数移动之后的内容");
+    a1.move(5);
+    BHTEST_EQUAL(a1.to_str(), "");
 
-    vloga("部分长度");
-    BHTEST_EQUAL(b1.to_str(), "hello world 1");
-    BHTEST_EQUAL(b2.to_str(), "hell");
-    BHTEST_EQUAL(b3.to_str(), "hello");
-    BHTEST_EQUAL(b4.to_str(), "llo world 1");
-    BHTEST_EQUAL(b5.to_str(), "world 1");
-    BHTEST_EQUAL(b6.to_str(), "world");
-    BHTEST_EQUAL(b7.to_str(), "worl");
+    a1.move(1);
+    BHTEST_EQUAL(a1.to_str(), "");
+    BHTEST_EQUAL(a1.size(), 11);
 
-    bh::Bview c1(a1);
-    bh::Bview c2(a1, 0, 5);
-    bh::Bview c3(a1, 0, 5);
-    bh::Bview c4(a1);
+    vloga("测试 move_head 函数");
+    a2.move_head(1);
+    BHTEST_EQUAL(a2.to_str(), "1234567890");
+    BHTEST_EQUAL(a2.size(), 10);
 
-    c2.move(2);
-    c3.move_head(2);
-    c4.move_tail(-3);
+    a2.move_head(3);
+    BHTEST_EQUAL(a2.to_str(), "4567890");
+    BHTEST_EQUAL(a2.size(), 7);
 
-    vloga("移动数据");
-    BHTEST_EQUAL(c1.to_str(), "hello world 1");
-    BHTEST_EQUAL(c2.to_str(), "llo w");
-    BHTEST_EQUAL(c3.to_str(), "llo");
-    BHTEST_EQUAL(c4.to_str(), "hello worl");
+    vloga("测试 move_tail 函数");
+    a3.move_tail(-2);
+    BHTEST_EQUAL(a3.to_str(), "C12345678");
+    BHTEST_EQUAL(a3.size(), 9);
 
-    bh::Bview d1(a1);
-    bh::Bview d2(a1);
-    bh::Bview d3(a1, 0, 5);
-    bh::Bview d4(a1, 6, 5);
+    a3.move_tail(-3);
+    BHTEST_EQUAL(a3.to_str(), "C12345");
+    BHTEST_EQUAL(a3.size(), 6);
 
-    bool ok1 = (d1 == a1);
-    bool ok2 = (d1 == d2);
-    bool ok3 = (d1 == d4);
-    bool ok4 = (d3 == "hello");
-    bool ok5 = (d3 == "world");
-    bool ok6 = (d4 == bh::dstr("hello"));
-    bool ok7 = (d4 == bh::dstr("world"));
-    bool ok8 = (d1 == cs1);
-    bool ok9 = (d1 == cs2);
-    bool ok10 = (d1 == cs3);
-    bool ok11 = (d1 == cs4);
-
-    vloga("相等测试");
-    BHTEST_EQUAL(ok1, true);
-    BHTEST_EQUAL(ok2, true);
-    BHTEST_EQUAL(ok3, false);
-    BHTEST_EQUAL(ok4, true);
-    BHTEST_EQUAL(ok5, false);
-    BHTEST_EQUAL(ok6, false);
-    BHTEST_EQUAL(ok7, true);
-    BHTEST_EQUAL(ok8, true);
-    BHTEST_EQUAL(ok9, false);
-    BHTEST_EQUAL(ok10, false);
-    BHTEST_EQUAL(ok11, false);
+    a3.move_tail(5);
+    BHTEST_EQUAL(a3.to_str(), "C1234567890");
+    BHTEST_EQUAL(a3.size(), 11);
 }
 
 void test_2()
 {
-    bh::Bview b1("hello world 1 hello world 1");
+    bh::cstr cs1 = "A1234567890B1234567890C1234567890D1234567890";
+    bh::Bview a1(cs1);
 
-    auto p1 = b1.find("world", 0, 5);
-    auto p2 = b1.find("ll", 0, 2);
-    auto p3 = b1.find("d 1", 0, 3);
-    auto p4 = b1.find("he", 0, 2);
-    auto p5 = b1.find("1", 0, 1);
-    auto p6 = b1.find("2", 0, 1);
-    auto p7 = b1.find("hella", 0, 5);
-    auto p8 = b1.find("world", p1 + 1, 5);
-    auto p9 = b1.find("ll", p2 + 1, 2);
-    auto p10 = b1.find("ll", p2 + 100, 2);
+    vloga("\n测试函数");
+    vloga("测试 find rfind 函数");
+    bh::Bview target("B123");
+    BHTEST_EQUAL(a1.find(target, 0), 11);
+    BHTEST_EQUAL(a1.find("E123", 0, 4), bh::dstr::npos);
+    BHTEST_EQUAL(a1.find("", 0, 0), 0);
+    BHTEST_EQUAL(a1.find("", 44, 0), 44);
+    BHTEST_EQUAL(a1.find("A", 45, 1), bh::dstr::npos);
 
-    auto r1 = b1.rfind("world", b1.size(), 5);
-    auto r2 = b1.rfind("ll", b1.size(), 2);
-    auto r3 = b1.rfind("d 1", b1.size(), 3);
-    auto r4 = b1.rfind("he", b1.size(), 2);
-    auto r5 = b1.rfind("1", b1.size(), 1);
-    auto r6 = b1.rfind("2", b1.size(), 1);
-    auto r7 = b1.rfind("hella", b1.size(), 5);
-    auto r8 = b1.rfind("world", r1 - 1, 5);
-    auto r9 = b1.rfind("ll", r2 - 1, 2);
-    auto r10 = b1.rfind("ll", r2 - 100, 2);
+    BHTEST_EQUAL(a1.find("C123", 0, 4), 22);
+    BHTEST_EQUAL(a1.find("Z123", 0, 4), bh::dstr::npos);
+    BHTEST_EQUAL(a1.find("D123", 30, 4), 33);
+    BHTEST_EQUAL(a1.find("D123", 34, 4), bh::dstr::npos);
+    BHTEST_EQUAL(a1.find("A123", 1, 4), bh::dstr::npos);
+    BHTEST_EQUAL(a1.find("B123", 11, 4), 11);
 
-    bh::dstr s1;
-    s1.rfind("world", 0, 5);
+    BHTEST_EQUAL(a1.rfind(target, 44), 11);
+    BHTEST_EQUAL(a1.rfind("D123", 44, 4), 33);
+    BHTEST_EQUAL(a1.rfind("B123", 10, 4), bh::dstr::npos);
+    BHTEST_EQUAL(a1.rfind("B123", 11, 4), 11);
 
-    vloga("查找字符串位置");
-    vlogd($(b1.to_str()) $(b1.size()));
-    vlogd($(p1));
-    vlogd($(p2));
-    vlogd($(p3));
-    vlogd($(p4));
-    vlogd($(p5));
-    vlogd($(p6));
-    vlogd($(p7));
-    vlogd($(p8));
-    vlogd($(p9));
-    vlogd($(p10));
+    BHTEST_EQUAL(a1.rfind("A123", 44, 4), 0);
+    BHTEST_EQUAL(a1.rfind("X123", 44, 4), bh::dstr::npos);
+    BHTEST_EQUAL(a1.rfind("C123", 30, 4), 22);
+    BHTEST_EQUAL(a1.rfind("C123", 21, 4), bh::dstr::npos);
+    BHTEST_EQUAL(a1.rfind("D123", 32, 4), bh::dstr::npos);
+    BHTEST_EQUAL(a1.rfind("D123", 33, 4), 33);
+}
 
-    vloga("反向查找");
-    vlogd($(b1.to_str()) $(b1.size()));
-    vlogd($(r1));
-    vlogd($(r2));
-    vlogd($(r3));
-    vlogd($(r4));
-    vlogd($(r5));
-    vlogd($(r6));
-    vlogd($(r7));
-    vlogd($(r8));
-    vlogd($(r9));
-    vlogd($(r10));
+void test_3()
+{
+    bh::cstr cs1 = "A1234567890B1234567890C1234567890D1234567890";
+    bh::Bview a1(cs1);
+    bh::Bview a2(cs1, 1);
+    bh::Bview a3(cs1, 11, 11);
+
+    vloga("\n测试不同的构造方式");
+    vlogd($(a1.to_str()) $(a1.size()));
+    BHTEST_EQUAL(a2.to_str(), "1234567890B1234567890C1234567890D1234567890");
+    BHTEST_EQUAL(a2.size(), 43);
+    BHTEST_EQUAL(a3.to_str(), "B1234567890");
+    BHTEST_EQUAL(a3.size(), 11);
+
+    vloga("\n测试 move 函数移动之后的内容");
+    a3.move(1);
+    BHTEST_EQUAL(a3.to_str(), "1234567890C");
+    a3.move(-1);
+    BHTEST_EQUAL(a3.to_str(), "B1234567890");
+    a3.move(11);
+    BHTEST_EQUAL(a3.to_str(), "C1234567890");
+    BHTEST_EQUAL(a3.size(), 11);
+    a3.move(-11);
+    BHTEST_EQUAL(a3.to_str(), "B1234567890");
+    a3.move(5);
+    BHTEST_EQUAL(a3.to_str(), "567890C1234");
+    a3.move(-2);
+    BHTEST_EQUAL(a3.to_str(), "34567890C12");
+
+    vloga("\n测试 operator[] 函数");
+    BHTEST_EQUAL(a1[0], 'A');
+    BHTEST_EQUAL(a1[11], 'B');
+    BHTEST_EQUAL(a1[43], '0');
+    BHTEST_TRUE(a1[0] != '1');
+    BHTEST_TRUE(a1[11] != 'A');
+    BHTEST_TRUE(a1[43] != 'D');
+
+    vloga("\n测试 operator== 函数");
+    bh::Bview v1("hello");
+    bh::Bview v2("hello");
+    bh::Bview v3("world");
+    bh::Bview v4("hell");
+    bh::Bview v5(v1, 0, 4);
+    BHTEST_TRUE(v1 == v2);
+    BHTEST_TRUE(v4 == v5);
+    BHTEST_TRUE(!(v1 == v3));
+    BHTEST_TRUE(!(v1 == v4));
+    BHTEST_TRUE(!(v1 == v5));
+    BHTEST_TRUE(v5 == v4);
 }
 
 int main(int argc, char *argv[])
 {
+    // 
     test_1();
     test_2();
+    test_3();
 
     return 0;
 }
