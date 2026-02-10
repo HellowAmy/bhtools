@@ -15,7 +15,7 @@ void test_1()
     t1.update();
     auto p3 = t1.time_interval();
 
-    vloga("\n间隔显示测试");
+    vloga("间隔显示测试\n");
     vloga("时间间隔");
     vlogd($(t1.to_str(p1)));
     vlogd($(t1.to_str(p2)));
@@ -35,7 +35,7 @@ void test_2()
     auto s4 = t1.to_str(0);
     auto s5 = t1.to_ctime();
 
-    vloga("\n格式测试");
+    vloga("格式测试\n");
     vloga("时间格式");
     vlogd($(s1));
     vlogd($(s2));
@@ -74,7 +74,7 @@ void test_3()
     auto p4 = t1.from_data(d4);
     auto d5 = t1.to_data(p4);
 
-    vloga("\n日期逆向测试");
+    vloga("日期逆向测试\n");
     vloga("逆向计算");
     vlogd($(t1.format_time(d1)));
     BHTEST_EQUAL(p1.count(), p2.count());
@@ -90,12 +90,86 @@ void test_3()
     vlogd($(p4.count()));
 }
 
+void test_4()
+{
+    int sum = 100 * 10000;
+    bh::Btimel t1;
+    bh::Btimefms ts1;
+
+    std::chrono::nanoseconds one_day_ns = std::chrono::hours(24);
+
+    bh::Btimes::data d1{0};
+    d1.yea = 1850;
+    d1.mon = 7;
+    d1.day = 15;
+    d1.hou = 11;
+    d1.min = 45;
+    d1.sec = 30;
+    d1.mil = 100;
+    d1.mic = 200;
+    d1.nan = 300;
+    auto p1 = ts1.from_data(d1);
+    auto p2 = ts1.from_data(d1);
+    auto p3 = ts1.from_data(d1);
+
+    t1.update();
+    bh::dstr ss1;
+    for(int i = 0; i < sum; i++) {
+        p1 += one_day_ns;
+        ss1 = ts1.format_time(ts1.to_data(p1));
+    }
+    auto tt1 = t1.time_interval();
+
+    t1.update();
+    bh::dstr ss2;
+    for(int i = 0; i < sum; i++) {
+        p2 += one_day_ns;
+        ss2 = ts1.get_date(p2);
+    }
+    auto tt2 = t1.time_interval();
+
+    t1.update();
+    bh::dstr ss3;
+    for(int i = 0; i < sum; i++) {
+        // p3 += one_day_ns;
+        ss3 = ts1.get_date(p3);
+    }
+    auto tt3 = t1.time_interval();
+
+    vlogd($(t1.to_str(tt1)));
+    vlogd($(t1.to_str(tt2)));
+    vlogd($(t1.to_str(tt3)));
+    vlogd($(ss1));
+    vlogd($(ss2));
+    vlogd($(ss3));
+}
+
+void test_5()
+{
+    bh::Btimefms ts1;
+    auto p1 = ts1.get_now_date();
+    vlogd($(p1));
+
+    // vlogd($(ts1._rec.yea.bpos) $(ts1._rec.yea.epos)  $(ts1._rec.yea.size()));
+    // vlogd($(ts1._rec.mon.bpos) $(ts1._rec.mon.epos)  $(ts1._rec.mon.size()));
+    // vlogd($(ts1._rec.day.bpos) $(ts1._rec.day.epos)  $(ts1._rec.day.size()));
+    // vlogd($(ts1._rec.hou.bpos) $(ts1._rec.hou.epos)  $(ts1._rec.hou.size()));
+    // vlogd($(ts1._rec.min.bpos) $(ts1._rec.min.epos)  $(ts1._rec.min.size()));
+    // vlogd($(ts1._rec.sec.bpos) $(ts1._rec.sec.epos)  $(ts1._rec.sec.size()));
+    // vlogd($(ts1._rec.mil.bpos) $(ts1._rec.mil.epos)  $(ts1._rec.mil.size()));
+    // vlogd($(ts1._rec.mic.bpos) $(ts1._rec.mic.epos)  $(ts1._rec.mic.size()));
+    // vlogd($(ts1._rec.nan.bpos) $(ts1._rec.nan.epos)  $(ts1._rec.nan.size()));
+ 
+}
+
 int main(int argc, char *argv[])
 {
     //
-    test_1();
-    test_2();
-    test_3();
+    // test_1();
+    // test_2();
+    // test_3();
+    test_4();
+    // test_5();
 
     return 0;
 }

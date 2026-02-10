@@ -31,6 +31,7 @@ protected:
 //
 
 // 静态单例模板
+// 子类需要继承单例模板-否则需要手动调用析构
 template <typename T>
 class Bsins
 {
@@ -38,14 +39,14 @@ public:
     // 返回对象
     static T *get() { return _obj; }
 
-private:
+protected:
     static T *_obj;                // 静态对象指针
     friend T;                      // 设置友元
     Bsins(const Bsins &) = delete; // 删除复制
     Bsins(Bsins &&) = delete;      // 删除复制
-    ~Bsins() = default;            // 声明析构
+    virtual ~Bsins() = default;    // 声明析构
 
-    // 退出时释放
+    // 退出时释放-触发数据析构
     Bsins()
     {
         static Bexit exit([=]() {
@@ -86,7 +87,7 @@ public:
         _mut.unlock();
     }
 
-private:
+protected:
     static std::mutex _mut;        // 多线程锁
     static T *_obj;                // 静态对象指针
     friend T;                      // 设置友元
@@ -94,13 +95,10 @@ private:
     Bsind(Bsind &&) = delete;      // 删除复制
     ~Bsind() = default;            // 声明析构
 
-    // 退出时释放
     Bsind()
     {
         static Bexit exit([=]() {
-            if(_obj) {
-                delete _obj;
-            }
+            delete _obj;
         });
     }
 };
@@ -122,10 +120,10 @@ std::mutex Bsind<T>::_mut;
 
 // 单例模板限制宏-在需要生成单例模板时声明
 #define BHSIN_SIN(class, single)                                                                   \
-private:                                                                                           \
+protected:                                                                                         \
     friend single<class>;                                                                          \
     class() = default;                                                                             \
-    ~class() = default;                                                                            \
+    virtual ~class() = default;                                                                    \
     class(const class &) = delete;                                                                 \
     class(class &&) = delete;                                                                      \
                                                                                                    \

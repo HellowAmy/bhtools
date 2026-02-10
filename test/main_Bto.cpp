@@ -47,7 +47,7 @@ void test_1()
     bh::dstr s15 = bh::Bto::to_str(c5);
     bh::dstr s16 = bh::Bto::to_str(c6);
 
-    vloga("\n各类型字符转换");
+    vloga("各类型字符转换\n");
     vloga("整数");
     vlogd($(a1));
     vlogd($(a2));
@@ -109,7 +109,7 @@ void test_2()
     bh::dstr s8 = bh::Bto::to_str(d6);
     bh::dstr s9 = bh::Bto::to_str(d7);
 
-    vloga("\n特殊类型转换");
+    vloga("特殊类型转换\n");
     vlogd($(s1));
     vlogd($(s2));
     vlogd($(s3));
@@ -143,7 +143,7 @@ void test_3()
     auto a8 = bh::Bto::from_str<bh::ft64>(cs8);
     auto a9 = bh::Bto::from_str<bh::ft64>(cs9);
 
-    vloga("\n从字符转到数字");
+    vloga("从字符转到数字\n");
     vloga("转数字");
     vlogd($(a1));
     vlogd($(a2));
@@ -199,7 +199,7 @@ void test_4()
     auto b3 = bh::Bto::from_str_opt<bh::int64>(cs3);
     auto b4 = bh::Bto::from_str_opt<bh::uint64>(cs4);
 
-    vloga("\n边界测试");
+    vloga("边界测试\n");
     vloga("范围判断");
     vlogd($(cs1));
     vlogd($(cs2));
@@ -240,7 +240,7 @@ void test_5()
     auto p2 = t1.time_interval();
     t1.update();
 
-    vloga("\n性能测试");
+    vloga("性能测试\n");
     vlogd($(t1.to_str(p1)));
     vlogd($(t1.to_str(p2)));
 }

@@ -32,6 +32,14 @@ namespace bhenum {
         e_err,
         e_fat,
     };
+
+    enum class end
+    {
+        e_skip,
+        e_blank,
+        e_line,
+        e_flush,
+    };
 } // namespace bhenum
 
 //
@@ -39,39 +47,19 @@ namespace bhenum {
 //
 //
 
-// 日志缓冲区
-struct Blog_buf
-{
-    template <typename T>
-    inline void push(const T &val)
-    {
-        _str += Bto::to_str(val);
-    }
-
-    inline void clear() { _str.clear(); }
-
-    inline dstr value() const { return _str; }
-
-    dstr _str; // 缓存内容
-};
-
-// 日志结束类标记
-struct Blog_end
-{
-};
-
 // 日志基本类-用于创建各种输出类型的模板-不提供打印只提供写入与缓存
-template <typename Tbuf, typename Tend, typename Tout>
-struct Blog_base
+template <typename Tbuf, typename Tout>
+class Blog_base
 {
+public:
     using level = bhenum::level;
+    using end = bhenum::end;
 
     // 设置日志等级-不显示低等级内容
-    inline void set_level(const level &el) { _el = el; }
+    inline void set_level(level el) { _el = el; }
 
-    // internal
     // 传入等级
-    inline Blog_base &operator<<(const level &el)
+    inline Blog_base &operator<<(level el)
     {
         if(el >= _el) {
             _pass = true;
@@ -83,10 +71,26 @@ struct Blog_base
     }
 
     // 打印内容
-    inline Blog_base &operator<<(Tend)
+    inline Blog_base &operator<<(end e)
     {
         if(_pass) {
-            _out.out(_buf);
+
+            if(e == end::e_line) {
+                _buf.push("\n");
+                _out.out(_buf.value());
+            }
+            else if(e == end::e_flush) {
+                _buf.push("\n");
+                _out.out(_buf.value());
+                _out.flush();
+            }
+            else if(e == end::e_blank) {
+                _buf.push(" ");
+                _out.out(_buf.value());
+            }
+            else if(e == end::e_skip) {
+                _out.out(_buf.value());
+            }
             _buf.clear();
             _pass = false;
         }
@@ -95,14 +99,15 @@ struct Blog_base
 
     // 传入内容
     template <typename T>
-    inline Blog_base &operator<<(const T &log)
+    inline Blog_base &operator<<(T &&val)
     {
         if(_pass) {
-            _buf.push(log);
+            _buf.push(std::forward<T>(val));
         }
         return *this;
     }
 
+protected:
     bool _pass = false;       // 日志等级是否通过
     level _el = level::e_all; // 日志等级划分枚举
     Tbuf _buf;                // 日志写入缓存内容
@@ -114,38 +119,77 @@ struct Blog_base
 //
 //
 
-// 空打印-用于测试 << 操作的耗时
-struct Blog_out_null
+// 日志缓冲区-可自定义
+template <typename Tto = Bto>
+class Blog_buf
 {
-    void out(const Blog_buf &buf) {}
+public:
+    Blog_buf() { _str.reserve(_BH_INT_1024_); }
+
+    template <typename T>
+    inline void push(T &&val)
+    {
+        _str += Tto::to_str(std::forward<T>(val));
+    }
+
+    inline void clear() { _str.clear(); }
+
+    inline cstr value() const { return _str; }
+
+protected:
+    dstr _str; // 缓存内容
+};
+
+//
+//
+//
+//
+
+// 空打印-用于测试 << 操作的耗时
+class Blog_out_null
+{
+public:
+    inline void out(cstr buf) {}
+
+    inline void flush() {}
 };
 
 // 命令行打印
-struct Blog_out_cmd
+class Blog_out_cmd
 {
-    void out(const Blog_buf &buf) { std::cout << buf.value() << "\n"; }
+public:
+    inline void out(cstr buf) { std::cout << buf; }
+
+    inline void flush() { std::flush(std::cout); }
 };
 
 // 文件打印
-struct Blog_out_file
+class Blog_out_file
 {
+public:
     using pair_name = std::pair<dstr, dstr>;
 
-    ~Blog_out_file()
+    ~Blog_out_file() { flush(); }
+
+    inline void out(cstr buf)
     {
         if(_fs.is_open()) {
-            _fs.flush();
+            _fs << buf;
+            update_file();
+        }
+        else {
+            _fs.open(_file, _mode);
+            if(_fs.is_open()) {
+                _fs << buf;
+                update_file();
+            }
         }
     }
 
-    void out(const Blog_buf &buf)
+    inline void flush()
     {
-        if(_fs.is_open() == false) {
-            _fs.open(_file, _mode);
-        }
         if(_fs.is_open()) {
-            _fs << buf.value() << "\n";
-            update_file();
+            _fs.flush();
         }
     }
 
@@ -174,6 +218,7 @@ struct Blog_out_file
     // 设置单个文件最大长度-默认64M
     inline void set_length(uint64 len) { _len_max = len; }
 
+protected:
     // 判断文件是否存在
     static bool exist_file(cstr filename)
     {
@@ -181,11 +226,10 @@ struct Blog_out_file
         return f.is_open();
     }
 
-    // internal
     // 超出最大文件限制后更新文件名
     bool update_file()
     {
-        if(_len_max < (uint64)_fs.tellg()) {
+        if(_len_max < _fs.tellg()) {
             if(_limit_max == 0) {
                 return write_unlimited();
             }
@@ -200,9 +244,9 @@ struct Blog_out_file
     bool write_unlimited()
     {
         _fs.close();
-        for(int32 i = _limit_now;; i++) {
+        for(int32 i = _limit_now; i < _BH_INT_4096_; i++) {
             dstr file = newfile(i);
-            if(exist_file(file) == false) {
+            if(!exist_file(file)) {
                 rename(_file.c_str(), file.c_str());
                 _limit_now++;
                 break;
@@ -244,104 +288,96 @@ struct Blog_out_file
         return file;
     }
 
+protected:
     uint64 _limit_max = 0;         // 日志文件限制数量
     uint64 _limit_now = 1;         // 当前写入日志
     uint64 _len_max = (1 << 26);   // 最大长度--64M
     pair_name _pname;              // 文件名与后缀
-    dstr _file;             // 文件名
+    dstr _file;                    // 文件名
     std::fstream _fs;              // 文件对象
     std::ios_base::openmode _mode; // 文件打开模式
 };
 
 // 异步文件日志
-template <typename Tbuf, uint64 Ttime = 1000>
-struct Blog_out_asyn : public Blog_out_file
+template <uint64 Ttime = 500>
+class Blog_out_asyn : public Blog_out_file
 {
-    Blog_out_asyn() {}
-
-    ~Blog_out_asyn() { exit_th(); }
-
-    void out(const Blog_buf &buf) { push_queue(buf); }
-
-    // 重启写入线程
-    void reset()
+public:
+    Blog_out_asyn()
     {
-        if(_run == false) {
-            _run = true;
-            _th = std::make_shared<std::thread>(&Blog_out_asyn::work_write, this);
-        }
+        _run = true;
+        _th = std::make_shared<std::thread>(&Blog_out_asyn::work_write, this);
     }
 
-    // 退出写入线程
-    void exit_th()
+    ~Blog_out_asyn()
+    {
+        _run = false;
+        _th->join();
+        flush();
+    }
+
+    inline void out(cstr buf)
     {
         if(_run) {
-            _run = false;
-            _th->join();
-            Blog_out_file::_fs.flush();
+            _write = true;
+            std::lock_guard<std::mutex> lock(_mut);
+            _que.push(buf);
+            _write = false;
         }
     }
 
-    // internal
+    inline void flush() { Blog_out_file::flush(); }
+
+protected:
     // 将队列内日志写入日志输出类
     void work_write()
     {
         while(_run) {
             std::this_thread::sleep_for(std::chrono::milliseconds(Ttime));
-            std::unique_lock<std::mutex> lock(_mut);
-            while(_que.empty() == false) {
+            std::lock_guard<std::mutex> lock(_mut);
+            while(!_que.empty() && !_write) {
                 Blog_out_file::out(_que.front());
                 _que.pop();
             }
         }
-    }
-
-    // 加入到队列
-    inline void push_queue(const Tbuf &txt)
-    {
-        if(_run == false) {
-            reset();
+        while(!_que.empty()) {
+            Blog_out_file::out(_que.front());
+            _que.pop();
         }
-        std::unique_lock<std::mutex> lock(_mut);
-        _que.push(txt);
     }
 
+protected:
     bool _run = false;                // 写入线程运行标记
+    bool _write = false;              // 正在写入标记
     std::mutex _mut;                  // 队列锁
-    std::queue<Tbuf> _que;            // 写入日志队列
+    std::queue<dstr> _que;            // 写入日志队列
     std::shared_ptr<std::thread> _th; // 写入线程
 };
 
 // 空打印日志
-struct Blog_null : public Blog_base<Blog_buf, Blog_end, Blog_out_null>
+struct Blog_null : public Blog_base<Blog_buf<>, Blog_out_null>
 {
-    Blog_null() { set_level(bhenum::level::e_all); }
+    Blog_null() {}
 };
 
 // 命令行打印日志
-struct Blog_cmd : public Blog_base<Blog_buf, Blog_end, Blog_out_cmd>
+struct Blog_cmd : public Blog_base<Blog_buf<>, Blog_out_cmd>
 {
-    Blog_cmd() { set_level(bhenum::level::e_all); }
+    Blog_cmd() {}
 };
 
 // 文件打印日志
-struct Blog_file : public Blog_base<Blog_buf, Blog_end, Blog_out_file>
+struct Blog_file : public Blog_base<Blog_buf<>, Blog_out_file>
 {
-    Blog_file(cstr file = "Bflog.log")
-    {
-        set_level(bhenum::level::e_all);
-        _out.reopen(file);
-    }
+    Blog_file(cstr file = "Bflog.log") { _out.reopen(file); }
+    Blog_out_file *operator->() { return &_out; }
 };
 
 // 文件打印日志-异步
-struct Blog_afile : public Blog_base<Blog_buf, Blog_end, Blog_out_asyn<Blog_buf, 500>>
+struct Blog_asyn : public Blog_base<Blog_buf<>, Blog_out_asyn<>>
 {
-    Blog_afile(cstr file = "Baflog.log")
-    {
-        set_level(bhenum::level::e_all);
-        _out.reopen(file);
-    }
+    Blog_asyn(cstr file = "Balog.log") { _out.reopen(file); }
+    Blog_out_file *operator->() { return &_out; }
 };
 
 //
@@ -364,8 +400,7 @@ struct Blog_time
 struct Blog_con
 {
     template <typename T>
-    inline static dstr print(const T &con, uint64 len = 1, cstr flg = " ",
-                                    cstr prev = "| ")
+    inline static dstr print(const T &con, uint64 len = 1, cstr flg = " ", cstr prev = "| ")
     {
         dstr ret = "\n";
         ret += prev + "size: " + std::to_string(con.size());
@@ -488,11 +523,10 @@ struct Blog_con
 // 默认打印宏
 struct Bsin_log_conf
 {
-    Blog_end _end;
     Blog_cmd _cmd;
     Blog_null _null;
     Blog_file _file;
-    Blog_afile _afile;
+    Blog_asyn _asyn;
 
     // 简化日志类函数调用
     template <typename T>
@@ -518,8 +552,6 @@ struct Bsin_log_conf
     {
         ptr._out.set_limit(max);
     }
-
-    void exit_flush_afile() { _afile._out.exit_th(); }
 
     static Bsin_log_conf *get() { return Bsind<Bsin_log_conf>::get(); }
 };

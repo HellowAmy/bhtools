@@ -5,7 +5,7 @@
 
 #include "Ftest.h"
 
-// 继承式单例
+// 继承式单例-继承单例会自己调用析构-否则需要手动调用
 class TastA : public bh::Bsins<TastA>
 {
     BHSIN_SIN(TastA, Bsins)
@@ -31,14 +31,14 @@ public:
 
 void test_1()
 {
-    vloga("单例访问");
+    vloga("单例访问\n");
     TastA::get()->print();
     bh::Bsins<TastB>::get()->print();
 }
 
 void test_2()
 {
-    vloga("开放式静态单例");
+    vloga("开放式静态单例\n");
     bh::Bsins<TastC>::get()->print();
     bh::Bsins<TastC>::get()->s = "IDSIN S";
     bh::Bsins<TastC>::get()->print();
@@ -57,10 +57,75 @@ void test_2()
 
 void test_3()
 {
-    vloga("自动销毁");
+    vloga("自动销毁\n");
     bh::Bexit a([]() {
         vlogd("exit func");
     });
+}
+
+class TastDA : public bh::Bsins<TastDA>
+{
+public:
+    friend bh::Bsins<TastDA>;
+    void print() { vlogd("hellow world A"); }
+
+protected:
+    TastDA() { vlogd("TastDA构造函数"); }
+    ~TastDA() { vlogd("TastDA析构"); }
+};
+
+class TastDB : public bh::Bsind<TastDB>
+{
+public:
+    friend bh::Bsind<TastDB>;
+    void print() { vlogd("hellow world B"); }
+
+protected:
+    TastDB() { vlogd("TastDB构造函数"); }
+    ~TastDB() { vlogd("TastDB析构"); }
+};
+
+class TastDC
+{
+public:
+    void print() { vlogd("hellow world C"); }
+    TastDC()
+    {
+        vlogd("TastDC构造函数");
+        static bh::Bexit exit([=]() {
+            delete this;
+        });
+    }
+    ~TastDC() { vlogd("TastDC析构"); }
+};
+
+class TastDD
+{
+public:
+    void print() { vlogd("hellow world D"); }
+    TastDD()
+    {
+        vlogd("TastDD构造函数");
+        static bh::Bexit exit([=]() {
+            delete this;
+        });
+    }
+    ~TastDD() { vlogd("TastDD析构"); }
+};
+
+void test_4()
+{
+    vloga("析构测试\n");
+    TastDA::get()->print();
+    TastDA::get()->print();
+    TastDB::get()->print();
+    TastDB::get()->print();
+
+    bh::Bsind<TastDC>::get()->print();
+    bh::Bsind<TastDC>::get()->print();
+
+    bh::Bsins<TastDD>::get()->print();
+    bh::Bsins<TastDD>::get()->print();
 }
 
 int main(int argc, char *argv[])
@@ -68,6 +133,7 @@ int main(int argc, char *argv[])
     test_1();
     test_2();
     test_3();
+    test_4();
 
     return 0;
 }

@@ -253,6 +253,10 @@ if(ALL OR main_Btest)
     add_executable(main_Btest test/main_Btest.cpp)
 endif()
 
+if(ALL OR main_Bbuf)
+    add_executable(main_Bbuf test/main_Bbuf.cpp)
+endif()
+
 
 
 # 生成目标

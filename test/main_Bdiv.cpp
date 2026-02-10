@@ -46,8 +46,7 @@ void test_1()
     auto f4 = bh::Bdiv("##11##22##33##44##")("##", 2, -3);
     auto f5 = bh::Bdiv("##11##22##33##44##")("##", 3, -3);
 
-    vloga("\n基础分割测试");
-    vloga("切割测试");
+    vloga("基础分割测试\n");
     BHTEST_EQUAL(a1, "11");
     BHTEST_EQUAL(a2, "22");
     BHTEST_EQUAL(a3, "33");
@@ -112,7 +111,7 @@ void test_2()
     auto c3 = bh::Bdiv("###111###222###333###444")("###", -1, -1);
     auto c4 = bh::Bdiv("###111###222###333###444")("###", -4, -4);
 
-    vloga("\n反向测试");
+    vloga("反向测试\n");
     vloga("多段分割");
     BHTEST_EQUAL(a1, "11##22");
     BHTEST_EQUAL(a2, "11##22##33");
@@ -144,7 +143,7 @@ void test_3()
     auto a5 =
         bh::Bdiv("[main_Bdiv.cpp:102][2026-02-06.21:25:19.664]")("main_Bdiv", 1, 1, "cpp", 0, 0);
 
-    vloga("\n多次分割测试");
+    vloga("多次分割测试\n");
     vloga("精准分割");
     BHTEST_EQUAL(a1, "cpp");
     BHTEST_EQUAL(a2, "2026");
@@ -163,7 +162,7 @@ void test_4()
                                                                        1, 1);
     }
 
-    vloga("\n性能测试");
+    vloga("性能测试\n");
     vloga("时间打印");
     vlogd($(sum) $(s1) $(t1.to_str()));
     BHTEST_EQUAL(s1, "1992/4/3");

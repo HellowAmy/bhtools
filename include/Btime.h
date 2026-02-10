@@ -39,7 +39,7 @@ public:
     inline nanoseconds time_interval() { return steady_clock::now() - _begin; }
 
     // 转自定义格式
-    inline static data to_data(const nanoseconds &loss)
+    inline static data to_data(nanoseconds loss)
     {
         data ret{0};
         ret.nan = loss.count();
@@ -50,7 +50,7 @@ public:
     }
 
     // 转字符显示
-    inline static dstr to_str(const nanoseconds &loss)
+    inline static dstr to_str(nanoseconds loss)
     {
         // 顺序 [纳秒|微秒|毫秒|秒]
         data d = to_data(loss);
@@ -154,7 +154,7 @@ public:
 
     // 返回C++标准库的UTC时间-具体地区的时间偏移需要自行计算
     // 参考 Howard Hinnant 的时间算法-无需使用月份查表的推算日期方式
-    inline static data to_data(const nanoseconds &point)
+    inline static data to_data(nanoseconds point)
     {
         // 获取自 1970-01-01 以来的总纳秒数
         data d{0};
@@ -336,6 +336,286 @@ public:
         }
         return ret;
     }
+};
+
+class Btimefms : public Btimes
+{
+public:
+    struct posdate
+    {
+        int32 bpos = 0;
+        int32 epos = 0;
+        inline int32 size() { return epos - bpos; }
+    };
+
+    struct record
+    {
+        posdate yea;
+        posdate mon;
+        posdate day;
+        posdate hou;
+        posdate min;
+        posdate sec;
+        posdate mil;
+        posdate mic;
+        posdate nan;
+    };
+
+public:
+    Btimefms(Bview fm = "YYYY-MM-DD.HH:TT:SS.LLL.CCC.NNN") { set_format(fm); }
+
+    inline void set_format(Bview fm)
+    {
+        if(_cache_date != nullptr) {
+            delete[] _cache_date;
+        }
+        _cache_date = new char[fm.size() + 1];
+        std::memset(_cache_date, 0, fm.size() + 1);
+        std::memcpy(_cache_date, fm.data(), fm.size());
+
+        // _cache_date.clear();
+        // _cache_date.append(fm.data(), fm.size());
+
+        for(int32 i = 0; i < fm.size(); i++) {
+            char c = fm[i];
+
+            if(c == 'Y') {
+                if(_rec.yea.bpos != _rec.yea.epos) {
+                    _rec.yea.epos++;
+                }
+                else {
+                    _rec.yea.bpos = i;
+                    _rec.yea.epos = _rec.yea.bpos + 1;
+                }
+            }
+            else if(c == 'M') {
+                if(_rec.mon.bpos != _rec.mon.epos) {
+                    _rec.mon.epos++;
+                }
+                else {
+                    _rec.mon.bpos = i;
+                    _rec.mon.epos = _rec.mon.bpos + 1;
+                }
+            }
+            else if(c == 'D') {
+                if(_rec.day.bpos != _rec.day.epos) {
+                    _rec.day.epos++;
+                }
+                else {
+                    _rec.day.bpos = i;
+                    _rec.day.epos = _rec.day.bpos + 1;
+                }
+            }
+            else if(c == 'H') {
+                if(_rec.hou.bpos != _rec.hou.epos) {
+                    _rec.hou.epos++;
+                }
+                else {
+                    _rec.hou.bpos = i;
+                    _rec.hou.epos = _rec.hou.bpos + 1;
+                }
+            }
+            else if(c == 'T') {
+
+                if(_rec.min.bpos != _rec.min.epos) {
+                    _rec.min.epos++;
+                }
+                else {
+                    _rec.min.bpos = i;
+                    _rec.min.epos = _rec.min.bpos + 1;
+                }
+            }
+            else if(c == 'S') {
+                if(_rec.sec.bpos != _rec.sec.epos) {
+                    _rec.sec.epos++;
+                }
+                else {
+                    _rec.sec.bpos = i;
+                    _rec.sec.epos = _rec.sec.bpos + 1;
+                }
+            }
+            else if(c == 'L') {
+                if(_rec.mil.bpos != _rec.mil.epos) {
+                    _rec.mil.epos++;
+                }
+                else {
+                    _rec.mil.bpos = i;
+                    _rec.mil.epos = _rec.mil.bpos + 1;
+                }
+            }
+            else if(c == 'C') {
+                if(_rec.mic.bpos != _rec.mic.epos) {
+                    _rec.mic.epos++;
+                }
+                else {
+                    _rec.mic.bpos = i;
+                    _rec.mic.epos = _rec.mic.bpos + 1;
+                }
+            }
+            else if(c == 'N') {
+                if(_rec.nan.bpos != _rec.nan.epos) {
+                    _rec.nan.epos++;
+                }
+                else {
+                    _rec.nan.bpos = i;
+                    _rec.nan.epos = _rec.nan.bpos + 1;
+                }
+            }
+        }
+    }
+
+    inline dstr get_now_date() { return get_date(time_now()); }
+
+    inline dstr get_date(nanoseconds point)
+    {
+        // 同一天不计算日期
+        data d{0};
+        int64 day = get_cur_day(point, d);
+        if(_cur_day == day) {
+            push_number(_rec.hou, d.hou);
+            push_number(_rec.min, d.min);
+            push_number(_rec.sec, d.sec);
+            push_number(_rec.mil, d.mil);
+            push_number(_rec.mic, d.mic);
+            push_number(_rec.nan, d.nan);
+            return dstr(_cache_date, strlen(_cache_date));
+        }
+
+        // 新一天重新计算日期
+        d = to_data(point);
+        push_number(_rec.yea, d.yea);
+        push_number(_rec.mon, d.mon);
+        push_number(_rec.day, d.day);
+        push_number(_rec.hou, d.hou);
+        push_number(_rec.min, d.min);
+        push_number(_rec.sec, d.sec);
+        push_number(_rec.mil, d.mil);
+        push_number(_rec.mic, d.mic);
+        push_number(_rec.nan, d.nan);
+        _cur_day = day;
+        return dstr(_cache_date, strlen(_cache_date));
+    }
+
+    // protected:
+
+    // 计算总天数
+    inline int64 get_cur_day(nanoseconds point, data &d)
+    {
+
+        int64 count = point.count();
+
+        // 从纳秒中获取秒和亚秒-亚秒指不足一秒的余数
+        int64 total_sec = count / _tnan_sec;
+        int64 sub_nan = count % _tnan_sec;
+
+        // 处理负时间戳-1970年以前的日期-从秒中借位到亚秒
+        if(sub_nan < 0) {
+            total_sec--;
+            sub_nan += _tnan_sec;
+        }
+
+        // 获取纳秒数-从亚秒中提取毫秒到纳秒的值
+        int64 rem_nan = sub_nan % _tnan_mil;
+        d.mil = sub_nan / _tnan_mil;
+        d.mic = rem_nan / _tnan_mic;
+        d.nan = rem_nan % _tnan_mic;
+
+        // 从秒数中算出总天数
+        int64 days = total_sec / _tsec_day;
+        int64 rem_sec = total_sec % _tsec_day;
+
+        // 获取到亚天-不足时从天中借位到亚天
+        if(rem_sec < 0) {
+            days--;
+            rem_sec += _tsec_day;
+        }
+
+        // 获取分钟数-提取小时到秒的值
+        int64 rem_m = rem_sec % _tsec_hou;
+        d.hou = rem_sec / _tsec_hou;
+        d.min = rem_m / _tsec_min;
+        d.sec = rem_m % _tsec_min;
+        return days;
+    }
+
+    inline dchp ptr_cache(int32 pos) { return _cache_date + pos; }
+
+    inline int32 push_number(posdate pos, int64 val)
+    {
+        push_number(ptr_cache(pos.bpos), pos.size(), val);
+    }
+
+    // 推入时间缓冲区
+    inline int32 push_number(dchp first, int32 len, int64 val)
+    {
+        uint32 vlen = get_number_len(val);
+        for(int32 i = 0; i < len - vlen; i++) {
+            *first = '0';
+            first++;
+        }
+        get_number_chars(first, vlen, val);
+        return len;
+    }
+
+    // 以下数字转字符代码参考 std::to_string 函数 C++11 charconv 的实现
+    // 计算数字的字符长度
+    template <typename T>
+    static constexpr uint32 get_number_len(T value, int32 base = 10) noexcept
+    {
+        uint32 count = 1;
+        const uint32 base2 = base * base;
+        const uint32 base3 = base2 * base;
+        const uint64 base4 = (uint64)base3 * base;
+        while(true) {
+            if(value < (uint32)base) {
+                return count;
+            }
+            if(value < base2) {
+                return count + 1;
+            }
+            if(value < base3) {
+                return count + 2;
+            }
+            if(value < base4) {
+                return count + 3;
+            }
+            value /= base4;
+            count += 4;
+        }
+    }
+
+    // 数字转字符
+    template <typename T>
+    static void get_number_chars(dchp first, uint32 len, T val) noexcept
+    {
+        static constexpr char digits_lut[201] = "0001020304050607080910111213141516171819"
+                                                "2021222324252627282930313233343536373839"
+                                                "4041424344454647484950515253545556575859"
+                                                "6061626364656667686970717273747576777879"
+                                                "8081828384858687888990919293949596979899";
+        uint32 pos = len - 1;
+        while(val >= 100) {
+            const auto num = (val % 100) * 2;
+            val /= 100;
+
+            first[pos] = digits_lut[num + 1];
+            first[pos - 1] = digits_lut[num];
+            pos -= 2;
+        }
+        if(val >= 10) {
+            const auto num = val * 2;
+            first[1] = digits_lut[num + 1];
+            first[0] = digits_lut[num];
+        }
+        else {
+            first[0] = '0' + (char)val;
+        }
+    }
+
+    // protected:
+    int64 _cur_day = 0;
+    dchp _cache_date = nullptr;
+    record _rec;
 };
 
 } // namespace bh

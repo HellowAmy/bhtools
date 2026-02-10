@@ -30,7 +30,7 @@ void test_1()
     auto b1 = bh::Bfm("{}{}{}{}")(100, 3.14, true, "hello");
     auto b2 = bh::Bfm("#{}#{}#{}#{}#")(100, 3.14, true, "hello");
 
-    vloga("边界检查");
+    vloga("边界检查\n");
     BHTEST_EQUAL(s1, "123");
     BHTEST_EQUAL(s2, "100200300");
     BHTEST_EQUAL(s3, "123456789");
@@ -105,7 +105,7 @@ void test_2()
     // auto p5 = t1.time_interval();
     // t1.update();
 
-    vloga("性能测试");
+    vloga("性能测试\n");
     vlogd($(t1.to_str(p1)));
     vlogd($(t1.to_str(p2)));
     // vlogd($(t1.to_str(p3)));
