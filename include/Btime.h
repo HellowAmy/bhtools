@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <thread>
 
+#include "Bbuf.h"
 #include "Bview.h"
 #include "Btype.h"
 #include "Bto.h"
@@ -338,9 +339,11 @@ public:
     }
 };
 
+// 格式化时间速度优化
 class Btimefms : public Btimes
 {
 public:
+    // 记录下标
     struct posdate
     {
         int32 bpos = 0;
@@ -348,6 +351,7 @@ public:
         inline int32 size() { return epos - bpos; }
     };
 
+    // 记录所有格式占位符位置
     struct record
     {
         posdate yea;
@@ -362,20 +366,16 @@ public:
     };
 
 public:
-    Btimefms(Bview fm = "YYYY-MM-DD.HH:TT:SS.LLL.CCC.NNN") { set_format(fm); }
+    Btimefms(Bview fm = "YYYY-MM-DD.HH:TT:SS.LLL.CCC.NNN") : _buf(fm.size()) { set_format(fm); }
 
+    // 记录格式符
     inline void set_format(Bview fm)
     {
-        if(_cache_date != nullptr) {
-            delete[] _cache_date;
+        if(_buf.size() < fm.size()) {
+            _buf.reserve(fm.size());
         }
-        _cache_date = new char[fm.size() + 1];
-        std::memset(_cache_date, 0, fm.size() + 1);
-        std::memcpy(_cache_date, fm.data(), fm.size());
-
-        // _cache_date.clear();
-        // _cache_date.append(fm.data(), fm.size());
-
+        _buf.clear();
+        _buf += fm;
         for(int32 i = 0; i < fm.size(); i++) {
             char c = fm[i];
 
@@ -464,9 +464,11 @@ public:
         }
     }
 
-    inline dstr get_now_date() { return get_date(time_now()); }
+    // 获取当前时间
+    inline Bview get_now_date() { return get_date(time_now()); }
 
-    inline dstr get_date(nanoseconds point)
+    // 获取时间字符串
+    inline Bview get_date(nanoseconds point)
     {
         // 同一天不计算日期
         data d{0};
@@ -478,7 +480,7 @@ public:
             push_number(_rec.mil, d.mil);
             push_number(_rec.mic, d.mic);
             push_number(_rec.nan, d.nan);
-            return dstr(_cache_date, strlen(_cache_date));
+            return _buf.to_view();
         }
 
         // 新一天重新计算日期
@@ -493,18 +495,15 @@ public:
         push_number(_rec.mic, d.mic);
         push_number(_rec.nan, d.nan);
         _cur_day = day;
-        return dstr(_cache_date, strlen(_cache_date));
+        return _buf.to_view();
     }
 
-    // protected:
-
+protected:
     // 计算总天数
     inline int64 get_cur_day(nanoseconds point, data &d)
     {
-
-        int64 count = point.count();
-
         // 从纳秒中获取秒和亚秒-亚秒指不足一秒的余数
+        int64 count = point.count();
         int64 total_sec = count / _tnan_sec;
         int64 sub_nan = count % _tnan_sec;
 
@@ -538,15 +537,14 @@ public:
         return days;
     }
 
-    inline dchp ptr_cache(int32 pos) { return _cache_date + pos; }
-
-    inline int32 push_number(posdate pos, int64 val)
+    //
+    inline void push_number(posdate pos, int64 val)
     {
-        push_number(ptr_cache(pos.bpos), pos.size(), val);
+        push_number(_buf.data() + pos.bpos, pos.size(), val);
     }
 
     // 推入时间缓冲区
-    inline int32 push_number(dchp first, int32 len, int64 val)
+    inline void push_number(dchp first, int32 len, int64 val)
     {
         uint32 vlen = get_number_len(val);
         for(int32 i = 0; i < len - vlen; i++) {
@@ -554,7 +552,6 @@ public:
             first++;
         }
         get_number_chars(first, vlen, val);
-        return len;
     }
 
     // 以下数字转字符代码参考 std::to_string 函数 C++11 charconv 的实现
@@ -613,8 +610,9 @@ public:
     }
 
     // protected:
+public:
     int64 _cur_day = 0;
-    dchp _cache_date = nullptr;
+    Bbuf _buf;
     record _rec;
 };
 

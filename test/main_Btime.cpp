@@ -92,7 +92,7 @@ void test_3()
 
 void test_4()
 {
-    int sum = 100 * 10000;
+    int sum = 1000 * 10000;
     bh::Btimel t1;
     bh::Btimefms ts1;
 
@@ -121,7 +121,7 @@ void test_4()
     auto tt1 = t1.time_interval();
 
     t1.update();
-    bh::dstr ss2;
+    bh::Bview ss2;
     for(int i = 0; i < sum; i++) {
         p2 += one_day_ns;
         ss2 = ts1.get_date(p2);
@@ -129,7 +129,7 @@ void test_4()
     auto tt2 = t1.time_interval();
 
     t1.update();
-    bh::dstr ss3;
+    bh::Bview ss3;
     for(int i = 0; i < sum; i++) {
         // p3 += one_day_ns;
         ss3 = ts1.get_date(p3);
@@ -140,26 +140,17 @@ void test_4()
     vlogd($(t1.to_str(tt2)));
     vlogd($(t1.to_str(tt3)));
     vlogd($(ss1));
-    vlogd($(ss2));
-    vlogd($(ss3));
-}
+    vlogd($(ss2.to_str()));
+    vlogd($(ss3.to_str()));
 
-void test_5()
-{
-    bh::Btimefms ts1;
-    auto p1 = ts1.get_now_date();
-    vlogd($(p1));
-
-    // vlogd($(ts1._rec.yea.bpos) $(ts1._rec.yea.epos)  $(ts1._rec.yea.size()));
-    // vlogd($(ts1._rec.mon.bpos) $(ts1._rec.mon.epos)  $(ts1._rec.mon.size()));
-    // vlogd($(ts1._rec.day.bpos) $(ts1._rec.day.epos)  $(ts1._rec.day.size()));
-    // vlogd($(ts1._rec.hou.bpos) $(ts1._rec.hou.epos)  $(ts1._rec.hou.size()));
-    // vlogd($(ts1._rec.min.bpos) $(ts1._rec.min.epos)  $(ts1._rec.min.size()));
-    // vlogd($(ts1._rec.sec.bpos) $(ts1._rec.sec.epos)  $(ts1._rec.sec.size()));
-    // vlogd($(ts1._rec.mil.bpos) $(ts1._rec.mil.epos)  $(ts1._rec.mil.size()));
-    // vlogd($(ts1._rec.mic.bpos) $(ts1._rec.mic.epos)  $(ts1._rec.mic.size()));
-    // vlogd($(ts1._rec.nan.bpos) $(ts1._rec.nan.epos)  $(ts1._rec.nan.size()));
- 
+    /*
+        [Deb]<<<< [t1.to_str(tt1): [nan: 4239671150|mic: 4239671|mil: 4239|sec: 4]]
+        [Deb]<<<< [t1.to_str(tt2): [nan: 1183129225|mic: 1183129|mil: 1183|sec: 1]]
+        [Deb]<<<< [t1.to_str(tt3): [nan: 691389492|mic: 691389|mil: 691|sec: 0]]
+        [Deb]<<<< [ss1: 1755-07-26.07:41:05.751.274.348]
+        [Deb]<<<< [ss2.to_str(): 1850-07-15.11:45:30.100.200.300]
+        [Deb]<<<< [ss3.to_str(): 1850-07-15.11:45:30.100.200.300]
+    */
 }
 
 int main(int argc, char *argv[])
@@ -169,7 +160,6 @@ int main(int argc, char *argv[])
     // test_2();
     // test_3();
     test_4();
-    // test_5();
 
     return 0;
 }
