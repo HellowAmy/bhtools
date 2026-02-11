@@ -2,8 +2,7 @@
 
 #include "Bdiv.h"
 #include "Btime.h"
-
-#include "Ftest.h"
+#include "Btest.h"
 
 void test_1()
 {
@@ -47,7 +46,7 @@ void test_1()
     auto f5 = bh::Bdiv("##11##22##33##44##")("##", 3, -3);
 
     vloga("基础分割测试\n");
-     BHTEST_EQUAL(a1.to_str(), "11");
+    BHTEST_EQUAL(a1.to_str(), "11");
     BHTEST_EQUAL(a2.to_str(), "22");
     BHTEST_EQUAL(a3.to_str(), "33");
     BHTEST_EQUAL(a4.to_str(), "44");
@@ -159,7 +158,8 @@ void test_4()
     bh::dstr s1;
     for(bh::int32 i = 0; i < sum; i++) {
         s1 = bh::Bdiv("##100##<<abc-hellow world-1992/4/3 15:12:54>>")("##", 2, 2, " ", 1, 1, "-",
-                                                                       1, 1).to_str();
+                                                                       1, 1)
+                 .to_str();
     }
 
     vloga("性能测试\n");

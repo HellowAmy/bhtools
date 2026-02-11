@@ -1,20 +1,21 @@
 #ifndef BTEST_H
 #define BTEST_H
 
-#include "Tlog.h"
+#include "Blog.h"
 
 namespace bh {
 
 // 测试宏
-#define BHLOG_MAKE_COLYES(out, end, ...)                                                           \
-    BHLOG_MAKE(out, "\033[32m[Yes]", "\033[0m" << end, e_deb, __VA_ARGS__)
+#define BHLOG_MAKE_COLYES(out, sfx, ...)                                                           \
+    BHLOG_MAKE(out, bh::bhenum::level::e_deb << "\033[32m[Yes]",                                   \
+               "\033[0m" << bh::bhenum::end::e_line, sfx, __VA_ARGS__)
 
-#define BHLOG_MAKE_COLBAD(out, end, ...)                                                           \
-    BHLOG_MAKE(out, "\033[31m[Bad]", "\033[0m" << end, e_deb, __VA_ARGS__)
+#define BHLOG_MAKE_COLBAD(out, sfx, ...)                                                           \
+    BHLOG_MAKE(out, bh::bhenum::level::e_deb << "\033[31m[Bad]",                                   \
+               "\033[0m" << bh::bhenum::end::e_line, sfx, __VA_ARGS__)
 
-#define BHLOG_YES(...) BHLOG_MAKE_COLYES(BHLOG_CONF(_cmd), BHLOG_CONF(_end), __VA_ARGS__)
-
-#define BHLOG_BAD(...) BHLOG_MAKE_COLBAD(BHLOG_CONF(_cmd), BHLOG_CONF(_end), __VA_ARGS__)
+#define BHLOG_YES(...) BHLOG_MAKE_COLYES(BHLOG_CONF(_cmd), BHLOG_CONF(_sufs), __VA_ARGS__)
+#define BHLOG_BAD(...) BHLOG_MAKE_COLBAD(BHLOG_CONF(_cmd), BHLOG_CONF(_sufs), __VA_ARGS__)
 
 // 值是否相等
 #define BHTEST_EQUAL(a, b)                                                                         \
