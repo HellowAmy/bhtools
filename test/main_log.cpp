@@ -250,12 +250,54 @@ void test_4()
     */
 }
 
+void test_5()
+{
+    bhtools::Ftimel t1;
+    int num = 1000 * 10000;
+    bool a1 = true;
+    int a2 = 10;
+    size_t a3 = 64;
+    double a4 = 6.66;
+    std::string a5 = "ss hellow";
+    const char *a6 = "cs hellow";
+
+    for(int i=0;i<num;i++)
+    {
+        nlogd($(a1) $(a2) $(a3) $(a4) $(a5) $(a6) $(i));
+    }
+    t1.push_point("time2",true);
+
+    for(int i=0;i<num;i++)
+    {
+        flogd($(a1) $(a2) $(a3) $(a4) $(a5) $(a6) $(i));
+    }
+    t1.push_point("time3",true);
+
+    for(int i=0;i<num;i++)
+    {
+        alogd($(a1) $(a2) $(a3) $(a4) $(a5) $(a6) $(i));
+    }
+    t1.push_point("time4",true);
+
+    vlogd($C(t1.check_vec()));
+
+    /*
+        [Deb]<<<< [t1.check_vec(): 
+        | size: 3
+        | time2 [nan: 11144186336|mic: 11144186|mil: 11144|sec: 11] 
+        | time3 [nan: 18978789139|mic: 18978789|mil: 18978|sec: 18] 
+        | time4 [nan: 17162295109|mic: 17162295|mil: 17162|sec: 17] 
+        ]  >>>>[/home/red/open/github/bhtools/test/main_log.cpp:282][2026-02-11.17:14:51.239]
+    */
+}
+
 int main(int argc, char *argv[])
 {
-    test_1();
+    // test_1();
     // test_2();
     // test_3();
     // test_4();
+    test_5();
 
     return 0;
 }

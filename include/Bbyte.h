@@ -3,7 +3,6 @@
 
 #include <string>
 #include <algorithm>
-#include <tuple>
 #include <cstring>
 #include <vector>
 #include <sstream>

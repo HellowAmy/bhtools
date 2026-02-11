@@ -3,6 +3,7 @@
 
 #include <sstream>
 #include <iomanip>
+#include <tuple>
 
 #include "Bview.h"
 #include "Btype.h"

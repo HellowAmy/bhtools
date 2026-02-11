@@ -1,8 +1,6 @@
 #ifndef BDESIGN_H
 #define BDESIGN_H
 
-#include <tuple>
-
 namespace bh {
 
 // 模板职责链-外部接口
