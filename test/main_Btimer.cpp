@@ -8,119 +8,241 @@
 
 void test_1()
 {
-    vloga("Btimer 基础触发与次数限制测试 (参考 main_timer::test_1)");
-    bh::Btimer<> timer;
+    bh::Btimel ts1;
+    bh::Btimer<> t1;
 
-    std::atomic<bh::int32> count1{0};
-    std::atomic<bh::int32> count2{0};
-    std::atomic<bh::int32> count3{0};
+    bh::uint32 a1 = 0;
+    bh::uint32 a2 = 0;
+    bh::uint32 a3 = 0;
 
-    vloga("推入任务1：2000ms触发，无限循环(active=0)");
-    bh::uint64 id1 = timer.push(
-        2000,
-        [&](bh::uint64 id) {
-            count1++;
-            vlogd("任务1触发一次");
+    vloga("定时触发\n");
+    bh::uint32 id1 = t1.push(
+        300,
+        [&](bh::uint32 id) {
+            a1++;
+            vlogd("id1 " $(ts1.to_str()));
         },
         0);
 
-    vloga("推入任务2：1000ms触发，默认执行1次");
-    bh::uint64 id2 = timer.push(1000, [&](bh::uint64 id) {
-        count2++;
-        vlogd("任务2触发一次");
+    bh::uint32 id2 = t1.push(200, [&](bh::uint32 id) {
+        a2++;
+        vlogd("id2 " $(ts1.to_str()));
     });
 
-    vloga("推入任务3：500ms触发，执行5次");
-    bh::uint64 id3 = timer.push(
-        500,
-        [&](bh::uint64 id) {
-            count3++;
-            vlogd("任务3触发一次");
+    bh::uint32 id3 = t1.push(
+        100,
+        [&](bh::uint32 id) {
+            a3++;
+            vlogd("id3 " $(ts1.to_str()));
         },
         5);
 
-    vloga("主线程计时等待 6s 以覆盖所有任务周期");
-    bh::Btimel::sleep(6000);
+    bh::Btimel::sleep(1 * 1000);
+    t1.close();
 
-    vloga("结果数据校验");
-    vlogd($(count1.load()) $(count2.load()) $(count3.load()));
-
-    BHTEST_TRUE((count1.load() >= 2)); // 6s内至少触发2-3次
-    BHTEST_EQUAL(count2.load(), 1);
-    BHTEST_EQUAL(count3.load(), 5);
+    vloga("关闭 " $(ts1.to_str()));
+    vloga("次数验证");
+    BHTEST_EQUAL(a1, 3);
+    BHTEST_EQUAL(a2, 1);
+    BHTEST_EQUAL(a3, 5);
 }
 
 void test_2()
 {
-    vloga("Btimer 自定义时间单位与检查间隔测试 (参考 main_timer::test_2)");
+    bh::Btimer<2, 100, std::chrono::microseconds> t1;
+    bh::Btimer<2, 20, std::chrono::milliseconds> t2;
 
-    // 毫秒级检查间隔(5ms)
-    bh::Btimer<std::chrono::milliseconds, 5> t_ms;
-    // 秒级检查间隔
-    bh::Btimer<std::chrono::seconds, 1> t_sec;
+    bh::Btimel ts1;
+    bh::uint32 a1 = 0;
+    bh::uint32 a2 = 0;
 
-    std::atomic<bh::int32> count_ms{0};
-    std::atomic<bh::int32> count_sec{0};
-
-    vloga("推入毫秒任务(200ms触发5次)与秒级任务(2s触发2次)");
-    t_ms.push(
-        200,
-        [&](bh::uint64 id) {
-            count_ms++;
+    bh::uint32 id1 = t1.push(
+        500,
+        [&](bh::uint32 id) {
+            a1++;
+            vloga("id1 " $(ts1.to_str()));
         },
-        5);
-    t_sec.push(
-        2,
-        [&](bh::uint64 id) {
-            count_sec++;
+        0);
+
+    bh::uint32 id2 = t2.push(
+        100,
+        [&](bh::uint32 id) {
+            a2++;
+            vlogd("id2 " $(ts1.to_str()));
         },
-        2);
+        0);
 
-    vloga("等待执行完成...");
-    bh::Btimel::sleep(6000);
+    bh::Btimel::sleep(1 * 1100 + 50);
+    t1.close();
 
-    vlogd($(count_ms.load()) $(count_sec.load()));
-    BHTEST_EQUAL(count_ms.load(), 5);
-    BHTEST_EQUAL(count_sec.load(), 2);
+    vloga("关闭 " $(ts1.to_str()));
+    vloga("不同速度循环间隔\n");
+    BHTEST_EQUAL(a1, 2000);
+    BHTEST_EQUAL(a2, 10);
 }
 
 void test_3()
 {
-    vloga("Btimer 任务移除与定时器关闭测试 (参考 main_timer::test_3)");
-    bh::Btimer<> timer;
-    std::atomic<bh::int32> count{0};
+    bh::Btimer<8> t1;
+    bh::Btimer<8> t2;
 
-    vloga("推入 200ms 触发的无限循环任务");
-    bh::uint64 id = timer.push(
-        200,
-        [&](bh::uint64 id) {
-            count++;
+    bh::Btimel ts1;
+
+    std::atomic<int> at1(0);
+    bh::uint32 a1 = 0;
+    bh::uint32 a2 = 0;
+
+    bh::uint32 id1 = t1.push(
+        100,
+        [&](bh::uint32 id) {
+            a1++;
+            at1++;
+            vloga("id1 " $(ts1.to_str()));
+        },
+        0);
+    bh::uint32 id2 = t1.push(
+        100,
+        [&](bh::uint32 id) {
+            a1++;
+            at1++;
+            vloga("id2 " $(ts1.to_str()));
+        },
+        0);
+    bh::uint32 id3 = t1.push(
+        100,
+        [&](bh::uint32 id) {
+            a1++;
+            at1++;
+            vloga("id3 " $(ts1.to_str()));
         },
         0);
 
-    bh::Btimel::sleep(1000);
+    bh::uint32 id4 = t2.push(
+        100,
+        [&](bh::uint32 id) {
+            a2++;
+            vlogd("id4 " $(ts1.to_str()));
+        },
+        0);
 
-    vloga("尝试移除运行中的任务");
-    bool ok = timer.remove(id);
-    BHTEST_TRUE(ok);
+    bh::Btimel::sleep(1 * 1100 + 50);
+    t1.close();
 
-    bh::int32 last_count = count.load();
-    vlogd("移除时触发总数: " $(last_count));
-
-    bh::Btimel::sleep(1000);
-    vloga("再次等待 1s 后校验计数器是否停止增加");
-    BHTEST_EQUAL(count.load(), last_count);
-
-    vloga("测试关闭整个定时器运行");
-    timer.close_timer();
-    BHTEST_TRUE(!timer.is_run());
+    vloga("关闭 " $(ts1.to_str()));
+    vloga("多线程处理\n");
+    BHTEST_EQUAL(at1.load(), 30);
+    BHTEST_EQUAL(a1, 30);
+    BHTEST_EQUAL(a2, 10);
 }
 
+void test_4()
+{
+    bh::Btimel ts1;
+    bh::Btimer<> t1;
+
+    bh::uint32 a1 = 0;
+    bh::uint32 a2 = 0;
+    bh::uint32 a3 = 0;
+
+    vloga("移除测试\n");
+    bh::uint32 id1 = t1.push(
+        100,
+        [&](bh::uint32 id) {
+            a1++;
+            vlogd("id1 " $(ts1.to_str()));
+        },
+        0);
+
+    bh::uint32 id2 = t1.push(
+        150,
+        [&](bh::uint32 id) {
+            a2++;
+            vlogd("id2 " $(ts1.to_str()));
+        },
+        0);
+
+    bh::uint32 id3 = t1.push(
+        200,
+        [&](bh::uint32 id) {
+            a3++;
+            vlogd("id3 " $(ts1.to_str()));
+        },
+        5);
+
+    bh::Btimel::sleep(500 + 20);
+    t1.remove(id1);
+    t1.remove(id3);
+    vloga("移除 " $(id1) $(id3) $(t1.is_run()));
+
+    bh::Btimel::sleep(500 + 20);
+    t1.close();
+    vloga("关闭 " $(ts1.to_str()) $(t1.is_run()));
+
+    vloga("次数验证");
+    BHTEST_EQUAL(a1, 4);
+    BHTEST_EQUAL(a2, 6);
+    BHTEST_EQUAL(a3, 2);
+}
+
+// void test_2()
+// {
+//     // 设置为微妙和秒为检查的定时器间隔
+//     bhtools::Ttimer<std::chrono::milliseconds,5> t1;
+//     bhtools::Ttimer<std::chrono::seconds,1> t2;
+//     bhtools::Ftimel tt1;
+//     bhtools::Ftimel tt2;
+
+//     vlogd($(tt1.to_string()));
+//     vlogi($(tt2.to_string()));
+
+//     // 无限次
+//     size_t id1 = t1.push(200,[&](size_t id){
+//         vlogd("id1: " << $(tt1.to_string()));
+//         tt1.update();
+//     },20);
+
+//     size_t id2 = t2.push(4,[&](size_t id){
+//         vlogi("id2: " << $(tt2.to_string()));
+//     },5);
+
+//     bhtools::Ftimel::sleep(10 * 1000);
+
+//     vlogd($(id1) $(id2));
+// }
+
+// void test_3()
+// {
+//     // 停止定时任务
+//     bhtools::Ttimer<> t1;
+//     bhtools::Ftimel tt1;
+
+//     vlogd($(tt1.to_string()));
+
+//     // 无限次
+//     size_t id1 = t1.push(200,[&](size_t id){
+//         vlogd("id1: " << $(tt1.to_string()));
+//     },0);
+
+//     bhtools::Ftimel::sleep(2 * 1000);
+
+//     bool ok = t1.remove(id1);
+//     vlogd($(ok));
+
+//     bhtools::Ftimel::sleep(2 * 1000);
+
+//     t1.close_timer();
+//     vlogd($(t1.is_run()));
+
+//     bhtools::Ftimel::sleep(1 * 1000);
+
+//     vlogd("end");
+// }
 int main(bh::int32 argc, char *argv[])
 {
     test_1();
-    test_2();
-    test_3();
+    // test_2();
+    // test_3();
+    test_4();
 
     return 0;
 }

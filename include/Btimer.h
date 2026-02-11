@@ -12,7 +12,7 @@ namespace bh {
 // 多线程定时器-在子线程开启事件循环监控时间-其他子线程处理任务-至少存在2个子线程才能导致定时延时
 // 可自定义定时器的精度-事件循环间隔-任务线程池数量
 // 定时精度不高-精度通常在20毫秒内
-template <typename Tduration = std::chrono::milliseconds, uint64 Tinterval = 20, uint32 Tths = 2>
+template <uint32 Tths = 2, uint32 Tinterval = 20, typename Tduration = std::chrono::milliseconds>
 class Btimer
 {
 public:
@@ -23,14 +23,14 @@ public:
     struct task
     {
         task() {}
-        task(uint64 id) : _id(id) {}
+        task(uint32 id) : _id(id) {}
 
         bool _never;                       // 永不停止
-        uint64 _id;                        // 定时器任务ID
-        uint64 _active;                    // 活动数规定执行次数
+        uint32 _id;                        // 定时器任务ID
+        uint32 _active;                    // 活动数规定执行次数
         Tduration _start;                  // 任务开始时间
         Tduration _delay;                  // 任务延时时间-加入多久后会被执行
-        std::function<void(uint64)> _task; // 回调函数
+        std::function<void(uint32)> _task; // 回调函数
 
         // 最大堆需实现
         bool operator>(const task &ct) const { return _start > ct._start; }
@@ -47,10 +47,10 @@ public:
     Btimer() { _works.push(&Btimer::start_event_loop, this); }
 
     // 析构时退出事件循环
-    ~Btimer() { close_timer(); }
+    ~Btimer() { close(); }
 
     // 加入定时任务到执行队列
-    inline uint64 push(Tduration delay, std::function<void(uint64)> fn, uint64 active = 1)
+    inline uint32 push(Tduration delay, std::function<void(uint32)> fn, uint32 active = 1)
     {
         task ct;
         ct._id = _count++;
@@ -70,19 +70,19 @@ public:
     }
 
     // 加入定时任务到执行队列-重载
-    inline uint64 push(uint64 delay, std::function<void(uint64)> fn, uint64 active = 1)
+    inline uint32 push(uint32 delay, std::function<void(uint32)> fn, uint32 active = 1)
     {
         return push(std::chrono::duration_cast<Tduration>(Tduration(delay)), fn, active);
     }
 
     // 移除指定ID定时任务
-    inline bool remove(uint64 id) { return remove_task_th(id); }
+    inline bool remove(uint32 id) { return remove_task_th(id); }
 
     // 查看是否运行-关闭后会自行销毁不可重启
     inline bool is_run() { return _run; }
 
     // 关闭定时器
-    inline void close_timer() { _run = false; }
+    inline void close() { _run = false; }
 
 protected:
     // 开始定时器时间循环
@@ -129,7 +129,7 @@ protected:
     }
 
     // 移除指定ID定时任务
-    inline bool remove_task_th(uint64 id)
+    inline bool remove_task_th(uint32 id)
     {
         std::unique_lock<std::mutex> lock(_mut);
         return _heap.remove_node(task(id));
@@ -158,7 +158,7 @@ protected:
 
 protected:
     bool _run = true;      // 事件循环运行标记
-    uint64 _count = 0;     // 任务数量累计-并作为新的任务ID发布
+    uint32 _count = 0;     // 任务数量累计-并作为新的任务ID发布
     std::mutex _mut;       // 定时器任务锁
     Bpool<Tths> _works;    // 定时任务线程池
     Bheap_min<task> _heap; // 最小堆定时排队
