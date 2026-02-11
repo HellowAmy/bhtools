@@ -6,12 +6,12 @@
 
 namespace bh {
 
-// 使用RAII机制的自动退出函数-通常在构造时传入退出函数
+// RAII机制-退出时触发
 class Bexit
 {
 public:
     // 构造时获取退出函数
-    Bexit(std::function<void()> fn) { _fn = fn; }
+    Bexit(std::function<void()> fn) : _fn(std::move(fn)) {}
 
     // 析造时执行退出函数
     ~Bexit()
@@ -20,6 +20,10 @@ public:
             _fn();
         }
     }
+
+protected:
+    Bexit(const Bexit &) = delete;
+    Bexit &operator=(const Bexit &) = delete;
 
 protected:
     std::function<void()> _fn = nullptr;
@@ -37,22 +41,21 @@ class Bsins
 {
 public:
     // 返回对象
-    static T *get() { return _obj; }
+    static T *get()
+    {
+        static Bexit exit([]() {
+            delete _obj;
+        });
+        return _obj;
+    }
 
 protected:
     static T *_obj;                // 静态对象指针
     friend T;                      // 设置友元
     Bsins(const Bsins &) = delete; // 删除复制
     Bsins(Bsins &&) = delete;      // 删除复制
+    Bsins() = default;             // 声明构造
     virtual ~Bsins() = default;    // 声明析构
-
-    // 退出时释放-触发数据析构
-    Bsins()
-    {
-        static Bexit exit([=]() {
-            delete _obj;
-        });
-    }
 };
 
 //
@@ -72,6 +75,10 @@ public:
             _mut.lock();
             if(_obj == nullptr) {
                 _obj = new T;
+
+                static Bexit exit([]() {
+                    delete _obj;
+                });
             }
             _mut.unlock();
         }
@@ -81,10 +88,12 @@ public:
     // 清除对象
     void clean()
     {
-        _mut.lock();
-        delete _obj;
-        _obj = nullptr;
-        _mut.unlock();
+        if(_obj) {
+            _mut.lock();
+            delete _obj;
+            _obj = nullptr;
+            _mut.unlock();
+        }
     }
 
 protected:
@@ -93,14 +102,8 @@ protected:
     friend T;                      // 设置友元
     Bsind(const Bsind &) = delete; // 删除复制
     Bsind(Bsind &&) = delete;      // 删除复制
-    ~Bsind() = default;            // 声明析构
-
-    Bsind()
-    {
-        static Bexit exit([=]() {
-            delete _obj;
-        });
-    }
+    Bsind() = default;             // 声明构造
+    virtual ~Bsind() = default;    // 声明析构
 };
 
 // 静态变量外部声明

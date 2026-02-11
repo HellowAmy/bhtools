@@ -2,8 +2,7 @@
 
 #include "Bsin.h"
 #include "Btype.h"
-
-#include "Ftest.h"
+#include "Btest.h"
 
 // 继承式单例-继承单例会自己调用析构-否则需要手动调用
 class TastA : public bh::Bsins<TastA>
@@ -89,13 +88,7 @@ class TastDC
 {
 public:
     void print() { vlogd("hellow world C"); }
-    TastDC()
-    {
-        vlogd("TastDC构造函数");
-        static bh::Bexit exit([=]() {
-            delete this;
-        });
-    }
+    TastDC() { vlogd("TastDC构造函数"); }
     ~TastDC() { vlogd("TastDC析构"); }
 };
 
@@ -103,13 +96,7 @@ class TastDD
 {
 public:
     void print() { vlogd("hellow world D"); }
-    TastDD()
-    {
-        vlogd("TastDD构造函数");
-        static bh::Bexit exit([=]() {
-            delete this;
-        });
-    }
+    TastDD() { vlogd("TastDD构造函数"); }
     ~TastDD() { vlogd("TastDD析构"); }
 };
 
@@ -130,6 +117,7 @@ void test_4()
 
 int main(int argc, char *argv[])
 {
+    //
     test_1();
     test_2();
     test_3();

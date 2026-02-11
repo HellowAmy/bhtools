@@ -4,7 +4,6 @@
 #include "Btype.h"
 #include "Btest.h"
 #include "Bbuf.h"
-#include "Tlog.h"
 
 void test_1()
 {
@@ -151,6 +150,7 @@ void test_4()
 
 int main(bh::int32 argc, char *argv[])
 {
+    //
     test_1();
     test_2();
     test_3();
