@@ -143,7 +143,6 @@ public:
         uint32 count = 0;
         uint32 sum = 0;
         dstr ret;
-
         for(uint32 i = 0; i < size_byte(val); i++) {
             if(val & _BH_ONE_LOW_) {
                 sum += calc_exp(2, count);
@@ -168,7 +167,6 @@ public:
         uint32 count = 0;
         uint32 sum = 0;
         dstr ret;
-
         for(uint32 i = 0; i < size_byte(val); i++) {
             if(val & _BH_ONE_LOW_) {
                 sum += calc_exp(2, count);
