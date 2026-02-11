@@ -9,7 +9,8 @@
 
 namespace bh {
 
-// 多线程定时器-在子线程开启事件循环监控时间-其他子线程处理任务-至少存在2个子线程才能导致定时延时
+// 多线程定时器-至少存在2个子线程才能导致定时延时
+// 在子线程开启事件循环监控时间-其他子线程处理任务
 // 可自定义定时器的精度-事件循环间隔-任务线程池数量
 // 定时精度不高-精度通常在20毫秒内
 template <uint32 Tths = 2, uint32 Tinterval = 20, typename Tduration = std::chrono::milliseconds>
@@ -111,7 +112,7 @@ protected:
                     rct._active--;
                 }
                 if(rct._never || rct._active > 0) {
-                    rct._start = now + rct._delay;
+                    rct._start = now + rct._delay - (now - rct._start);
                     insert_task_th(rct);
                 }
             }

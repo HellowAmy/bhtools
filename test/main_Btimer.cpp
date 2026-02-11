@@ -49,8 +49,8 @@ void test_1()
 
 void test_2()
 {
-    bh::Btimer<2, 100, std::chrono::microseconds> t1;
-    bh::Btimer<2, 20, std::chrono::milliseconds> t2;
+    bh::Btimer<2, 100> t1;
+    bh::Btimer<2, 20> t2;
 
     bh::Btimel ts1;
     bh::uint32 a1 = 0;
@@ -184,65 +184,68 @@ void test_4()
     BHTEST_EQUAL(a3, 2);
 }
 
-// void test_2()
-// {
-//     // 设置为微妙和秒为检查的定时器间隔
-//     bhtools::Ttimer<std::chrono::milliseconds,5> t1;
-//     bhtools::Ttimer<std::chrono::seconds,1> t2;
-//     bhtools::Ftimel tt1;
-//     bhtools::Ftimel tt2;
+void test_5()
+{
+    using namespace std::chrono;
+    bh::Btimel ts1;
+    bh::Btimer<> t1;
+    milliseconds ms1(0);
 
-//     vlogd($(tt1.to_string()));
-//     vlogi($(tt2.to_string()));
+    vloga("下一个任务间隔\n");
+    bh::uint32 id1 = t1.push(
+        milliseconds(100),
+        [&](bh::uint32 id) {
+            static int count = 0;
+            count++;
+            auto a1 = duration_cast<milliseconds>(ts1.time_interval()).count() - count * 100;
 
-//     // 无限次
-//     size_t id1 = t1.push(200,[&](size_t id){
-//         vlogd("id1: " << $(tt1.to_string()));
-//         tt1.update();
-//     },20);
+            ms1 += milliseconds(a1);
+            vlogd("id1 " $(ts1.to_str()) $(a1));
+        },
+        0);
+    bh::Btimel::sleep(1 * 1000);
+    t1.close();
 
-//     size_t id2 = t2.push(4,[&](size_t id){
-//         vlogi("id2: " << $(tt2.to_string()));
-//     },5);
+    vloga("误差计算\n");
+    vlogd($(ms1.count()));
+}
 
-//     bhtools::Ftimel::sleep(10 * 1000);
+void test_6()
+{
+    vloga("长定时任务\n");
 
-//     vlogd($(id1) $(id2));
-// }
+    vloga("10分钟检查一次");
+    using namespace std::chrono;
+    bh::Btimel ts1;
+    bh::Btimer<8, 10, minutes> t1;
+    milliseconds ms1(0);
 
-// void test_3()
-// {
-//     // 停止定时任务
-//     bhtools::Ttimer<> t1;
-//     bhtools::Ftimel tt1;
+    vloga("1小时触发一次");
+    bh::uint32 id1 = t1.push(
+        hours(1),
+        [&](bh::uint32 id) {
+            static int count = 0;
+            count++;
+            auto a1 = duration_cast<milliseconds>(ts1.time_interval()).count() - count * 100;
+            ms1 += milliseconds(a1);
+            vlogd("id1 " $(ts1.to_str()) $(a1));
+        },
+        0);
+    bh::Btimel::sleep(10 * 1000);
+    t1.close();
 
-//     vlogd($(tt1.to_string()));
+    vloga("误差计算\n");
+    vlogd($(ms1.count()));
+}
 
-//     // 无限次
-//     size_t id1 = t1.push(200,[&](size_t id){
-//         vlogd("id1: " << $(tt1.to_string()));
-//     },0);
-
-//     bhtools::Ftimel::sleep(2 * 1000);
-
-//     bool ok = t1.remove(id1);
-//     vlogd($(ok));
-
-//     bhtools::Ftimel::sleep(2 * 1000);
-
-//     t1.close_timer();
-//     vlogd($(t1.is_run()));
-
-//     bhtools::Ftimel::sleep(1 * 1000);
-
-//     vlogd("end");
-// }
 int main(bh::int32 argc, char *argv[])
 {
-    test_1();
+    // test_1();
     // test_2();
     // test_3();
-    test_4();
+    // test_4();
+    test_5();
+    // test_6();
 
     return 0;
 }
