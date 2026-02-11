@@ -106,6 +106,8 @@ protected:
     type_base *_val = nullptr;             // 保存值的无类型指针
 };
 
+using BCany = const Bany &;
+
 } // namespace bh
 
 #endif // BANY_H

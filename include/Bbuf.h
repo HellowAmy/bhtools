@@ -166,6 +166,8 @@ protected:
     dchp _data = nullptr;
 };
 
+using BCbuf = const Bbuf &;
+
 } // namespace bh
 
 #endif // BBUF_H
