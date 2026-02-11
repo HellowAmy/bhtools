@@ -47,49 +47,49 @@ void test_1()
     auto f5 = bh::Bdiv("##11##22##33##44##")("##", 3, -3);
 
     vloga("基础分割测试\n");
-    BHTEST_EQUAL(a1, "11");
-    BHTEST_EQUAL(a2, "22");
-    BHTEST_EQUAL(a3, "33");
-    BHTEST_EQUAL(a4, "44");
-    BHTEST_EQUAL(a5, "");
+     BHTEST_EQUAL(a1.to_str(), "11");
+    BHTEST_EQUAL(a2.to_str(), "22");
+    BHTEST_EQUAL(a3.to_str(), "33");
+    BHTEST_EQUAL(a4.to_str(), "44");
+    BHTEST_EQUAL(a5.to_str(), "");
 
     vloga("边界测试");
-    BHTEST_EQUAL(b1, "");
-    BHTEST_EQUAL(b2, "11");
-    BHTEST_EQUAL(b3, "22");
-    BHTEST_EQUAL(b4, "33");
-    BHTEST_EQUAL(b5, "44");
-    BHTEST_EQUAL(b6, "");
-    BHTEST_EQUAL(b7, "");
+    BHTEST_EQUAL(b1.to_str(), "");
+    BHTEST_EQUAL(b2.to_str(), "11");
+    BHTEST_EQUAL(b3.to_str(), "22");
+    BHTEST_EQUAL(b4.to_str(), "33");
+    BHTEST_EQUAL(b5.to_str(), "44");
+    BHTEST_EQUAL(b6.to_str(), "");
+    BHTEST_EQUAL(b7.to_str(), "");
 
     vloga("反向测试");
-    BHTEST_EQUAL(c1, "44");
-    BHTEST_EQUAL(c2, "33");
-    BHTEST_EQUAL(c3, "22");
-    BHTEST_EQUAL(c4, "11");
-    BHTEST_EQUAL(c5, "");
+    BHTEST_EQUAL(c1.to_str(), "44");
+    BHTEST_EQUAL(c2.to_str(), "33");
+    BHTEST_EQUAL(c3.to_str(), "22");
+    BHTEST_EQUAL(c4.to_str(), "11");
+    BHTEST_EQUAL(c5.to_str(), "");
 
     vloga("边界反向测试");
-    BHTEST_EQUAL(d1, "");
-    BHTEST_EQUAL(d2, "44");
-    BHTEST_EQUAL(d3, "33");
-    BHTEST_EQUAL(d4, "22");
-    BHTEST_EQUAL(d5, "11");
-    BHTEST_EQUAL(d6, "");
-    BHTEST_EQUAL(d7, "");
+    BHTEST_EQUAL(d1.to_str(), "");
+    BHTEST_EQUAL(d2.to_str(), "44");
+    BHTEST_EQUAL(d3.to_str(), "33");
+    BHTEST_EQUAL(d4.to_str(), "22");
+    BHTEST_EQUAL(d5.to_str(), "11");
+    BHTEST_EQUAL(d6.to_str(), "");
+    BHTEST_EQUAL(d7.to_str(), "");
 
     vloga("双向测试");
-    BHTEST_EQUAL(e1, "11##22##33##44");
-    BHTEST_EQUAL(e2, "11##22##33");
-    BHTEST_EQUAL(e3, "22");
-    BHTEST_EQUAL(e4, "");
+    BHTEST_EQUAL(e1.to_str(), "11##22##33##44");
+    BHTEST_EQUAL(e2.to_str(), "11##22##33");
+    BHTEST_EQUAL(e3.to_str(), "22");
+    BHTEST_EQUAL(e4.to_str(), "");
 
     vloga("边界双向测试");
-    BHTEST_EQUAL(f1, "##11##22##33##44##");
-    BHTEST_EQUAL(f2, "##11##22##33##44");
-    BHTEST_EQUAL(f3, "11##22##33");
-    BHTEST_EQUAL(f4, "22##33");
-    BHTEST_EQUAL(f5, "33");
+    BHTEST_EQUAL(f1.to_str(), "##11##22##33##44##");
+    BHTEST_EQUAL(f2.to_str(), "##11##22##33##44");
+    BHTEST_EQUAL(f3.to_str(), "11##22##33");
+    BHTEST_EQUAL(f4.to_str(), "22##33");
+    BHTEST_EQUAL(f5.to_str(), "33");
 }
 
 void test_2()
@@ -113,24 +113,24 @@ void test_2()
 
     vloga("反向测试\n");
     vloga("多段分割");
-    BHTEST_EQUAL(a1, "11##22");
-    BHTEST_EQUAL(a2, "11##22##33");
-    BHTEST_EQUAL(a3, "22##33");
-    BHTEST_EQUAL(a4, "22##33##44");
+    BHTEST_EQUAL(a1.to_str(), "11##22");
+    BHTEST_EQUAL(a2.to_str(), "11##22##33");
+    BHTEST_EQUAL(a3.to_str(), "22##33");
+    BHTEST_EQUAL(a4.to_str(), "22##33##44");
 
     vloga("单字符分割");
-    BHTEST_EQUAL(b1, "1");
-    BHTEST_EQUAL(b2, "2");
-    BHTEST_EQUAL(b3, "4");
-    BHTEST_EQUAL(b4, "4");
-    BHTEST_EQUAL(b5, "3");
-    BHTEST_EQUAL(b6, "1");
+    BHTEST_EQUAL(b1.to_str(), "1");
+    BHTEST_EQUAL(b2.to_str(), "2");
+    BHTEST_EQUAL(b3.to_str(), "4");
+    BHTEST_EQUAL(b4.to_str(), "4");
+    BHTEST_EQUAL(b5.to_str(), "3");
+    BHTEST_EQUAL(b6.to_str(), "1");
 
     vloga("多字符分割");
-    BHTEST_EQUAL(c1, "111");
-    BHTEST_EQUAL(c2, "444");
-    BHTEST_EQUAL(c3, "444");
-    BHTEST_EQUAL(c4, "111");
+    BHTEST_EQUAL(c1.to_str(), "111");
+    BHTEST_EQUAL(c2.to_str(), "444");
+    BHTEST_EQUAL(c3.to_str(), "444");
+    BHTEST_EQUAL(c4.to_str(), "111");
 }
 
 void test_3()
@@ -145,11 +145,11 @@ void test_3()
 
     vloga("多次分割测试\n");
     vloga("精准分割");
-    BHTEST_EQUAL(a1, "cpp");
-    BHTEST_EQUAL(a2, "2026");
-    BHTEST_EQUAL(a3, "02");
-    BHTEST_EQUAL(a4, ".");
-    BHTEST_EQUAL(a5, ".");
+    BHTEST_EQUAL(a1.to_str(), "cpp");
+    BHTEST_EQUAL(a2.to_str(), "2026");
+    BHTEST_EQUAL(a3.to_str(), "02");
+    BHTEST_EQUAL(a4.to_str(), ".");
+    BHTEST_EQUAL(a5.to_str(), ".");
 }
 
 void test_4()
@@ -159,7 +159,7 @@ void test_4()
     bh::dstr s1;
     for(bh::int32 i = 0; i < sum; i++) {
         s1 = bh::Bdiv("##100##<<abc-hellow world-1992/4/3 15:12:54>>")("##", 2, 2, " ", 1, 1, "-",
-                                                                       1, 1);
+                                                                       1, 1).to_str();
     }
 
     vloga("性能测试\n");

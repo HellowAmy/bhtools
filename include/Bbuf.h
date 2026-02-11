@@ -90,7 +90,7 @@ public:
 
     inline void reserve(uint64 cap)
     {
-        if(_cap != cap) {
+        if(_cap < cap) {
             reset_data(cap);
         }
     }
@@ -134,8 +134,10 @@ protected:
         _data = new_data(len);
         _cap = len;
 
-        memcpy(_data, old, _size);
-        delete_data(old);
+        if(old) {
+            memcpy(_data, old, _size);
+            delete_data(old);
+        }
     }
 
     // 是否需要扩展空间

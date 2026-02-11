@@ -348,6 +348,7 @@ public:
     {
         int32 bpos = 0;
         int32 epos = 0;
+
         inline int32 size() { return epos - bpos; }
     };
 
@@ -363,6 +364,8 @@ public:
         posdate mil;
         posdate mic;
         posdate nan;
+
+        inline void clear() { std::memset(this, 0, sizeof(record)); }
     };
 
 public:
@@ -371,11 +374,17 @@ public:
     // 记录格式符
     inline void set_format(Bview fm)
     {
-        if(_buf.size() < fm.size()) {
+        if(_buf.size() != fm.size()) {
             _buf.reserve(fm.size());
         }
+
+        // 清空缓冲区
         _buf.clear();
         _buf += fm;
+        _cur_day = 0;
+        _rec.clear();
+
+        // 记录下标
         for(int32 i = 0; i < fm.size(); i++) {
             char c = fm[i];
 
@@ -465,15 +474,16 @@ public:
     }
 
     // 获取当前时间
-    inline Bview get_now_date() { return get_date(time_now()); }
+    inline Bview cur_datetime(int32 UTC = 8) { return get_datetime(time_now(), UTC); }
 
     // 获取时间字符串
-    inline Bview get_date(nanoseconds point)
+    inline Bview get_datetime(nanoseconds point, int32 UTC = 8)
     {
         // 同一天不计算日期
         data d{0};
         int64 day = get_cur_day(point, d);
         if(_cur_day == day) {
+            d.hou += UTC;
             push_number(_rec.hou, d.hou);
             push_number(_rec.min, d.min);
             push_number(_rec.sec, d.sec);
@@ -485,6 +495,7 @@ public:
 
         // 新一天重新计算日期
         d = to_data(point);
+        d.hou += UTC;
         push_number(_rec.yea, d.yea);
         push_number(_rec.mon, d.mon);
         push_number(_rec.day, d.day);
@@ -537,21 +548,25 @@ protected:
         return days;
     }
 
-    //
+    // 重载版本
     inline void push_number(posdate pos, int64 val)
     {
-        push_number(_buf.data() + pos.bpos, pos.size(), val);
+        if(pos.size() > 0) {
+            push_number(_buf.data() + pos.bpos, pos.size(), val);
+        }
     }
 
     // 推入时间缓冲区
     inline void push_number(dchp first, int32 len, int64 val)
     {
         uint32 vlen = get_number_len(val);
-        for(int32 i = 0; i < len - vlen; i++) {
-            *first = '0';
-            first++;
+        if(len > vlen) {
+            for(int32 i = 0; i < len - vlen; i++) {
+                *first = '0';
+                first++;
+            }
         }
-        get_number_chars(first, vlen, val);
+        get_number_chars(first, len, val);
     }
 
     // 以下数字转字符代码参考 std::to_string 函数 C++11 charconv 的实现
@@ -609,11 +624,10 @@ protected:
         }
     }
 
-    // protected:
-public:
+protected:
     int64 _cur_day = 0;
-    Bbuf _buf;
     record _rec;
+    Bbuf _buf;
 };
 
 } // namespace bh

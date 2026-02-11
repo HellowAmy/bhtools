@@ -119,7 +119,7 @@ public:
     {
         for(int32 i = 0; i < _vec.size(); i++) {
             if(is_exist_sub(_vec[i], arg)) {
-                return bh::Bdiv(_vec[i])(end, 1, 1);
+                return bh::Bdiv(_vec[i])(end, 1, 1).to_str();
             }
         }
         return "";

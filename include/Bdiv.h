@@ -15,15 +15,15 @@ public:
 
     // 切割参数进入
     template <typename... Tarr>
-    inline dstr operator()(const Tarr &...arg)
+    inline Bview operator()(const Tarr &...arg)
     {
         if(_str.size() == 0 || sizeof...(arg) == 0) {
-            return "";
+            return Bview();
         }
         if(section(arg...)) {
-            return dstr(_str.data(), _str.size());
+            return Bview(_str.data(), _str.size(), 0, 0);
         }
-        return "";
+        return Bview();
     }
 
 protected:

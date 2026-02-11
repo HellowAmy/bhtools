@@ -121,45 +121,82 @@ void test_4()
     auto tt1 = t1.time_interval();
 
     t1.update();
-    bh::Bview ss2;
+    bh::dstr ss2;
     for(int i = 0; i < sum; i++) {
         p2 += one_day_ns;
-        ss2 = ts1.get_date(p2);
+        ss2 = ts1.get_datetime(p2).to_str();
     }
     auto tt2 = t1.time_interval();
 
     t1.update();
-    bh::Bview ss3;
+    bh::dstr ss3;
     for(int i = 0; i < sum; i++) {
         // p3 += one_day_ns;
-        ss3 = ts1.get_date(p3);
+        ss3 = ts1.get_datetime(p3).to_str();
     }
     auto tt3 = t1.time_interval();
 
+    t1.update();
+    bh::dstr ss4;
+    ts1.set_format("HH:TT:SS.LLL");
+    for(int i = 0; i < sum; i++) {
+        ss4 = ts1.get_datetime(p3).to_str();
+    }
+    auto tt4 = t1.time_interval();
+
+    vloga("性能测试\n");
     vlogd($(t1.to_str(tt1)));
     vlogd($(t1.to_str(tt2)));
     vlogd($(t1.to_str(tt3)));
+    vlogd($(t1.to_str(tt4)));
     vlogd($(ss1));
-    vlogd($(ss2.to_str()));
-    vlogd($(ss3.to_str()));
+    vlogd($(ss2));
+    vlogd($(ss3));
+    vlogd($(ss4));
 
     /*
-        [Deb]<<<< [t1.to_str(tt1): [nan: 4239671150|mic: 4239671|mil: 4239|sec: 4]]
-        [Deb]<<<< [t1.to_str(tt2): [nan: 1183129225|mic: 1183129|mil: 1183|sec: 1]]
-        [Deb]<<<< [t1.to_str(tt3): [nan: 691389492|mic: 691389|mil: 691|sec: 0]]
+        [All]<<<< 性能测试
+        [Deb]<<<< [t1.to_str(tt1): [nan: 4560358410|mic: 4560358|mil: 4560|sec: 4]]
+        [Deb]<<<< [t1.to_str(tt2): [nan: 1454485026|mic: 1454485|mil: 1454|sec: 1]]
+        [Deb]<<<< [t1.to_str(tt3): [nan: 891818065|mic: 891818|mil: 891|sec: 0]]
+        [Deb]<<<< [t1.to_str(tt4): [nan: 637329481|mic: 637329|mil: 637|sec: 0]]
         [Deb]<<<< [ss1: 1755-07-26.07:41:05.751.274.348]
-        [Deb]<<<< [ss2.to_str(): 1850-07-15.11:45:30.100.200.300]
-        [Deb]<<<< [ss3.to_str(): 1850-07-15.11:45:30.100.200.300]
+        [Deb]<<<< [ss2: 1755-07-26.15:41:05.751.274.348]
+        [Deb]<<<< [ss3: 1850-07-15.19:45:30.100.200.300]
+        [Deb]<<<< [ss4: 19:45:30.100]
     */
+}
+
+void test_5()
+{
+    bh::Btimefms ts1;
+
+    bh::dstr s1 = ts1.cur_datetime().to_str(); // YYYY-MM-DD.HH:TT:SS.LLL.CCC.NNN
+
+    ts1.set_format("YYYY-MM-DD.HH:TT:SS.LLL.CCC.NNN");
+    bh::dstr s2 = ts1.cur_datetime().to_str();
+
+    ts1.set_format("YY-MM-DD.HH:TT:SS.LLL.CCC.NNN");
+    bh::dstr s3 = ts1.cur_datetime().to_str();
+
+    ts1.set_format("HH:TT:SS.LLL");
+    bh::dstr s4 = ts1.cur_datetime().to_str();
+
+    vloga("格式打印");
+    vlogd($(s1));
+    vlogd($(s2));
+    vlogd($(s3));
+    vlogd($(s4));
 }
 
 int main(int argc, char *argv[])
 {
     //
-    // test_1();
-    // test_2();
-    // test_3();
+    test_1();
+    test_2();
+    test_3();
     test_4();
+    test_5();
 
     return 0;
 }

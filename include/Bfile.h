@@ -487,19 +487,19 @@ public:
     // 返回后缀
     inline static dstr get_suffix(cstr file)
     {
-        return Bdiv(file)(".", -1, -1);
+        return Bdiv(file)(".", -1, -1).to_str();
     }
 
     // 返回全名称
     inline static dstr get_name(cstr file)
     {
-        return Bdiv(file)(platform::file_splitter(), -1, -1);
+        return Bdiv(file)(platform::file_splitter(), -1, -1).to_str();
     }
 
     // 返回无后缀名
     inline static dstr get_basename(cstr file)
     {
-        return Bdiv(file)(platform::file_splitter(), -1, -1, ".", 0, 0);
+        return Bdiv(file)(platform::file_splitter(), -1, -1, ".", 0, 0).to_str();
     }
 
     // 获取文件

@@ -1,7 +1,7 @@
 #ifndef BTEST_H
 #define BTEST_H
 
-#include "Blog.h"
+#include "Tlog.h"
 
 namespace bh {
 
@@ -12,9 +12,9 @@ namespace bh {
 #define BHLOG_MAKE_COLBAD(out, end, ...)                                                           \
     BHLOG_MAKE(out, "\033[31m[Bad]", "\033[0m" << end, e_deb, __VA_ARGS__)
 
-#define BHLOG_YES(...) BHLOG_MAKE_COLYES(BHLOG_CONF_DEF(_cmd), BHLOG_CONF_DEF(_end), __VA_ARGS__)
+#define BHLOG_YES(...) BHLOG_MAKE_COLYES(BHLOG_CONF(_cmd), BHLOG_CONF(_end), __VA_ARGS__)
 
-#define BHLOG_BAD(...) BHLOG_MAKE_COLBAD(BHLOG_CONF_DEF(_cmd), BHLOG_CONF_DEF(_end), __VA_ARGS__)
+#define BHLOG_BAD(...) BHLOG_MAKE_COLBAD(BHLOG_CONF(_cmd), BHLOG_CONF(_end), __VA_ARGS__)
 
 // 值是否相等
 #define BHTEST_EQUAL(a, b)                                                                         \
