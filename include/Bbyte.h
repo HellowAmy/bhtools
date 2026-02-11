@@ -65,9 +65,9 @@ public:
     template <typename T>
     inline static T swap_endian(T val)
     {
-        uint64 len = sizeof(val);
-        std::string mem((char *)&val, len);
-        for(uint64 i = 0; i < len; i++) {
+        uint32 len = sizeof(val);
+        dstr mem((char *)&val, len);
+        for(uint32 i = 0; i < len; i++) {
             if(i >= len / 2) {
                 break;
             }
@@ -112,10 +112,10 @@ class Bbyte
 public:
     // 2进制转2进制字符串
     template <typename T>
-    inline static std::string b2_s2(T val)
+    inline static dstr b2_s2(T val)
     {
-        std::string mem(size_byte(val), '0');
-        for(uint64 i = 0; i < mem.size(); i++) {
+        dstr mem(size_byte(val), '0');
+        for(uint32 i = 0; i < mem.size(); i++) {
             if(val & _BH_ONE_LOW_) {
                 mem[mem.size() - i - 1] = '1';
             }
@@ -126,11 +126,11 @@ public:
 
     // 2进制转2进制字符串-返回真实的字节序排布
     template <typename T>
-    inline static std::string b2_s2_true(T val)
+    inline static dstr b2_s2_true(T val)
     {
-        std::string ret;
-        std::string mem((char *)&val, sizeof(val));
-        for(uint64 i = 0; i < sizeof(val); i++) {
+        dstr ret;
+        dstr mem((char *)&val, sizeof(val));
+        for(uint32 i = 0; i < sizeof(val); i++) {
             ret += b2_s2<char>(mem[i]);
         }
         return ret;
@@ -138,13 +138,13 @@ public:
 
     // 2进制转8进制字符串
     template <typename T>
-    inline static std::string b2_s8(T val)
+    inline static dstr b2_s8(T val)
     {
-        uint64 count = 0;
-        uint64 sum = 0;
-        std::string ret;
+        uint32 count = 0;
+        uint32 sum = 0;
+        dstr ret;
 
-        for(uint64 i = 0; i < size_byte(val); i++) {
+        for(uint32 i = 0; i < size_byte(val); i++) {
             if(val & _BH_ONE_LOW_) {
                 sum += calc_exp(2, count);
             }
@@ -163,13 +163,13 @@ public:
 
     // 2进制转16进制字符串
     template <typename T>
-    inline static std::string b2_s16(T val)
+    inline static dstr b2_s16(T val)
     {
-        uint64 count = 0;
-        uint64 sum = 0;
-        std::string ret;
+        uint32 count = 0;
+        uint32 sum = 0;
+        dstr ret;
 
-        for(uint64 i = 0; i < size_byte(val); i++) {
+        for(uint32 i = 0; i < size_byte(val); i++) {
             if(val & _BH_ONE_LOW_) {
                 sum += calc_exp(2, count);
             }
@@ -187,11 +187,11 @@ public:
 
     // 2进制转10进制字符串
     template <typename T>
-    inline static std::string b2_s10(T val)
+    inline static dstr b2_s10(T val)
     {
-        uint64 sum = 0;
-        uint64 one = 0;
-        for(uint64 i = 0; i < size_byte(val); i++) {
+        uint32 sum = 0;
+        uint32 one = 0;
+        for(uint32 i = 0; i < size_byte(val); i++) {
             if(val & _BH_ONE_LOW_) {
                 one = 1;
             }
@@ -206,10 +206,10 @@ public:
 
     // 2进制字符串转2进制
     template <typename T>
-    inline static T s2_b2(const std::string &s)
+    inline static T s2_b2(cstr s)
     {
         T t = 0;
-        for(uint64 i = 0; i < s.size(); i++) {
+        for(uint32 i = 0; i < s.size(); i++) {
             t <<= 1;
             if(s[i] == '1') {
                 t |= _BH_ONE_LOW_;
@@ -220,12 +220,12 @@ public:
 
     // 8进制字符串转2进制
     template <typename T>
-    inline static T s8_b2(const std::string &s)
+    inline static T s8_b2(cstr s)
     {
         T t = 0;
-        for(uint64 i = 0; i < s.size(); i++) {
+        for(uint32 i = 0; i < s.size(); i++) {
             std::vector<bool> vec = char_oct(s[i]);
-            for(uint64 a = vec.size(); a > 0; a--) {
+            for(uint32 a = vec.size(); a > 0; a--) {
                 t <<= 1;
                 if(vec[a - 1]) {
                     t |= _BH_ONE_LOW_;
@@ -237,7 +237,7 @@ public:
 
     // 10进制字符串转2进制
     template <typename T>
-    inline static T s10_b2(const std::string &s)
+    inline static T s10_b2(cstr s)
     {
         T ret;
         std::istringstream ss(s);
@@ -247,12 +247,12 @@ public:
 
     // 16进制字符串转2进制
     template <typename T>
-    inline static T s16_b2(const std::string &s)
+    inline static T s16_b2(cstr s)
     {
         T t = 0;
-        for(uint64 i = 0; i < s.size(); i++) {
+        for(uint32 i = 0; i < s.size(); i++) {
             std::vector<bool> vec = char_hex(s[i]);
-            for(uint64 a = vec.size(); a > 0; a--) {
+            for(uint32 a = vec.size(); a > 0; a--) {
                 t <<= 1;
                 if(vec[a - 1]) {
                     t |= _BH_ONE_LOW_;
@@ -263,7 +263,7 @@ public:
     }
 
     // 数字转16进制符号
-    inline static char num_hex(uint64 val)
+    inline static char num_hex(uint32 val)
     {
         if(val > 15) {
             return '0';
@@ -275,7 +275,7 @@ public:
     }
 
     // 16进制符号转数字
-    inline static uint64 hex_num(char c)
+    inline static uint32 hex_num(char c)
     {
         if(is_hex_range(c)) {
             if(is_hex_digit(c)) {
@@ -292,7 +292,7 @@ public:
     }
 
     // 8进制符号转数字
-    inline static uint64 oct_num(char c)
+    inline static uint32 oct_num(char c)
     {
         if(is_oct_range(c)) {
             return c - '0';
@@ -366,9 +366,9 @@ public:
     }
 
     // 转大写-字符串
-    inline static std::string to_upper(const std::string &s)
+    inline static dstr to_upper(cstr s)
     {
-        std::string ret(s.size(), '0');
+        dstr ret(s.size(), '0');
         for(int32 i = 0; i < s.size(); i++) {
             ret[i] = to_upper(s[i]);
         }
@@ -376,9 +376,9 @@ public:
     }
 
     // 转小写-字符串
-    inline static std::string to_lower(const std::string &s)
+    inline static dstr to_lower(cstr s)
     {
-        std::string ret(s.size(), '0');
+        dstr ret(s.size(), '0');
         for(int32 i = 0; i < s.size(); i++) {
             ret[i] = to_lower(s[i]);
         }
@@ -407,13 +407,13 @@ public:
 
     // 返回内存的bit长度
     template <typename T>
-    inline static uint64 size_byte(T val)
+    inline static uint32 size_byte(T val)
     {
         return sizeof(val) * 8;
     }
 
     // 正整数的指数计算
-    inline static uint64 calc_exp(uint64 val, uint64 exp)
+    inline static uint32 calc_exp(uint32 val, uint32 exp)
     {
         if(exp == 0) {
             return 1;
@@ -421,21 +421,21 @@ public:
         if(exp == 1) {
             return val;
         }
-        uint64 sum = val;
-        for(uint64 i = 0; i < exp - 1; i++) {
+        uint32 sum = val;
+        for(uint32 i = 0; i < exp - 1; i++) {
             sum *= val;
         }
         return sum;
     }
 
-    // internal
+protected:
     // 字节转16进制位数标记
     inline static std::vector<bool> char_hex(char c)
     {
         std::vector<bool> vec{false, false, false, false};
-        uint64 num = hex_num(c);
+        uint32 num = hex_num(c);
         for(int32 i = 3; i >= 0; i--) {
-            uint64 b = calc_exp(2, i);
+            uint32 b = calc_exp(2, i);
             if(num >= b) {
                 num -= b;
                 vec[i] = true;
@@ -448,9 +448,9 @@ public:
     inline static std::vector<bool> char_oct(char c)
     {
         std::vector<bool> vec{false, false, false};
-        uint64 num = oct_num(c);
+        uint32 num = oct_num(c);
         for(int32 i = 2; i >= 0; i--) {
-            uint64 b = calc_exp(2, i);
+            uint32 b = calc_exp(2, i);
             if(num >= b) {
                 num -= b;
                 vec[i] = true;
